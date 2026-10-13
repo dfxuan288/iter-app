@@ -45,7 +45,19 @@ because these decisions were made later by the founding team.
 - Animation: Reanimated inside the app (works on web and native). GSAP is for the landing website only.
 - Icons: Phosphor.
 
+## Phase 1 notes (13 Oct 2026)
+
+- Demo trip: Tokyo, 9 to 18 Nov 2026, with the demo clock on 15 Nov (day 7). Planned: Food 900, Transport 440,
+  Stay 1,470, Activities 400, Shopping 690. The 24 seeded expenses total exactly RM 2,700; a test enforces it.
+- Hotel and two tickets are seeded as online bookings paid in Ringgit; everything else is in yen.
+- "Planned daily amount" (used for the spending-fast check) is the safe-to-spend figure on day 1, before any spending.
+- The forecast averages spending over the days elapsed including today.
+- Starting a new trip moves the current one to history. "Reset the demo" on the Me tab restores Tokyo.
+- The tax refund card is off Home until Phase 5, when it can be calculated rather than typed in.
+- Mobbin's connector needs a paid Mobbin plan, so it is not used.
+
 ## Still open
 
 - Server details from the lecturer: operating system, web address/HTTPS, and how we get access.
-- Home currently shows hand-typed sample numbers as a design preview; Phase 1 replaces them.
+- Destination photos still load from Unsplash; copy them into the app before the demo.
+- Ho Chi Minh City, New York and Paris have no photo yet (they show the ocean gradient).
