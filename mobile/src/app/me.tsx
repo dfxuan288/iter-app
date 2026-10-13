@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { ComingSoon } from '@/components/ComingSoon';
 import { AppText } from '@/components/ui/AppText';
+import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Chip, type ChipTone } from '@/components/ui/Chip';
+import { ArrowsClockwiseIcon } from '@/components/ui/icons';
 import { Screen } from '@/components/ui/Screen';
 import { env } from '@/config/env';
 import { healthService, type ServerHealth } from '@/services/healthService';
 import type { RequestFailure, RequestResult } from '@/services/http';
-import { colors, MIN_TOUCH_TARGET, radius, spacing } from '@/theme/tokens';
+import { colors, spacing } from '@/theme/tokens';
 
 type ServerState =
   | { kind: 'checking' }
@@ -74,16 +76,13 @@ export default function MeScreen() {
           {server.kind === 'checking' ? <ActivityIndicator color={colors.teal} /> : null}
         </View>
         <AppText color="muted">{status.detail}</AppText>
-        <Pressable
+        <Button
+          label="Check again"
+          icon={ArrowsClockwiseIcon}
           onPress={() => void check()}
           disabled={server.kind === 'checking'}
-          accessibilityRole="button"
           accessibilityLabel="Check the server connection again"
-          style={({ pressed }) => [styles.button, (pressed || server.kind === 'checking') && styles.buttonDimmed]}>
-          <AppText variant="label" color="inverse">
-            Check again
-          </AppText>
-        </Pressable>
+        />
       </Card>
       <ComingSoon
         phase="Phase 8"
@@ -103,14 +102,4 @@ export default function MeScreen() {
 
 const styles = StyleSheet.create({
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  button: {
-    minHeight: MIN_TOUCH_TARGET,
-    borderRadius: radius.lg,
-    backgroundColor: colors.navy,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
-    marginTop: spacing.xs,
-  },
-  buttonDimmed: { opacity: 0.6 },
 });

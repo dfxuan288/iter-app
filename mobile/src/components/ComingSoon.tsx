@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { Card } from '@/components/ui/Card';
 import { Chip } from '@/components/ui/Chip';
+import { Reveal } from '@/components/ui/Reveal';
 import { spacing } from '@/theme/tokens';
 
 export interface ComingSoonProps {
@@ -14,16 +15,18 @@ export interface ComingSoonProps {
 /** Placeholder card shown on screens whose features arrive in a later build phase. */
 export function ComingSoon({ phase, features }: ComingSoonProps) {
   return (
-    <Card>
-      <Chip label={`Coming in ${phase}`} />
-      <AppText variant="heading">What will be here</AppText>
-      <View style={{ gap: spacing.xs }}>
-        {features.map((feature) => (
-          <AppText key={feature} color="muted">
-            {`•  ${feature}`}
-          </AppText>
-        ))}
-      </View>
-    </Card>
+    <Reveal>
+      <Card>
+        <Chip label={`Coming in ${phase}`} />
+        <AppText variant="heading">What will be here</AppText>
+        <View style={{ gap: spacing.xs }}>
+          {features.map((feature) => (
+            <AppText key={feature} color="muted">
+              {`•  ${feature}`}
+            </AppText>
+          ))}
+        </View>
+      </Card>
+    </Reveal>
   );
 }

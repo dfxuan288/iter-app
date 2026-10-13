@@ -2,13 +2,13 @@
   "expo": {
     "name": "ITER",
     "slug": "iter",
-    "description": "Know what's safe to spend. A travel money app for Malaysian travellers.",
+    "description": "Smarter journeys. Safer spends. A travel money app for Malaysian travellers.",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "iter",
     "userInterfaceStyle": "light",
-    "backgroundColor": "#EEEEEE",
+    "backgroundColor": "#EDF5F4",
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#053B50",

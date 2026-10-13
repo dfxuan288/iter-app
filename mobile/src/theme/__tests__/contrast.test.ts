@@ -25,15 +25,18 @@ describe('contrastRatio', () => {
 describe('ITER palette meets WCAG AA', () => {
   const textPairs: [name: string, foreground: string, background: string][] = [
     ['primary text on cards', colors.navy, colors.card],
-    ['primary text on section background', colors.navy, colors.surface],
+    ['primary text on the page', colors.navy, colors.surface],
+    ['primary text on sunken tiles', colors.navy, colors.surfaceSunken],
     ['muted text on cards', colors.textMuted, colors.card],
-    ['muted text on section background', colors.textMuted, colors.surface],
-    ['chip text on chip', colors.chipText, colors.chip],
-    ['white text on navy', colors.white, colors.navy],
-    ['white text on teal', colors.white, colors.teal],
+    ['muted text on the page', colors.textMuted, colors.surface],
+    ['muted text on sunken tiles', colors.textMuted, colors.surfaceSunken],
+    ['white text on the navy button', colors.white, colors.navy],
+    ['white text on teal (lightest text area of the gradient)', colors.white, colors.teal],
+    ['navy text on the accent fill', colors.navy, colors.accent],
+    ['accent text on cards', colors.accentText, colors.card],
+    ['accent text on the page', colors.accentText, colors.surface],
+    ['accent text on the soft accent fill', colors.accentText, colors.accentSoft],
     ['teal links on cards', colors.teal, colors.card],
-    ['success text on cards', colors.success, colors.card],
-    ['success text on chip', colors.success, colors.chip],
     ['warning text on warning surface', colors.warning, colors.warningSurface],
     ['danger text on danger surface', colors.danger, colors.dangerSurface],
   ];
@@ -42,8 +45,13 @@ describe('ITER palette meets WCAG AA', () => {
     expect(contrastRatio(foreground, background)).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
   });
 
-  it('keeps aqua as a highlight only: it fails as text on white', () => {
+  it('keeps aqua and the accent as fills only: both fail as text on white', () => {
     expect(contrastRatio(colors.aqua, colors.card)).toBeLessThan(AA_LARGE_TEXT);
+    expect(contrastRatio(colors.accent, colors.card)).toBeLessThan(AA_LARGE_TEXT);
+  });
+
+  it('never puts white text on the accent fill', () => {
+    expect(contrastRatio(colors.white, colors.accent)).toBeLessThan(AA_NORMAL_TEXT);
   });
 
   it('uses a touch target of at least 44 points', () => {
