@@ -7,6 +7,7 @@ developers: explain things in plain language and say clearly when they must do s
 
 - `docs/PROJECT_BRIEF.md` — the product brief (source of truth).
 - `docs/DECISIONS.md` — later decisions that override the brief, and what is still open.
+- `docs/DESIGN.md` — the visual direction and its rules. Follow it for every screen.
 - `README.md` — how to run, test and deploy.
 
 ## Layout

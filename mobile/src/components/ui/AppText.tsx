@@ -2,15 +2,15 @@ import { Text, type TextProps } from 'react-native';
 
 import { colors, typography, type TypographyVariant } from '@/theme/tokens';
 
-export type TextColor = 'primary' | 'muted' | 'inverse' | 'inverseMuted' | 'link' | 'chip' | 'danger';
+export type TextColor = 'primary' | 'muted' | 'inverse' | 'inverseMuted' | 'link' | 'accent' | 'danger';
 
 const textColors: Record<TextColor, string> = {
   primary: colors.navy,
   muted: colors.textMuted,
   inverse: colors.white,
-  inverseMuted: 'rgba(255,255,255,0.85)',
+  inverseMuted: colors.glassText,
   link: colors.teal,
-  chip: colors.chipText,
+  accent: colors.accentText,
   danger: colors.danger,
 };
 
@@ -22,12 +22,13 @@ export interface AppTextProps extends TextProps {
 
 /** The one text component used across the app, so type sizes and colours stay consistent. */
 export function AppText({ variant = 'body', color = 'primary', align, style, ...rest }: AppTextProps) {
-  const isHeading = variant === 'display' || variant === 'title' || variant === 'heading';
+  const isHeading = variant === 'title' || variant === 'heading';
+  const isLarge = isHeading || variant === 'display' || variant === 'number';
   return (
     <Text
-      accessibilityRole={isHeading ? 'header' : undefined}
+      role={isHeading ? 'heading' : undefined}
       // Respect the user's text-size setting, but stop very large sizes breaking layouts.
-      maxFontSizeMultiplier={isHeading ? 1.4 : 1.8}
+      maxFontSizeMultiplier={isLarge ? 1.4 : 1.8}
       {...rest}
       style={[typography[variant], { color: textColors[color] }, align ? { textAlign: align } : null, style]}
     />

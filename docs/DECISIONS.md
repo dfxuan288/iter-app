@@ -36,9 +36,16 @@ because these decisions were made later by the founding team.
 - **Scope note from the tutor:** features such as sign-in and multi-user interaction only need to
   be shown as available in the app; they do not need a real multi-user backend.
 
+## Design (13 Oct 2026)
+
+- Tagline: **"Smarter journeys. Safer spends."** (replaces "Know what's safe to spend.").
+- Look: see `DESIGN.md`. Light aqua-tinted style from the team's two references; ITER navy and
+  teal kept, with the logo's green as the single accent. Ocean gradient and glass only on the
+  safe-to-spend card and Scan screen. Outfit for headings and numbers.
+- Animation: Reanimated inside the app (works on web and native). GSAP is for the landing website only.
+- Icons: Phosphor.
+
 ## Still open
 
-- Tagline: the brief says "Know what's safe to spend."; the logo sheet says "Smarter journeys.
-  Safer spends." The app currently uses the brief's.
-- Colours: the logo sheet uses #0B2A4A / #00B894; the brief's palette (§10) is used for the app UI.
 - Server details from the lecturer: operating system, web address/HTTPS, and how we get access.
+- Home currently shows hand-typed sample numbers as a design preview; Phase 1 replaces them.

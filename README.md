@@ -1,6 +1,6 @@
 # ITER
 
-**Know what's safe to spend.** A travel money app for Malaysian travellers: safe-to-spend per day,
+**Smarter journeys. Safer spends.** A travel money app for Malaysian travellers: safe-to-spend per day,
 AI receipt scanning, tax refund tracking, live exchange rates and a community feed.
 
 This is a **prototype**. It uses demo data and moves no real money.
@@ -9,7 +9,7 @@ This is a **prototype**. It uses demo data and moves no real money.
 |---|---|
 | `mobile/` | The app (Expo + React Native + TypeScript), shipped as a web app you open in a phone browser |
 | `server/` | The backend (Node.js + TypeScript), packaged with Docker. Holds the AI key and fetches exchange rates |
-| `docs/` | The project brief and the decisions made since |
+| `docs/` | The project brief, the decisions made since, and the design direction |
 
 ## Build status
 
