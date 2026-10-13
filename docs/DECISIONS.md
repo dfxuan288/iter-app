@@ -72,4 +72,4 @@ The lecturer's recommended setup replaces the private-server plan above.
 
 ## Still open
 
-- New York and Paris have no photo yet (they show the ocean gradient).
+- Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.
