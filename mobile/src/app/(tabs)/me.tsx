@@ -9,6 +9,9 @@ import { Chip, type ChipTone } from '@/components/ui/Chip';
 import { ArrowsClockwiseIcon } from '@/components/ui/icons';
 import { Screen } from '@/components/ui/Screen';
 import { env } from '@/config/env';
+import { planFor } from '@/config/plans';
+import { formatDayMonth } from '@/domain/dates';
+import { useAppData } from '@/state/AppDataProvider';
 import { healthService, type ServerHealth } from '@/services/healthService';
 import type { RequestFailure, RequestResult } from '@/services/http';
 import { colors, spacing } from '@/theme/tokens';
@@ -67,8 +70,46 @@ export default function MeScreen() {
 
   const status = describe(server);
 
+  const { data, trip, resetDemo } = useAppData();
+  const [confirmingReset, setConfirmingReset] = useState(false);
+  const pastTrips = data.trips.filter((t) => t.id !== trip?.id);
+
   return (
     <Screen title="Me" subtitle="Profile, plan and settings.">
+      <Card>
+        <AppText variant="heading">{data.user.displayName}</AppText>
+        <Chip label={planFor(data.user.planTier).name} tone="success" />
+        {trip ? <AppText color="muted">{`Current trip: ${trip.city}, ${formatDayMonth(trip.startDate)} to ${formatDayMonth(trip.endDate)}`}</AppText> : null}
+        {pastTrips.length > 0 ? (
+          <AppText color="muted">{`Earlier trips: ${pastTrips.map((t) => t.city).join(', ')}`}</AppText>
+        ) : null}
+      </Card>
+      <Card>
+        <AppText variant="heading">Demo data</AppText>
+        <AppText color="muted">
+          {confirmingReset
+            ? 'This removes every trip you created on this phone and brings back the Tokyo demo. It cannot be undone.'
+            : 'Put the app back to the Tokyo demo trip, exactly as it was when first opened.'}
+        </AppText>
+        {confirmingReset ? (
+          <View style={styles.confirmRow}>
+            <View style={styles.confirmButton}>
+              <Button label="Keep my data" variant="quiet" onPress={() => setConfirmingReset(false)} />
+            </View>
+            <View style={styles.confirmButton}>
+              <Button
+                label="Yes, reset"
+                onPress={() => {
+                  resetDemo();
+                  setConfirmingReset(false);
+                }}
+              />
+            </View>
+          </View>
+        ) : (
+          <Button label="Reset the demo" variant="quiet" onPress={() => setConfirmingReset(true)} />
+        )}
+      </Card>
       <Card>
         <AppText variant="heading">Server connection</AppText>
         <View style={styles.statusRow} accessibilityLiveRegion="polite">
@@ -87,7 +128,6 @@ export default function MeScreen() {
       <ComingSoon
         phase="Phase 8"
         features={[
-          'Profile and current plan',
           'Free, Trip Pass and Premium (purchases simulated)',
           'Trip history',
           'Settings: notifications, scan quality, privacy, delete my data',
@@ -102,4 +142,6 @@ export default function MeScreen() {
 
 const styles = StyleSheet.create({
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  confirmRow: { flexDirection: 'row', gap: spacing.md },
+  confirmButton: { flex: 1 },
 });

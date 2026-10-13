@@ -27,7 +27,9 @@ developers: explain things in plain language and say clearly when they must do s
 - Secrets live only in the server's `.env`. Never put a key in `mobile/` or commit one.
 - Never crash and never lose user data: network calls return typed results (`mobile/src/services/http.ts`).
 - Accessibility: WCAG AA contrast, 44pt touch targets, screen-reader labels.
-- All data access from screens goes through `mobile/src/services/`.
+- All data access from screens goes through `mobile/src/services/` and `mobile/src/state/AppDataProvider.tsx`.
+- Calculations live in `mobile/src/domain/` (pure, tested). Tunable numbers live in `mobile/src/config/`.
+- "Today" comes from `mobile/src/config/demo.ts` (a fixed demo date), never from `new Date()` in screens.
 
 ## Workflow
 

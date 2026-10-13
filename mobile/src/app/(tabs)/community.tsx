@@ -5,12 +5,12 @@ import { DestinationCard } from '@/components/DestinationCard';
 import { AppText } from '@/components/ui/AppText';
 import { Reveal } from '@/components/ui/Reveal';
 import { Screen } from '@/components/ui/Screen';
-import { destinations } from '@/data/destinations';
+import { photoDestinations } from '@/data/destinations';
 import { spacing } from '@/theme/tokens';
 
 export default function CommunityScreen() {
   // One wide card, then the rest two to a row.
-  const [featured, ...rest] = destinations;
+  const [featured, ...rest] = photoDestinations;
   const rows: (typeof rest)[] = [];
   for (let i = 0; i < rest.length; i += 2) rows.push(rest.slice(i, i + 2));
 

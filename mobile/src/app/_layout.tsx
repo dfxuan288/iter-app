@@ -1,11 +1,11 @@
 import { Outfit_500Medium, Outfit_600SemiBold, Outfit_700Bold, useFonts } from '@expo-google-fonts/outfit';
-import { DefaultTheme, ThemeProvider } from 'expo-router';
+import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { AppTabs } from '@/components/navigation/AppTabs';
+import { AppDataProvider } from '@/state/AppDataProvider';
 import { colors, MAX_APP_WIDTH } from '@/theme/tokens';
 
 void SplashScreen.preventAutoHideAsync();
@@ -44,13 +44,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={iterTheme}>
-      <StatusBar style="dark" />
-      {/* On a laptop or projector the app is shown as a centred phone-width column. */}
-      <View style={styles.backdrop}>
-        <View style={styles.app}>
-          <AppTabs />
+      <AppDataProvider>
+        <StatusBar style="dark" />
+        {/* On a laptop or projector the app is shown as a centred phone-width column. */}
+        <View style={styles.backdrop}>
+          <View style={styles.app}>
+            <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }} />
+          </View>
         </View>
-      </View>
+      </AppDataProvider>
     </ThemeProvider>
   );
 }

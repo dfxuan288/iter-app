@@ -16,8 +16,8 @@ This is a **prototype**. It uses demo data and moves no real money.
 | Phase | Status |
 |---|---|
 | 0. Foundations: project, checks, five-tab shell, backend in Docker | Done |
-| 1. Money core and Home | Next |
-| 2. Currency and manual entry | |
+| 1. Money core and Home: safe-to-spend maths, demo trip, plan-a-trip flow | Done |
+| 2. Currency and manual entry | Next |
 | 3. Scan backend (AI) | |
 | 4. Receipt scan flow | |
 | 5. Tax refund | |
@@ -117,7 +117,11 @@ These are deliberately kept out of the screens, each in one config file:
 
 | What | Where | Arrives in |
 |---|---|---|
-| Plan prices and free scan limits (placeholders) | `mobile/src/config/plans.ts` | Phase 1 |
+| Plan prices and free scan limits (placeholders) | `mobile/src/config/plans.ts` | Now |
+| Safe-to-spend rules: which categories are essentials, the "spending fast" threshold, suggested split | `mobile/src/config/budget.ts` | Now |
+| The demo date and the seeded exchange rates | `mobile/src/config/demo.ts` | Now |
+| The demo trip and its expenses | `mobile/src/data/seed.ts` | Now |
+| Destinations, their currencies and photos | `mobile/src/data/destinations.ts` | Now |
 | Tax refund rules per country, each with a source link and "last verified" date | `mobile/src/config/taxRules.ts` | Phase 5 |
 | Colours, spacing and type sizes | `mobile/src/theme/tokens.ts` | Now |
 

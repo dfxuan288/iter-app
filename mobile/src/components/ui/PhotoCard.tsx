@@ -6,8 +6,9 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { colors, gradients, radius, shadow, spacing } from '@/theme/tokens';
 
 export interface PhotoCardProps {
-  photoUrl: string;
-  photoAlt: string;
+  /** Leave out to show the ocean gradient alone. */
+  photoUrl?: string;
+  photoAlt?: string;
   children: ReactNode;
   /**
    * `full` darkens the whole photo, for cards with a lot of text on top.
@@ -19,7 +20,7 @@ export interface PhotoCardProps {
 }
 
 const scrims = {
-  full: ['rgba(5,59,80,0.05)', 'rgba(5,59,80,0.70)', 'rgba(5,59,80,0.95)'] as const,
+  full: ['rgba(5,59,80,0)', 'rgba(5,59,80,0.42)', 'rgba(5,59,80,0.9)'] as const,
   bottom: ['rgba(5,59,80,0)', 'rgba(5,59,80,0.30)', 'rgba(5,59,80,0.92)'] as const,
 };
 
@@ -33,14 +34,16 @@ export function PhotoCard({ photoUrl, photoAlt, children, scrim = 'full', style,
     <View style={[styles.shadow, style]}>
       <View style={styles.clip}>
         <LinearGradient colors={gradients.ocean} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-        <Image
-          source={{ uri: photoUrl }}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          transition={300}
-          accessibilityLabel={photoAlt}
-        />
-        <LinearGradient colors={scrims[scrim]} locations={scrim === 'full' ? [0, 0.42, 1] : [0, 0.45, 1]} style={StyleSheet.absoluteFill} />
+        {photoUrl ? (
+          <Image
+            source={{ uri: photoUrl }}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            transition={300}
+            accessibilityLabel={photoAlt}
+          />
+        ) : null}
+        <LinearGradient colors={scrims[scrim]} locations={scrim === 'full' ? [0.12, 0.52, 1] : [0, 0.45, 1]} style={StyleSheet.absoluteFill} />
         <View style={[styles.content, contentStyle]}>{children}</View>
       </View>
     </View>
