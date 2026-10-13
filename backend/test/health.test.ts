@@ -10,12 +10,12 @@ import { routes } from '../routes.js';
 
 describe('loadConfig', () => {
   it('runs locally with no key by default', () => {
-    expect(loadConfig({})).toEqual({ anthropicApiKey: undefined, platform: 'local' });
+    expect(loadConfig({})).toEqual({ anthropicApiKey: undefined, supabase: undefined, platform: 'local' });
   });
 
   it('recognises Vercel and reads the key', () => {
     const config = loadConfig({ VERCEL_ENV: 'production', ANTHROPIC_API_KEY: ' test-key-value ' });
-    expect(config).toEqual({ anthropicApiKey: 'test-key-value', platform: 'vercel' });
+    expect(config).toEqual({ anthropicApiKey: 'test-key-value', supabase: undefined, platform: 'vercel' });
   });
 
   it('treats a blank key as missing', () => {
