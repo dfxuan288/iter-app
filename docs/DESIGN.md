@@ -45,5 +45,4 @@ All motion switches off when the phone is set to reduce motion.
 ## Photos
 
 Listed in `mobile/src/data/destinations.ts`, each with its source link. All are from Unsplash under the
-free Unsplash Licence. They currently load from Unsplash's servers; before the demo they should be
-copied into the app so it does not depend on Unsplash being reachable.
+free Unsplash Licence. The image files are stored in `mobile/assets/images/destinations`, so the app does not depend on Unsplash.

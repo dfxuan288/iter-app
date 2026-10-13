@@ -7,15 +7,19 @@ This is a **prototype**. It uses demo data and moves no real money.
 
 | Folder | What it is |
 |---|---|
-| `mobile/` | The app (Expo + React Native + TypeScript), shipped as a web app you open in a phone browser |
-| `server/` | The backend (Node.js + TypeScript), packaged with Docker. Holds the AI key and fetches exchange rates |
+| `mobile/` | The app (Expo + React Native + TypeScript), shipped as a web app you open in a browser |
+| `api/` | The backend's endpoints. Vercel turns each file here into a web address under `/api/` |
+| `backend/` | The backend's actual logic and tests. Holds the AI key and fetches exchange rates |
 | `docs/` | The project brief, the decisions made since, and the design direction |
+
+It is hosted on **Vercel** (the app and the backend) with **Supabase** for the backend's small
+database, as recommended for the course.
 
 ## Build status
 
 | Phase | Status |
 |---|---|
-| 0. Foundations: project, checks, five-tab shell, backend in Docker | Done |
+| 0. Foundations: project, checks, five-tab shell, backend | Done |
 | 1. Money core and Home: safe-to-spend maths, demo trip, plan-a-trip flow | Done |
 | 2. Currency and manual entry | Next |
 | 3. Scan backend (AI) | |
@@ -25,91 +29,75 @@ This is a **prototype**. It uses demo data and moves no real money.
 | 7. Community | |
 | 8. Plans and Me | |
 | 9. Polish | |
-| 10. Deployment to the lecturer's server | |
+| 10. Final deployment checks and demo rehearsal | |
 
 ## Run it on your computer
 
-You need [Node.js](https://nodejs.org) 22 or newer. The first time, install the packages:
+You need [Node.js](https://nodejs.org) 22 or newer. The first time, install the packages (run
+these in the project folder):
 
 ```bash
-cd server
-npm install
-cd ../mobile
 npm install
 ```
 
-Then open **two terminals**.
+```bash
+npm --prefix mobile install
+```
+
+Then open **two terminals** in the project folder.
 
 Terminal 1, the backend:
 
 ```bash
-cd server
-npm run dev
+npm run dev:api
 ```
 
 Terminal 2, the app:
 
 ```bash
-cd mobile
-npm run web
+npm --prefix mobile run web
 ```
 
 The app opens at http://localhost:8081. Go to the **Me** tab: it should say **Connected**.
 
 To see it at phone size on a laptop, press F12 in the browser and click the phone icon.
 
-### Try it on your phone
+## The live site (Vercel)
 
-Your phone and laptop must be on the same Wi-Fi. When `npm run web` starts it prints an address
-such as `http://192.168.1.20:8081`; open that in the phone's browser.
+Vercel watches the GitHub repository. Every push to `main` is built and published automatically
+to the project's `https://….vercel.app` address, which works on any phone. Pushes to other
+branches get their own preview address, so work in progress can be checked before it is merged.
 
-The phone **camera** will not work this way, because browsers only allow the camera over HTTPS.
-Camera testing on a phone is covered in the scanning phase.
+The settings Vercel needs are in `vercel.json`; nothing has to be configured by hand except the
+secret keys below.
 
-## The API key
+### Secret keys
 
 Receipt scanning and menu translation use the Anthropic API. The key lives **only on the server**.
 
-1. Copy `.env.example` to a new file called `.env` in the same folder.
-2. Paste the key after `ANTHROPIC_API_KEY=`.
-3. Restart the backend.
+- **Live site:** Vercel -> the project -> Settings -> Environment Variables. Add
+  `ANTHROPIC_API_KEY`, then redeploy.
+- **Your own computer:** copy `.env.example` to a new file called `.env` in the same folder, paste
+  the key after `ANTHROPIC_API_KEY=`, and restart the backend.
 
-`.env` is ignored by Git. Never commit it, paste it in a chat, or put a key anywhere in `mobile/`.
+`.env` is ignored by Git. Never commit it, paste a key in a chat, or put a key anywhere in `mobile/`.
 
 ## Checks
 
-Run these in both `mobile/` and `server/` before committing. GitHub runs the same checks
-automatically on every push (see the **Actions** tab on GitHub).
+Run these in the project folder (for the backend) and again in `mobile/` (for the app) before
+committing. GitHub runs the same checks automatically on every push (see the **Actions** tab).
 
 ```bash
 npm run typecheck
+```
+
+```bash
 npm run lint
+```
+
+```bash
 npm test
 ```
-
-## Run the backend with Docker
-
-This is how the backend runs on the real server. You need Docker Desktop running.
-
-```bash
-docker compose up --build -d
-```
-
-Check it at http://localhost:8080/api/health, and stop it with:
-
-```bash
-docker compose down
-```
-
-## Deploy to the server
-
-Full instructions arrive with Phase 10. In short, the server needs:
-
-- Linux with Docker installed.
-- A web address (domain or subdomain) pointing to it, with ports 80 and 443 open. The phone camera
-  only works over HTTPS, and the deployment package sets up the HTTPS certificate automatically
-  once the address exists.
-- A `.env` file containing the Anthropic API key.
 
 ## Change prices, plan limits and tax rules
 
@@ -129,6 +117,7 @@ After changing one, run the checks above: the tests will tell you if a number no
 
 ## Working together
 
-- `main` always works. Each phase is built on its own branch and merged when its checks pass.
+- `main` always works, and is what the live site shows. Each phase is built on its own branch and
+  merged when its checks pass.
 - Get the latest changes before you start, and push when you finish.
 - Work on different parts at the same time to avoid conflicts.

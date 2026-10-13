@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "iter-server",
+      "name": "iter-api",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "server", "run", "dev"],
+      "runtimeArgs": ["run", "dev:api"],
       "port": 8080
     },
     {

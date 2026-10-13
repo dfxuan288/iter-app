@@ -15,6 +15,20 @@ because these decisions were made later by the founding team.
 - AI: Anthropic API, Haiku 5.5, escalating to Sonnet 5.5 for low-confidence scans. The key lives
   only in the server's `.env`.
 
+## Hosting changed to Vercel + Supabase (13 Oct 2026)
+
+The lecturer's recommended setup replaces the private-server plan above.
+
+- **Vercel (free plan)** hosts the web app and runs the backend as functions (files in `/api`),
+  on one `https://….vercel.app` address. This gives HTTPS, which the phone camera needs, with no setup.
+- **Supabase (free plan)** is used only for what functions cannot remember between requests:
+  the per-device scan counter and the daily exchange-rate cache. Trips and expenses stay on the
+  phone (works offline; the tutor confirmed real multi-user features are not required).
+- Docker and the Fastify server were removed. The backend is plain request handlers in `/backend`,
+  run locally by `npm run dev:api`.
+- The Anthropic key lives in Vercel's environment variables (and a local `.env`), never in the app.
+- Vercel's free plan is for non-commercial use: fine for the course, not for a real launch.
+
 ## Contradictions in the brief, resolved (13 Oct 2026)
 
 | # | Issue | Decision |
@@ -58,6 +72,4 @@ because these decisions were made later by the founding team.
 
 ## Still open
 
-- Server details from the lecturer: operating system, web address/HTTPS, and how we get access.
-- Destination photos still load from Unsplash; copy them into the app before the demo.
-- Ho Chi Minh City, New York and Paris have no photo yet (they show the ocean gradient).
+- New York and Paris have no photo yet (they show the ocean gradient).
