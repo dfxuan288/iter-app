@@ -21,8 +21,8 @@ database, as recommended for the course.
 |---|---|
 | 0. Foundations: project, checks, five-tab shell, backend | Done |
 | 1. Money core and Home: safe-to-spend maths, demo trip, plan-a-trip flow | Done |
-| 2. Currency and manual entry | Next |
-| 3. Scan backend (AI) | |
+| 2. Currency and manual entry: live rates, converter, history, add/edit/delete expenses | Done |
+| 3. Scan backend (AI) | Next |
 | 4. Receipt scan flow | |
 | 5. Tax refund | |
 | 6. Menu translate | |
@@ -73,10 +73,11 @@ secret keys below.
 
 ### Secret keys
 
-Receipt scanning and menu translation use the Anthropic API. The key lives **only on the server**.
+Receipt scanning and menu translation use the Anthropic API, and the daily exchange rates are
+stored in Supabase. Both keys live **only on the server**. `.env.example` explains where to find each.
 
 - **Live site:** Vercel -> the project -> Settings -> Environment Variables. Add
-  `ANTHROPIC_API_KEY`, then redeploy.
+  `ANTHROPIC_API_KEY`, `SUPABASE_URL` and `SUPABASE_SECRET_KEY`, then redeploy.
 - **Your own computer:** copy `.env.example` to a new file called `.env` in the same folder, paste
   the key after `ANTHROPIC_API_KEY=`, and restart the backend.
 

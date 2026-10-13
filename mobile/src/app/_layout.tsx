@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppDataProvider } from '@/state/AppDataProvider';
+import { FxProvider } from '@/state/FxProvider';
 import { colors, MAX_APP_WIDTH } from '@/theme/tokens';
 
 void SplashScreen.preventAutoHideAsync();
@@ -45,6 +46,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={iterTheme}>
       <AppDataProvider>
+        <FxProvider>
         <StatusBar style="dark" />
         {/* On a laptop or projector the app is shown as a centred phone-width column. */}
         <View style={styles.backdrop}>
@@ -52,6 +54,7 @@ export default function RootLayout() {
             <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }} />
           </View>
         </View>
+        </FxProvider>
       </AppDataProvider>
     </ThemeProvider>
   );

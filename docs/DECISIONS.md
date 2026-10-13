@@ -70,6 +70,21 @@ The lecturer's recommended setup replaces the private-server plan above.
 - The tax refund card is off Home until Phase 5, when it can be calculated rather than typed in.
 - Mobbin's connector needs a paid Mobbin plan, so it is not used.
 
+## Phase 2 notes (14 Oct 2026)
+
+- Rates: `/api/rates` and `/api/rate-history`. With Supabase configured, Frankfurter is asked once per UTC day and
+  snapshots are kept in the `fx_rates` table; if Frankfurter is down, yesterday's stored rates are served.
+  Without Supabase the backend asks Frankfurter directly. Vercel's network also caches replies for 30 minutes.
+- The phone keeps the last rates it received. Offline it shows "Indicative rate" with the date; a phone that
+  has never been online uses the rates shipped with the app.
+- A new expense stores the rate it was converted with. Editing only the details keeps that rate; changing the
+  amount or currency re-converts at the current rate.
+- Quick entry ("1200 yen ramen") is plain pattern matching in code, not AI, so it works offline.
+- Expenses are listed newest day first, then most recently added first.
+- The Currency tab shows prices from the traveller's side (what ¥100 costs in Ringgit), not the raw rate.
+- Adding one expense to the demo trip triggers the "money runs out on day 10" warning: the demo sits just inside
+  the limit on purpose.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

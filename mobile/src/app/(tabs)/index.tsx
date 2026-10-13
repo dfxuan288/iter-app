@@ -82,6 +82,7 @@ export default function HomeScreen() {
       <Reveal index={0}>
         <SafeToSpendCard trip={trip} summary={summary} />
       </Reveal>
+      <Button label="Add an expense" variant="accent" icon={PlusIcon} onPress={() => router.push('/expense/new')} />
       <PaceWarning summary={summary} />
       <Reveal index={1}>
         <DailySpendBars days={summary.dailySpend} />
