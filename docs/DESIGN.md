@@ -22,7 +22,7 @@ lavender/mint transport concept). ITER borrows their shapes and rhythm, not thei
 | Glass | Frosted panels and chips sit only on a photo or the ocean gradient, where there is something behind them to blur |
 | Type | Outfit for headings and numbers; the phone's own font for reading text |
 | Receipts | Shown as ticket cards: body, perforated tear line, and a stub for the tax refund result |
-| Icons | Phosphor only, imported through `mobile/src/components/ui/icons.ts` |
+| Icons | Phosphor for interface icons, imported through `mobile/src/components/ui/icons.ts`. Categories use the team's own illustrations (`CategoryIcon`), recoloured to one teal so they read as a set |
 | Shadows | Soft and navy-tinted, never black |
 | Copy | Plain words. No long dashes |
 
@@ -44,5 +44,5 @@ All motion switches off when the phone is set to reduce motion.
 
 ## Photos
 
-Listed in `mobile/src/data/destinations.ts`, each with its source link. All are from Unsplash under the
-free Unsplash Licence. The image files are stored in `mobile/assets/images/destinations`, so the app does not depend on Unsplash.
+Listed in `mobile/src/data/destinations.ts`. Bangkok and Singapore are from Unsplash (free licence, source
+links recorded); the other six were supplied by the team, whose sources should be noted before any public launch. The image files are stored in `mobile/assets/images/destinations`, so the app does not depend on Unsplash.

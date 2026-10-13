@@ -2,6 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui/AppText';
 import { Card } from '@/components/ui/Card';
+import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import type { CategoryProgress } from '@/domain/budget';
 import { formatMoney } from '@/domain/money';
 import { categoryLabels } from '@/domain/types';
@@ -23,15 +24,18 @@ export function CategoryList({ categories }: { categories: CategoryProgress[] })
             style={styles.row}
             accessible
             aria-label={`${categoryLabels[item.category]}: ${rm(item.spentMyr)} spent of ${rm(item.plannedMyr)} planned${over ? ', over plan' : ''}`}>
-            <View style={styles.labels}>
-              <AppText variant="bodyStrong">{categoryLabels[item.category]}</AppText>
-              <AppText variant="caption" color={over ? 'danger' : 'muted'}>
-                {`${rm(item.spentMyr)} of ${rm(item.plannedMyr)}`}
-              </AppText>
-            </View>
-            <View style={styles.track}>
-              <View style={[styles.fill, { width: `${Math.round(share * 100)}%` }, over && styles.fillOver]} />
-            </View>
+            <CategoryIcon category={item.category} size={44} />
+            <View style={styles.detail}>
+              <View style={styles.labels}>
+                <AppText variant="bodyStrong">{categoryLabels[item.category]}</AppText>
+                <AppText variant="caption" color={over ? 'danger' : 'muted'}>
+                  {`${rm(item.spentMyr)} of ${rm(item.plannedMyr)}`}
+                </AppText>
+              </View>
+              <View style={styles.track}>
+                <View style={[styles.fill, { width: `${Math.round(share * 100)}%` }, over && styles.fillOver]} />
+              </View>
+              </View>
           </View>
         );
       })}
@@ -41,7 +45,8 @@ export function CategoryList({ categories }: { categories: CategoryProgress[] })
 
 const styles = StyleSheet.create({
   card: { gap: spacing.lg },
-  row: { gap: spacing.sm },
+  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  detail: { flex: 1, gap: spacing.sm },
   labels: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
   track: { height: 8, borderRadius: radius.pill, backgroundColor: colors.surfaceSunken, overflow: 'hidden' },
   fill: { height: 8, borderRadius: radius.pill, backgroundColor: colors.teal },
