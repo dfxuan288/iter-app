@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: spacing.lg + 4,
     paddingBottom: TAB_BAR_CLEARANCE,
-    gap: spacing.lg,
+    gap: spacing.xl,
   },
   titleRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md },
   titleText: { flex: 1, gap: spacing.xxs },

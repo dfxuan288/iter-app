@@ -34,6 +34,8 @@ export const colors = {
   glass: 'rgba(255,255,255,0.16)',
   glassBorder: 'rgba(255,255,255,0.34)',
   glassText: 'rgba(255,255,255,0.86)',
+  /** Chips placed directly on a photo. */
+  photoChip: 'rgba(5,59,80,0.62)',
 } as const;
 
 export const gradients = {
@@ -89,7 +91,7 @@ export const MIN_TOUCH_TARGET = 44;
 export const MAX_APP_WIDTH = 480;
 
 /** Space screens leave at the bottom so content clears the floating tab bar. */
-export const TAB_BAR_CLEARANCE = 112;
+export const TAB_BAR_CLEARANCE = 148;
 
 /** Shadows are tinted navy, never pure black. */
 export const shadow = {

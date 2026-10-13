@@ -4,7 +4,7 @@ import { AppText } from '@/components/ui/AppText';
 import type { Icon } from '@/components/ui/icons';
 import { colors, radius, spacing } from '@/theme/tokens';
 
-export type ChipTone = 'neutral' | 'plain' | 'success' | 'warning' | 'danger' | 'glass';
+export type ChipTone = 'neutral' | 'plain' | 'success' | 'warning' | 'danger' | 'glass' | 'photo';
 
 const tones: Record<ChipTone, { background: string; text: string; border?: string }> = {
   /** On a white card. */
@@ -16,6 +16,8 @@ const tones: Record<ChipTone, { background: string; text: string; border?: strin
   danger: { background: colors.dangerSurface, text: colors.danger },
   /** On the ocean gradient only. */
   glass: { background: colors.glass, text: colors.white, border: colors.glassBorder },
+  /** On a photo: darker than glass, so white text stays readable over bright pictures. */
+  photo: { background: colors.photoChip, text: colors.white, border: colors.glassBorder },
 };
 
 export interface ChipProps {

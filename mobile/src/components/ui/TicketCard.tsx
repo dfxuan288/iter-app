@@ -32,8 +32,8 @@ export function TicketCard({ children, stub, stubColor = colors.accentSoft }: Ti
 const styles = StyleSheet.create({
   card: { borderRadius: radius.card, backgroundColor: colors.card, ...shadow.card },
   body: {
-    padding: spacing.xl - 4,
-    paddingBottom: spacing.md,
+    padding: spacing.xl,
+    paddingBottom: spacing.lg,
     gap: spacing.md,
     borderTopLeftRadius: radius.card,
     borderTopRightRadius: radius.card,
@@ -58,9 +58,9 @@ const styles = StyleSheet.create({
   notchLeft: { left: -NOTCH / 2 },
   notchRight: { right: -NOTCH / 2 },
   stub: {
-    paddingHorizontal: spacing.xl - 4,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.xl - 4,
     borderBottomLeftRadius: radius.card,
     borderBottomRightRadius: radius.card,
   },

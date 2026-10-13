@@ -14,10 +14,12 @@ lavender/mint transport concept). ITER borrows their shapes and rhythm, not thei
 | Area | Rule |
 |---|---|
 | Background | Soft aqua tint (`surface`), never plain grey or white |
+| Space | Generous: 24 between sections and inside cards. When in doubt, add space rather than content |
 | Shape | Anything you tap is a pill. Containers use the `card` radius. Blocks inside a container use `tile` |
 | Colour | Navy for text and the main button. **One** bright accent: the logo's green, used as a fill with navy text on it |
-| Gradient | The ocean gradient appears only on the safe-to-spend card and the Scan screen |
-| Glass | Frosted panels and chips sit only on the ocean gradient, where there is light behind them to blur |
+| Photos | Destination photos carry the travel feeling: behind the safe-to-spend card on Home and on destination cards. A navy scrim keeps text readable, and the ocean gradient shows if a photo cannot load |
+| Gradient | The ocean gradient is the fallback behind photos and the background of the Scan screen |
+| Glass | Frosted panels and chips sit only on a photo or the ocean gradient, where there is something behind them to blur |
 | Type | Outfit for headings and numbers; the phone's own font for reading text |
 | Receipts | Shown as ticket cards: body, perforated tear line, and a stub for the tax refund result |
 | Icons | Phosphor only, imported through `mobile/src/components/ui/icons.ts` |
@@ -40,6 +42,8 @@ All motion switches off when the phone is set to reduce motion.
 - The accent green fails as text and with white text on it; the tests enforce both.
 - Touch targets are at least 44 points. Icon-only buttons must have a screen-reader label.
 
-## Not decided yet
+## Photos
 
-- Destination photos for trip and community cards (free-licence source), needed in Phase 7.
+Listed in `mobile/src/data/destinations.ts`, each with its source link. All are from Unsplash under the
+free Unsplash Licence. They currently load from Unsplash's servers; before the demo they should be
+copied into the app so it does not depend on Unsplash being reachable.
