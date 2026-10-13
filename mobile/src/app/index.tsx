@@ -5,10 +5,12 @@ import { AppText } from '@/components/ui/AppText';
 import { Card } from '@/components/ui/Card';
 import { Chip } from '@/components/ui/Chip';
 import { CheckCircleIcon, MapPinIcon, ReceiptIcon, TagIcon } from '@/components/ui/icons';
-import { GlassPanel, OceanCard } from '@/components/ui/OceanCard';
+import { GlassPanel } from '@/components/ui/OceanCard';
+import { PhotoCard } from '@/components/ui/PhotoCard';
 import { Reveal } from '@/components/ui/Reveal';
 import { Screen } from '@/components/ui/Screen';
 import { TicketCard } from '@/components/ui/TicketCard';
+import { destinations } from '@/data/destinations';
 import { colors, radius, spacing } from '@/theme/tokens';
 
 /**
@@ -28,6 +30,7 @@ const preview = {
 };
 
 export default function HomeScreen() {
+  const tripPhoto = destinations[0];
   return (
     <Screen
       title="Safe to spend"
@@ -46,11 +49,13 @@ export default function HomeScreen() {
         </View>
       }>
       <Reveal index={0}>
-        <OceanCard>
+        <PhotoCard photoUrl={tripPhoto?.photoUrl ?? ''} photoAlt={tripPhoto?.photoAlt ?? ''}>
           <View style={styles.chipRow}>
-            <Chip tone="glass" icon={MapPinIcon} label={preview.trip} />
-            <Chip tone="glass" label={preview.day} />
+            <Chip tone="photo" icon={MapPinIcon} label={preview.trip} />
+            <Chip tone="photo" label={preview.day} />
           </View>
+          {/* Leaves the top of the photo clear, so the destination is recognisable. */}
+          <View style={styles.photoWindow} />
           <View>
             <AppText variant="display" color="inverse">
               {preview.safePerDay}
@@ -77,7 +82,7 @@ export default function HomeScreen() {
             </View>
           </GlassPanel>
           <Chip tone="glass" icon={CheckCircleIcon} label="On track" />
-        </OceanCard>
+        </PhotoCard>
       </Reveal>
 
       <Reveal index={1}>
@@ -146,6 +151,7 @@ const styles = StyleSheet.create({
   },
   logo: { width: 26, height: 32 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  photoWindow: { height: 96 },
   statRow: { flexDirection: 'row', alignItems: 'center' },
   stat: { flex: 1, gap: spacing.xxs },
   statDivider: { width: 1, alignSelf: 'stretch', backgroundColor: colors.glassBorder, marginHorizontal: spacing.lg },
@@ -160,7 +166,7 @@ const styles = StyleSheet.create({
   },
   iconTileSunken: { backgroundColor: colors.surfaceSunken },
   refundText: { flex: 1 },
-  section: { gap: spacing.md },
+  section: { gap: spacing.lg, marginTop: spacing.sm },
   receiptHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   amount: { alignItems: 'flex-end' },
   stubRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },

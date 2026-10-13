@@ -2,13 +2,15 @@ import { Outfit_500Medium, Outfit_600SemiBold, Outfit_700Bold, useFonts } from '
 import { DefaultTheme, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppTabs } from '@/components/navigation/AppTabs';
 import { colors, MAX_APP_WIDTH } from '@/theme/tokens';
 
 void SplashScreen.preventAutoHideAsync();
+
+const FONT_WAIT_MS = 1500;
 
 const iterTheme = {
   ...DefaultTheme,
@@ -24,8 +26,15 @@ const iterTheme = {
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({ Outfit_500Medium, Outfit_600SemiBold, Outfit_700Bold });
-  // If the font cannot load, carry on with the phone's own font rather than blocking the app.
-  const ready = fontsLoaded || fontError !== null;
+  const [waitedLongEnough, setWaitedLongEnough] = useState(false);
+  // If the font fails or is slow (poor signal), carry on with the phone's own font rather than
+  // holding the app on a blank screen. The headings switch to Outfit when it arrives.
+  const ready = fontsLoaded || fontError !== null || waitedLongEnough;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setWaitedLongEnough(true), FONT_WAIT_MS);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (ready) void SplashScreen.hideAsync();
