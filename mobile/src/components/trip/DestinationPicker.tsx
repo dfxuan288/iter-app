@@ -17,7 +17,7 @@ function Option({ destination, selected, onPress }: { destination: Destination; 
       aria-label={`${destination.city}, ${destination.country}. Currency: ${currencies[destination.currency].name}`}
       style={[styles.option, selected && styles.optionSelected]}>
       <PhotoCard
-        photoUrl={destination.photoUrl}
+        photo={destination.photo}
         photoAlt=""
         scrim="bottom"
         style={styles.photo}

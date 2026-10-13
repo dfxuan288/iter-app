@@ -14,7 +14,7 @@ export interface DestinationCardProps {
 export function DestinationCard({ destination, height = 190, style }: DestinationCardProps) {
   return (
     <PhotoCard
-      photoUrl={destination.photoUrl}
+      photo={destination.photo}
       photoAlt={destination.photoAlt}
       scrim="bottom"
       style={[{ height }, style]}

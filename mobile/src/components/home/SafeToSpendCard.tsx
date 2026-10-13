@@ -51,7 +51,7 @@ export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSu
   const status = statusChips[summary.status];
 
   return (
-    <PhotoCard photoUrl={destination?.photoUrl} photoAlt={destination?.photoAlt}>
+    <PhotoCard photo={destination?.photo} photoAlt={destination?.photoAlt}>
       <View style={styles.chipRow}>
         <Chip tone="photo" icon={MapPinIcon} label={trip.city} />
         <Chip tone="photo" label={dayChip} />

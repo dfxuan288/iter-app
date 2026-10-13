@@ -19,3 +19,6 @@ Thumbs.db
 # Local tooling
 .tmp-tools/
 .claude/settings.local.json
+
+# Vercel
+.vercel/
