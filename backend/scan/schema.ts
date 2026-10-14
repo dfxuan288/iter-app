@@ -8,7 +8,7 @@ import { z } from 'zod';
  * Bump PROMPT_VERSION whenever these shapes or the prompts change, so cached results made by an
  * older prompt are not reused.
  */
-export const PROMPT_VERSION = 'v1';
+export const PROMPT_VERSION = 'v2';
 
 export const CATEGORY_VALUES = ['food', 'transport', 'stay', 'activities', 'shopping'] as const;
 

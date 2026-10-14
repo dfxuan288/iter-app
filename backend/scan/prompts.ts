@@ -36,13 +36,13 @@ ${SHARED}
 
 How to fill each field:
 - isMenu: false if the image is not a menu or price list. Then fill the other fields with empty values.
-- restaurantName: if printed, else null.
+- restaurantName: the name in English or romanised (for example "Ichiran Shibuya" for 一蘭 渋谷店), if printed, else null.
 - dishes: every dish or drink with a price, in order. original as printed; translation in natural English; description is one short sentence on what it is. price as printed, or null if none.
 - containsPork / containsAlcohol: yes when the name or description makes it clear (for example chashu, tonkotsu, bacon, beer, sake, mirin when listed), no when it clearly does not, otherwise unknown. Do not guess.
 - pricesExcludeTax: true when the menu says prices are before tax (税抜, 税別, "+tax", "++"), else false.
 - addedTaxPercent: the tax rate added on top of the printed prices, if the menu states or clearly implies it (Japan 税抜 means 10; Thailand "++" means 7). Null if prices already include tax or it is unknown.
 - serviceChargePercent: the service charge added on top (Thailand "++" means 10), else null.
-- notes: anything else about prices a traveller should know, one short sentence each, for example a cover charge or a minimum order. Empty if none.`;
+- notes: how the bill is charged, one short sentence each: the tax or service charge added, a cover charge, a minimum order. Nothing else. Empty if none.`;
 
 /** The trip details given with each image, so the AI knows which currency to expect. */
 export function contextLine(context: ScanContext): string {
