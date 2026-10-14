@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/Card';
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { CaretRightIcon, ReceiptIcon } from '@/components/ui/icons';
 import { PressableScale } from '@/components/ui/PressableScale';
+import { StoredImage } from '@/components/ui/StoredImage';
 import { formatDayMonth } from '@/domain/dates';
 import { formatMoney } from '@/domain/money';
 import { categoryLabels, type Expense } from '@/domain/types';
@@ -23,7 +24,11 @@ function ExpenseRow({ expense, onPress }: { expense: Expense; onPress: () => voi
       aria-label={`${expense.merchantName}, ${formatDayMonth(expense.purchaseDate)}, ${categoryLabels[expense.category]}, ${amountMyr}${scanned ? ', from a scanned receipt' : ''}. Open to edit or delete.`}
       style={styles.row}>
       <View>
-        <CategoryIcon category={expense.category} size={TILE} />
+        {expense.receipt?.imageId ? (
+          <StoredImage id={expense.receipt.imageId} alt="" style={styles.thumb} />
+        ) : (
+          <CategoryIcon category={expense.category} size={TILE} />
+        )}
         {scanned ? (
           <View style={styles.scanBadge}>
             <ReceiptIcon size={12} color={colors.navy} weight="bold" />
@@ -98,6 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  thumb: { width: TILE, height: TILE, borderRadius: radius.tile - 8 },
   text: { flex: 1 },
   amount: { alignItems: 'flex-end' },
 });

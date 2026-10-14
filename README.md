@@ -23,8 +23,8 @@ database, as recommended for the course.
 | 1. Money core and Home: safe-to-spend maths, demo trip, plan-a-trip flow | Done |
 | 2. Currency and manual entry: live rates, converter, history, add/edit/delete expenses | Done |
 | 3. Scan backend (AI): receipt and menu reading, checks, limits, cache, demo samples | Done |
-| 4. Receipt scan flow | Next |
-| 5. Tax refund | |
+| 4. Receipt scan flow: photo or sample, review with highlighted fields, save, offline waiting list | Done |
+| 5. Tax refund | Next |
 | 6. Menu translate | |
 | 7. Community | |
 | 8. Plans and Me | |

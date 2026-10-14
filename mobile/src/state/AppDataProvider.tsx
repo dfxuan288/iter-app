@@ -4,8 +4,9 @@ import { today as currentDay } from '@/config/demo';
 import { createSeedData } from '@/data/seed';
 import { summarizeTrip, type TripSummary } from '@/domain/budget';
 import type { IsoDate } from '@/domain/dates';
-import type { AppData, Expense, Trip } from '@/domain/types';
+import type { AppData, Expense, ExpenseSource, ReceiptDetails, Trip } from '@/domain/types';
 import { loadAppData, saveAppData, type LoadOutcome } from '@/services/appDataStore';
+import { imageStore } from '@/services/imageStore';
 import { addExpense, deleteExpense, newExpenseId, updateExpense, type ExpenseDraft, type ExpenseProblem, type RateQuote } from '@/services/expenseService';
 import { activeTrip, createTrip, newTripId, type TripDraft, type TripDraftProblem } from '@/services/tripService';
 
@@ -24,7 +25,7 @@ export interface AppDataContextValue {
   saveFailed: boolean;
   addTrip: (draft: TripDraft) => { ok: true } | { ok: false; problems: TripDraftProblem[] };
   /** Adds an expense to the active trip. `rate` is the exchange rate to save with it. */
-  addExpense: (draft: ExpenseDraft, rate: RateQuote | null) => ExpenseActionResult;
+  addExpense: (draft: ExpenseDraft, rate: RateQuote | null, extras?: { source?: ExpenseSource; receipt?: ReceiptDetails }) => ExpenseActionResult;
   updateExpense: (expenseId: string, draft: ExpenseDraft, rate: RateQuote | null) => ExpenseActionResult;
   deleteExpense: (expenseId: string) => void;
   resetDemo: () => void;
@@ -87,9 +88,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         commit(result.data);
         return { ok: true };
       },
-      addExpense: (draft, rate) => {
+      addExpense: (draft, rate, extras = {}) => {
         if (!trip) return { ok: false, problems: ['not_found'] };
-        const result = addExpense(data, trip.id, draft, rate, newExpenseId(), new Date().toISOString());
+        const result = addExpense(data, trip.id, draft, rate, newExpenseId(), new Date().toISOString(), extras.source, extras.receipt);
         if (!result.ok) return result;
         commit(result.data);
         return { ok: true };
@@ -100,7 +101,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         commit(result.data);
         return { ok: true };
       },
-      deleteExpense: (expenseId) => commit(deleteExpense(data, expenseId)),
+      deleteExpense: (expenseId) => {
+        const imageId = data.expenses.find((e) => e.id === expenseId)?.receipt?.imageId;
+        commit(deleteExpense(data, expenseId));
+        if (imageId) void imageStore.remove(imageId);
+      },
       resetDemo: () => commit(createSeedData()),
     };
   }, [data, loadOutcome, saveFailed]);

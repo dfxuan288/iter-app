@@ -145,6 +145,25 @@ today's spending was taken off before dividing by days left (which include today
   read by the real AI; only if it is unavailable or today's limit is reached does the backend use their printed contents.
 - Menu prices come back as printed plus the tax and service rates to add; the app calculates Ringgit prices in Phase 6.
 
+## Phase 4 notes (14 Oct 2026)
+
+- Scan tab opens on **Receipt**: take a photo, choose one from the phone's photos, or try one of two sample receipts
+  (for demos). In a phone browser, "Take a photo" opens the camera.
+- Photos are shrunk on the phone first: a 1,500 px copy is sent to the AI and deleted once the expense is saved or
+  discarded; a 900 px copy is kept with the expense (about 30 to 60 KB). On the web, photos live in the browser's
+  IndexedDB, which holds far more than ordinary web storage.
+- Every photo goes into a waiting list saved on the phone before it is sent: waiting, reading, ready to check, or
+  could not be read. Without a connection it waits and is sent automatically when the connection returns (checked on
+  the browser's "online" signal and every 30 seconds). Unsaved receipts are listed on Home and the Scan tab.
+- The review screen shows the photo, the shop, every item with its original name, subtotal, tax lines and total, then
+  the usual form already filled in. Fields the AI was unsure of, or that failed a check, are outlined in amber with a
+  short note. Nothing is saved until "Save expense" is tapped.
+- Items are shown but not edited one by one; the amount, currency, shop, category, day and note can all be changed.
+- What the receipt showed (items, tax lines, tax-included flag, tax-free shop) is kept with the expense, ready for the
+  tax refund check in Phase 5, and stays with it when the expense is edited. Deleting the expense deletes its photo.
+- The four seeded "scanned" expenses have no photos yet; sample photos for them are planned for Phase 9 (polish).
+- Free-plan scan limits (5 receipts per trip) arrive with Plans in Phase 8.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

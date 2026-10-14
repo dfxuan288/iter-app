@@ -13,11 +13,13 @@ export interface MoneyFieldProps {
   helper?: string;
   /** Shown under the field in place of the helper when the value is not acceptable. */
   error?: string;
+  /** Asks the user to double-check this field (e.g. something the AI found hard to read). */
+  highlight?: string;
   placeholder?: string;
 }
 
 /** A labelled amount input: label above, the field, then helper or error text below. */
-export function MoneyField({ label, value, onChangeText, currency = 'MYR', helper, error, placeholder = '0' }: MoneyFieldProps) {
+export function MoneyField({ label, value, onChangeText, currency = 'MYR', helper, error, highlight, placeholder = '0' }: MoneyFieldProps) {
   const id = useId();
   const { symbol, minorDigits } = currencies[currency];
   return (
@@ -25,7 +27,7 @@ export function MoneyField({ label, value, onChangeText, currency = 'MYR', helpe
       <AppText variant="label" nativeID={`${id}-label`}>
         {label}
       </AppText>
-      <View style={[styles.inputRow, error ? styles.inputRowError : null]}>
+      <View style={[styles.inputRow, highlight ? styles.inputRowHighlight : null, error ? styles.inputRowError : null]}>
         <AppText variant="number" color="muted">
           {symbol}
         </AppText>
@@ -43,6 +45,10 @@ export function MoneyField({ label, value, onChangeText, currency = 'MYR', helpe
       {error ? (
         <AppText variant="caption" color="danger" role="alert">
           {error}
+        </AppText>
+      ) : highlight ? (
+        <AppText variant="caption" color="warning">
+          {highlight}
         </AppText>
       ) : helper ? (
         <AppText variant="caption" color="muted">
@@ -67,6 +73,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   inputRowError: { borderColor: colors.danger },
+  inputRowHighlight: { borderColor: colors.warning, backgroundColor: colors.warningSurface },
   input: {
     flex: 1,
     minWidth: 0,

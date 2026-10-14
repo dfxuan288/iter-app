@@ -1,6 +1,6 @@
 import { isIsoDate, type IsoDate } from '@/domain/dates';
 import { convertToMyr, currencies, type CurrencyCode } from '@/domain/money';
-import { CATEGORIES, type AppData, type Category, type Expense, type ExpenseSource } from '@/domain/types';
+import { CATEGORIES, type AppData, type Category, type Expense, type ExpenseSource, type ReceiptDetails } from '@/domain/types';
 
 /** What the add/edit form collects. `amountOriginal` is in the minor unit of `currency`. */
 export interface ExpenseDraft {
@@ -46,11 +46,16 @@ export function validateExpenseDraft(draft: ExpenseDraft, rate: RateQuote | null
 
 export type ExpenseResult = { ok: true; data: AppData; expense: Expense } | { ok: false; problems: ExpenseProblem[] };
 
-function build(draft: ExpenseDraft, rate: RateQuote | null, base: Pick<Expense, 'id' | 'tripId' | 'createdAt' | 'source'>): Expense {
+function build(draft: ExpenseDraft, rate: RateQuote | null, base: Pick<Expense, 'id' | 'tripId' | 'createdAt' | 'source' | 'receipt'>): Expense {
   const isHome = draft.currency === 'MYR';
   const rateUsed = isHome ? 1 : (rate as RateQuote).ratePerMyr;
   return {
-    ...base,
+    id: base.id,
+    tripId: base.tripId,
+    createdAt: base.createdAt,
+    source: base.source,
+    // A scanned expense keeps what its receipt showed, even after its details are edited.
+    ...(base.receipt ? { receipt: base.receipt } : {}),
     note: draft.note.trim(),
     amountOriginal: draft.amountOriginal,
     currency: draft.currency,
@@ -72,11 +77,12 @@ export function addExpense(
   id: string,
   now: string,
   source: ExpenseSource = 'manual',
+  receipt?: ReceiptDetails,
 ): ExpenseResult {
   const problems = validateExpenseDraft(draft, rate);
   if (!data.trips.some((trip) => trip.id === tripId)) problems.push('not_found');
   if (problems.length > 0) return { ok: false, problems };
-  const expense = build(draft, rate, { id, tripId, createdAt: now, source });
+  const expense = build(draft, rate, { id, tripId, createdAt: now, source, receipt });
   return { ok: true, expense, data: { ...data, expenses: [...data.expenses, expense] } };
 }
 
