@@ -11,13 +11,15 @@ export interface TextFieldProps {
   placeholder?: string;
   helper?: string;
   error?: string;
+  /** Asks the user to double-check this field (e.g. something the AI found hard to read). */
+  highlight?: string;
   maxLength?: number;
   /** Called when the user presses Enter / Done on the keyboard. */
   onSubmit?: () => void;
 }
 
 /** A labelled text input: label above, the field, then helper or error text below. */
-export function TextField({ label, value, onChangeText, placeholder, helper, error, maxLength, onSubmit }: TextFieldProps) {
+export function TextField({ label, value, onChangeText, placeholder, helper, error, highlight, maxLength, onSubmit }: TextFieldProps) {
   const id = useId();
   return (
     <View style={styles.field}>
@@ -34,11 +36,15 @@ export function TextField({ label, value, onChangeText, placeholder, helper, err
         returnKeyType={onSubmit ? 'done' : undefined}
         aria-labelledby={`${id}-label`}
         aria-invalid={Boolean(error)}
-        style={[styles.input, error ? styles.inputError : null]}
+        style={[styles.input, highlight ? styles.inputHighlight : null, error ? styles.inputError : null]}
       />
       {error ? (
         <AppText variant="caption" color="danger" role="alert">
           {error}
+        </AppText>
+      ) : highlight ? (
+        <AppText variant="caption" color="warning">
+          {highlight}
         </AppText>
       ) : helper ? (
         <AppText variant="caption" color="muted">
@@ -64,4 +70,5 @@ const styles = StyleSheet.create({
     outlineWidth: 0,
   },
   inputError: { borderColor: colors.danger },
+  inputHighlight: { borderColor: colors.warning, backgroundColor: colors.warningSurface },
 });

@@ -7,6 +7,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppDataProvider } from '@/state/AppDataProvider';
 import { FxProvider } from '@/state/FxProvider';
+import { ScanQueueProvider } from '@/state/ScanQueueProvider';
 import { colors, MAX_APP_WIDTH } from '@/theme/tokens';
 
 void SplashScreen.preventAutoHideAsync();
@@ -47,13 +48,15 @@ export default function RootLayout() {
     <ThemeProvider value={iterTheme}>
       <AppDataProvider>
         <FxProvider>
-        <StatusBar style="dark" />
-        {/* On a laptop or projector the app is shown as a centred phone-width column. */}
-        <View style={styles.backdrop}>
-          <View style={styles.app}>
-            <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }} />
-          </View>
-        </View>
+          <ScanQueueProvider>
+            <StatusBar style="dark" />
+            {/* On a laptop or projector the app is shown as a centred phone-width column. */}
+            <View style={styles.backdrop}>
+              <View style={styles.app}>
+                <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }} />
+              </View>
+            </View>
+          </ScanQueueProvider>
         </FxProvider>
       </AppDataProvider>
     </ThemeProvider>

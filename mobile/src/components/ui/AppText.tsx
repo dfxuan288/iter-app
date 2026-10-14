@@ -2,7 +2,7 @@ import { Text, type TextProps } from 'react-native';
 
 import { colors, typography, type TypographyVariant } from '@/theme/tokens';
 
-export type TextColor = 'primary' | 'muted' | 'inverse' | 'inverseMuted' | 'link' | 'accent' | 'danger';
+export type TextColor = 'primary' | 'muted' | 'inverse' | 'inverseMuted' | 'link' | 'accent' | 'danger' | 'warning';
 
 const textColors: Record<TextColor, string> = {
   primary: colors.navy,
@@ -12,6 +12,7 @@ const textColors: Record<TextColor, string> = {
   link: colors.teal,
   accent: colors.accentText,
   danger: colors.danger,
+  warning: colors.warning,
 };
 
 export interface AppTextProps extends TextProps {

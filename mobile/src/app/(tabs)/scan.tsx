@@ -1,8 +1,10 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { ComingSoon } from '@/components/ComingSoon';
 import { ExpenseForm } from '@/components/expense/ExpenseForm';
+import { ReceiptCapture } from '@/components/scan/ReceiptCapture';
+import { ScanQueueList } from '@/components/scan/ScanQueueList';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -15,8 +17,9 @@ type Mode = 'receipt' | 'menu' | 'type';
 export default function ScanScreen() {
   const router = useRouter();
   const { trip, today, addExpense } = useAppData();
-  // "Type it" is the mode that works today; Receipt and Menu arrive with the scanning phases.
-  const [mode, setMode] = useState<Mode>('type');
+  // Opening Scan with ?mode=type (e.g. "Type it in instead" after a failed scan) starts on the form.
+  const params = useLocalSearchParams<{ mode?: string }>();
+  const [mode, setMode] = useState<Mode>(params.mode === 'type' ? 'type' : 'receipt');
   // Changing this number gives a fresh, empty form after an expense is saved.
   const [formVersion, setFormVersion] = useState(0);
 
@@ -33,15 +36,11 @@ export default function ScanScreen() {
         ]}
       />
 
-      {mode === 'receipt' ? (
-        <ComingSoon
-          phase="Phase 4"
-          features={[
-            'Photograph a receipt and let AI log the expense',
-            'Review and edit every field before saving',
-            'Photos taken offline wait and scan when you are back online',
-          ]}
-        />
+      {mode === 'receipt' && trip ? (
+        <>
+          <ScanQueueList tripId={trip.id} />
+          <ReceiptCapture />
+        </>
       ) : null}
 
       {mode === 'menu' ? (
@@ -69,7 +68,7 @@ export default function ScanScreen() {
         />
       ) : null}
 
-      {mode === 'type' && !trip ? (
+      {mode !== 'menu' && !trip ? (
         <Card>
           <AppText variant="heading">Plan a trip first</AppText>
           <AppText color="muted">Expenses belong to a trip, so ITER can work out what is safe to spend.</AppText>

@@ -54,6 +54,30 @@ export interface CategoryBudget {
 
 export type ExpenseSource = 'scan' | 'manual' | 'menu';
 
+/** What a receipt showed, kept with an expense that was scanned (brief §8 Receipt, items and tax). */
+export interface ReceiptDetails {
+  /** Key of the kept photo in the image store, or null if it could not be kept. */
+  imageId: string | null;
+  merchantNameOriginal: string | null;
+  /** All amounts below are in the minor unit of `currency`, as printed on the receipt. */
+  currency: CurrencyCode;
+  items: { name: string; nameOriginal: string | null; quantity: number | null; lineTotal: number }[];
+  subtotal: number | null;
+  taxLines: { ratePercent: number | null; amount: number }[];
+  serviceCharge: number | null;
+  total: number;
+  /** True when the item prices already include tax. */
+  taxIncluded: boolean;
+  /** Whether the receipt shows a registered tax-free shop. Used by the tax refund check. */
+  taxFreeShop: 'yes' | 'no' | 'unknown';
+  language: string;
+  /** 0 to 1, as reported by the AI. */
+  confidence: number;
+  /** `ai`: read just now; `cache`: the same photo was read before; `demo`: a sample answered without the AI. */
+  readBy: 'ai' | 'cache' | 'demo';
+  modelUsed: string | null;
+}
+
 export interface Expense {
   id: string;
   tripId: string;
@@ -71,6 +95,8 @@ export interface Expense {
   source: ExpenseSource;
   merchantName: string;
   purchaseDate: IsoDate;
+  /** Present on scanned expenses. */
+  receipt?: ReceiptDetails;
 }
 
 /** Everything saved on the phone. `version` lets later releases upgrade older saved data. */

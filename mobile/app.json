@@ -30,6 +30,14 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 96
         }
+      ],
+      "expo-asset",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "ITER opens your photos so you can scan a receipt you photographed earlier.",
+          "cameraPermission": "ITER uses the camera to photograph receipts so it can log them for you."
+        }
       ]
     ],
     "experiments": {

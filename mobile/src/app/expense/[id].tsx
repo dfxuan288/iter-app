@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ExpenseForm } from '@/components/expense/ExpenseForm';
+import { ReceiptItems } from '@/components/scan/ReceiptItems';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -10,6 +11,7 @@ import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { Chip } from '@/components/ui/Chip';
 import { PencilSimpleIcon, ReceiptIcon } from '@/components/ui/icons';
 import { StackScreen } from '@/components/ui/StackScreen';
+import { StoredImage } from '@/components/ui/StoredImage';
 import { TicketCard } from '@/components/ui/TicketCard';
 import { formatFullDate } from '@/domain/dates';
 import { formatMoney } from '@/domain/money';
@@ -92,6 +94,17 @@ export default function ExpenseDetailScreen() {
         </AppText>
       </TicketCard>
 
+      {expense.receipt ? (
+        <Card style={styles.receipt}>
+          <AppText variant="heading">On the receipt</AppText>
+          {expense.receipt.merchantNameOriginal ? <AppText color="muted">{expense.receipt.merchantNameOriginal}</AppText> : null}
+          {expense.receipt.imageId ? (
+            <StoredImage id={expense.receipt.imageId} alt={`Receipt from ${expense.merchantName}`} style={styles.photo} contentFit="contain" />
+          ) : null}
+          <ReceiptItems receipt={expense.receipt} />
+        </Card>
+      ) : null}
+
       {mode === 'confirm-delete' ? (
         <Card>
           <AppText variant="heading">Delete this expense?</AppText>
@@ -146,5 +159,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.lg },
   rowValue: { flex: 1 },
   confirmRow: { flexDirection: 'row', gap: spacing.md },
+  receipt: { gap: spacing.md },
+  photo: { height: 360, borderRadius: 16, backgroundColor: colors.surfaceSunken },
   confirmButton: { flex: 1 },
 });

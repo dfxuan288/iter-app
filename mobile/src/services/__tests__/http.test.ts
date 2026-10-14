@@ -42,13 +42,20 @@ describe('requestJson', () => {
     expect(result).toEqual({ ok: false, reason: 'timeout' });
   });
 
-  it('reports "server" with the status for error responses', async () => {
+  it('reports "server" with the status and the server’s explanation for error responses', async () => {
     const fetchImpl = jest.fn(async () => jsonResponse({ error: 'x' }, 503));
     await expect(requestJson('https://example.test/x', { fetchImpl })).resolves.toEqual({
       ok: false,
       reason: 'server',
       status: 503,
+      body: { error: 'x' },
     });
+  });
+
+  it('sends extra headers alongside the JSON body', async () => {
+    const fetchImpl = jest.fn(async (_url: string, _init?: RequestInit) => jsonResponse({}, 200));
+    await requestJson('https://example.test/x', { fetchImpl: fetchImpl as unknown as typeof fetch, method: 'POST', body: { a: 1 }, headers: { 'X-Device-Id': 'abc' } });
+    expect(fetchImpl.mock.calls[0]?.[1]?.headers).toEqual({ 'Content-Type': 'application/json', 'X-Device-Id': 'abc' });
   });
 
   it('reports "invalid_response" when the reply is not JSON', async () => {

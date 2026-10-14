@@ -7,6 +7,7 @@ import { DailySpendBars } from '@/components/home/DailySpendBars';
 import { ExpenseList } from '@/components/home/ExpenseList';
 import { PaceWarning } from '@/components/home/PaceWarning';
 import { SafeToSpendCard } from '@/components/home/SafeToSpendCard';
+import { ScanQueueList } from '@/components/scan/ScanQueueList';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -84,6 +85,7 @@ export default function HomeScreen() {
       </Reveal>
       <Button label="Add an expense" variant="accent" icon={PlusIcon} onPress={() => router.push('/expense/new')} />
       <PaceWarning summary={summary} />
+      <ScanQueueList tripId={trip.id} title="Receipts not saved yet" />
       <Reveal index={1}>
         <DailySpendBars days={summary.dailySpend} />
       </Reveal>

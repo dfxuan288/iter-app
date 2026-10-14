@@ -15,6 +15,7 @@ import { parseQuickEntry } from '@/domain/quickEntry';
 import { CATEGORIES, categoryLabels, type Category, type Expense, type Trip } from '@/domain/types';
 import { expenseProblemMessages, MAX_TEXT_LENGTH, type ExpenseDraft, type ExpenseProblem, type RateQuote } from '@/services/expenseService';
 import { rateQuoteFor } from '@/services/fxService';
+import type { ReviewField } from '@/services/receiptReview';
 import { useFx } from '@/state/FxProvider';
 import { spacing } from '@/theme/tokens';
 
@@ -23,6 +24,10 @@ export interface ExpenseFormProps {
   today: IsoDate;
   /** When editing: the expense to start from. */
   existing?: Expense;
+  /** When reviewing a scan: the values the AI read. */
+  initial?: ExpenseDraft;
+  /** "Check this" notes for fields the AI was unsure of. */
+  highlights?: Partial<Record<ReviewField, string>>;
   /** Show the "1200 yen ramen" box above the form. */
   quickEntry?: boolean;
   submitLabel: string;
@@ -35,19 +40,20 @@ const amountAsText = (minor: number, currency: CurrencyCode) =>
 const ALL_CURRENCIES = Object.keys(currencies) as CurrencyCode[];
 
 /** The add and edit form for an expense. All validation lives in expenseService; this only collects input. */
-export function ExpenseForm({ trip, today, existing, quickEntry = false, submitLabel, onSubmit }: ExpenseFormProps) {
+export function ExpenseForm({ trip, today, existing, initial, highlights = {}, quickEntry = false, submitLabel, onSubmit }: ExpenseFormProps) {
   const { rates } = useFx();
   const defaultDate = isWithin(today, trip.startDate, trip.endDate) ? today : trip.startDate;
+  const start = existing ?? initial;
 
   const [quickText, setQuickText] = useState('');
   const [quickMessage, setQuickMessage] = useState<string | null>(null);
-  const [amountText, setAmountText] = useState(existing ? amountAsText(existing.amountOriginal, existing.currency) : '');
-  const [currency, setCurrency] = useState<CurrencyCode>(existing?.currency ?? trip.localCurrency);
+  const [amountText, setAmountText] = useState(start ? amountAsText(start.amountOriginal, start.currency) : '');
+  const [currency, setCurrency] = useState<CurrencyCode>(start?.currency ?? trip.localCurrency);
   const [showAllCurrencies, setShowAllCurrencies] = useState(false);
-  const [category, setCategory] = useState<Category>(existing?.category ?? 'food');
-  const [merchant, setMerchant] = useState(existing?.merchantName ?? '');
-  const [note, setNote] = useState(existing?.note ?? '');
-  const [date, setDate] = useState<IsoDate>(existing?.purchaseDate ?? defaultDate);
+  const [category, setCategory] = useState<Category>(start?.category ?? 'food');
+  const [merchant, setMerchant] = useState(start?.merchantName ?? '');
+  const [note, setNote] = useState(start?.note ?? '');
+  const [date, setDate] = useState<IsoDate>(start?.purchaseDate ?? defaultDate);
   const [problems, setProblems] = useState<ExpenseProblem[]>([]);
 
   const amount = parseMoneyInput(amountText, currency);
@@ -114,10 +120,12 @@ export function ExpenseForm({ trip, today, existing, quickEntry = false, submitL
         onChangeText={setAmountText}
         currency={currency}
         error={has('amount_missing') ? expenseProblemMessages.amount_missing : undefined}
+        highlight={highlights.amount}
       />
 
       <View style={styles.group}>
         <AppText variant="label">Currency</AppText>
+        <FieldNote text={highlights.currency} />
         <ChoiceChips label="Currency" choices={currencyChoices} value={currency} onChange={setCurrency} />
         {showAllCurrencies ? null : <Button label="Other currencies" variant="quiet" onPress={() => setShowAllCurrencies(true)} />}
       </View>
@@ -142,6 +150,7 @@ export function ExpenseForm({ trip, today, existing, quickEntry = false, submitL
 
       <View style={styles.group}>
         <AppText variant="label">Category</AppText>
+        <FieldNote text={highlights.category} />
         <ChoiceChips
           label="Category"
           value={category}
@@ -157,11 +166,13 @@ export function ExpenseForm({ trip, today, existing, quickEntry = false, submitL
         placeholder="Ichiran Shibuya"
         maxLength={MAX_TEXT_LENGTH}
         error={has('text_too_long') ? expenseProblemMessages.text_too_long : undefined}
+        highlight={highlights.merchant}
       />
       <TextField label="Note (optional)" value={note} onChangeText={setNote} placeholder="Extra noodles" maxLength={MAX_TEXT_LENGTH} />
 
       <View style={styles.group}>
         <AppText variant="label">Day</AppText>
+        <FieldNote text={highlights.date} />
         <ChoiceChips label="Day" layout="scroll" choices={dayChoices} value={date} onChange={setDate} />
       </View>
 
@@ -176,6 +187,15 @@ export function ExpenseForm({ trip, today, existing, quickEntry = false, submitL
       <Button label={submitLabel} onPress={submit} />
     </View>
   );
+}
+
+/** A "check this" note under a group label. */
+function FieldNote({ text }: { text: string | undefined }) {
+  return text ? (
+    <AppText variant="caption" color="warning">
+      {text}
+    </AppText>
+  ) : null;
 }
 
 const styles = StyleSheet.create({
