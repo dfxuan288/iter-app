@@ -104,7 +104,7 @@ export default function CurrencyScreen() {
             onPress={() => setFromForeign(!fromForeign)}
           />
           <View style={styles.rateRow}>
-            <Chip tone={rates.origin === 'live' ? 'success' : 'warning'} label={rateLabel(rates)} />
+            <Chip tone={rates.origin === 'live' ? 'success' : 'warning'} label={rateLabel(rates, currency)} />
           </View>
           {rates.origin !== 'live' ? (
             <AppText variant="caption" color="muted">

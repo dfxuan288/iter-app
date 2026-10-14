@@ -99,6 +99,29 @@ The forecast now works on the same money as safe-to-spend:
 - Safe-to-spend (§9.1) and the status (§9.2) were already consistent with this and are unchanged.
 - The "Each day" chart still shows everything spent each day, hotel included.
 
+## Today's allowance is set once a day (14 Oct 2026)
+
+Changes how brief §9.1 is shown. Before, spending during the day lowered the safe-to-spend number itself, because
+today's spending was taken off before dividing by days left (which include today). Raised by the team.
+
+- **Today's allowance** = day-to-day money left at the start of today ÷ days left including today. Fixed all day.
+  It is the brief's formula, `(remaining − essentialsLeft − reserve) / daysLeft`, taken before today's spending.
+- **Left today** = today's allowance − day-to-day spending dated today. This is the big number on Home; it can go
+  below zero, and the card then says by how much.
+- Tomorrow it rebalances: underspending raises the allowance, overspending lowers it.
+- "Day-to-day" means the same as in the forecast: everything except stay and transport, plus any amount those go
+  over their plan. Paying planned stay or transport today does not touch today's number.
+- The "spending fast" check compares today's allowance with the planned one, as before.
+- **Demo data:** the Don Quijote and Sushiro purchases moved from 15 Nov to 14 Nov (the brief dates Don Quijote
+  15 Nov), so the demo opens on the morning of day 7 with RM 200 left of today's RM 200, and RM 2,700 spent.
+
+## Exchange rates per currency (14 Oct 2026)
+
+- Frankfurter's sources publish at different times, so the newest day can hold some currencies only. Each currency now
+  gets its own latest rate and date (`dates` in `/api/rates`), and its daily change is against its own previous day.
+- The backend refreshes from Frankfurter when its stored copy is more than 3 hours old (it was once per UTC day, so a
+  copy taken just after midnight missed currencies published later that day).
+
 ## Phase 3 notes (14 Oct 2026)
 
 - Endpoints: `POST /api/scan-receipt` and `POST /api/scan-menu` (brief §5.2's `/scan/receipt` and `/scan/menu`).

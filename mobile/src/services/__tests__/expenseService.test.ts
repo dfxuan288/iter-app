@@ -52,13 +52,14 @@ describe('addExpense', () => {
     expect(result.expense).toMatchObject({ amountMyr: 3095, rateUsed: 38.775, rateDate: '2026-10-13', source: 'manual' });
   });
 
-  it('updates safe-to-spend straight away', () => {
+  it('updates what is left today straight away, without changing today’s allowance', () => {
     const before = createSeedData();
-    // RM 80 of food: (1,500 − 80 − 400 − 300) / 4 = RM 180
+    // RM 80 of food today: RM 200 − 80 = RM 120 left of today's RM 200.
     const result = addExpense(before, DEMO_TRIP_ID, { ...draft, currency: 'MYR', amountOriginal: 8000 }, null, 'e-new', 'now');
     if (!result.ok) throw new Error('expected the expense to be added');
-    expect(summarize(before).safePerDayMyr).toBe(20000);
-    expect(summarize(result.data).safePerDayMyr).toBe(18000);
+    expect(summarize(before).leftTodayMyr).toBe(20000);
+    expect(summarize(result.data).safePerDayMyr).toBe(20000);
+    expect(summarize(result.data).leftTodayMyr).toBe(12000);
     expect(summarize(result.data).spentMyr).toBe(278000);
   });
 
@@ -66,6 +67,7 @@ describe('addExpense', () => {
     const result = addExpense(createSeedData(), DEMO_TRIP_ID, { ...draft, currency: 'MYR', amountOriginal: 10000, category: 'stay' }, null, 'e-new', 'now');
     if (!result.ok) throw new Error('expected the expense to be added');
     expect(summarize(result.data).safePerDayMyr).toBe(20000);
+    expect(summarize(result.data).leftTodayMyr).toBe(20000);
   });
 
   it('fills in a name when none is given, and trims spaces', () => {

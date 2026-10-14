@@ -53,6 +53,8 @@ const categoryBudgets: CategoryBudget[] = (Object.keys(plannedRinggit) as Catego
 type SeedRow = [date: IsoDate, merchant: string, note: string, category: Category, source: ExpenseSource, amount: number, currency: 'JPY' | 'MYR'];
 
 // Yen amounts are whole yen. Ringgit rows are online bookings paid from home, in ringgit.
+// The demo opens on the morning of day 7: only the metro ticket (transport, within plan) is dated
+// today, so today's allowance shows in full (RM 200 left of RM 200) until something is scanned.
 const rows: SeedRow[] = [
   ['2026-11-09', 'Agoda', 'Hotel, first 6 nights', 'stay', 'manual', 705.6, 'MYR'],
   ['2026-11-09', 'Klook', 'Narita Express ticket', 'transport', 'manual', 89.19, 'MYR'],
@@ -76,8 +78,8 @@ const rows: SeedRow[] = [
   ['2026-11-14', 'Ichiran Shibuya', 'Tonkotsu ramen, extra noodles', 'food', 'scan', 1690, 'JPY'],
   ['2026-11-14', 'Lawson Ginza', 'Onigiri and coffee', 'food', 'manual', 760, 'JPY'],
   ['2026-11-15', 'Tokyo Metro', '24-hour ticket ×2 and fares', 'transport', 'manual', 1480, 'JPY'],
-  ['2026-11-15', 'Don Quijote Shibuya', 'Umaibo snacks, LuLuLun face masks', 'shopping', 'scan', 1212, 'JPY'],
-  ['2026-11-15', 'Sushiro Shibuya', 'Lunch', 'food', 'manual', 1250, 'JPY'],
+  ['2026-11-14', 'Don Quijote Shibuya', 'Umaibo snacks, LuLuLun face masks', 'shopping', 'scan', 1212, 'JPY'],
+  ['2026-11-14', 'Sushiro Shibuya', 'Lunch', 'food', 'manual', 1250, 'JPY'],
 ];
 
 const expenses: Expense[] = rows.map(([purchaseDate, merchantName, note, category, source, amount, currency], index) => {
