@@ -25,7 +25,7 @@ export function paceMessage(summary: TripSummary): { title: string; body: string
     return {
       tone: 'warning',
       title: `At this pace, money runs out on day ${forecast.runOutDayNumber}`,
-      body: `You are averaging ${rm(forecast.burnRateMyr)} a day. Keeping to ${rm(summary.safePerDayMyr)} a day gets you to the end of the trip (${formatDayMonth(forecast.runOutDate)} is when it would run out).`,
+      body: `Leaving out your stay and transport, you are averaging ${rm(forecast.burnRateMyr)} a day. Keeping to ${rm(summary.safePerDayMyr)} a day gets you to the end of the trip (${formatDayMonth(forecast.runOutDate)} is when it would run out).`,
     };
   }
   if (summary.status === 'spending_fast') {

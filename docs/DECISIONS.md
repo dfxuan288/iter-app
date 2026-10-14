@@ -82,8 +82,22 @@ The lecturer's recommended setup replaces the private-server plan above.
 - Quick entry ("1200 yen ramen") is plain pattern matching in code, not AI, so it works offline.
 - Expenses are listed newest day first, then most recently added first.
 - The Currency tab shows prices from the traveller's side (what ¥100 costs in Ringgit), not the raw rate.
-- Adding one expense to the demo trip triggers the "money runs out on day 10" warning: the demo sits just inside
-  the limit on purpose.
+
+## Forecast uses day-to-day spending only (14 Oct 2026)
+
+Replaces brief §9.3 (`burnRate = spent / daysElapsed`), which counted the hotel and transport as daily
+spending. A RM 2,000 hotel paid on day 1 of a 4-day trip made the app warn "money runs out on day 3",
+although that hotel was already set aside in the budget. Raised by the team.
+
+The forecast now works on the same money as safe-to-spend:
+
+- **Day-to-day budget** = total budget − reserve − what was planned for stay and transport.
+- **Pace** = food, activities and shopping dated from day 1 up to today, divided by the days so far.
+- **One-offs** come out of the day-to-day budget once and are not projected forward: spending above the stay or
+  transport plan, and day-to-day things bought before the trip (for example tickets booked from home).
+- **Run-out day** = the first day where one-offs + pace × day is more than the day-to-day budget.
+- Safe-to-spend (§9.1) and the status (§9.2) were already consistent with this and are unchanged.
+- The "Each day" chart still shows everything spent each day, hotel included.
 
 ## Still open
 

@@ -31,9 +31,9 @@ export interface CategoryProgress {
 }
 
 export interface Forecast {
-  /** Average spend per day so far. */
+  /** Average day-to-day spend (everything except essentials) per trip day so far. */
   burnRateMyr: number;
-  /** The trip day on which money (excluding the reserve) runs out at this pace, if it does. */
+  /** The trip day on which the day-to-day money runs out at this pace, if it does. */
   runOutDayNumber: number | null;
   runOutDate: IsoDate | null;
 }
@@ -105,23 +105,29 @@ export function budgetStatus(input: {
 }
 
 /**
- * Projects spending forward at the average daily pace so far.
- * The run-out day is the first day where projected total spend passes the budget minus the reserve.
+ * Projects day-to-day spending forward at the average pace so far. It works on the same money as
+ * safe-to-spend: the budget minus the reserve minus what was planned for essentials (stay, transport).
+ *
+ * - `paceSpentMyr`: day-to-day spending dated from the first day of the trip up to today. Only this
+ *   sets the pace, so paying for the hotel never looks like a habit.
+ * - `oneOffMyr`: money that comes out of the day-to-day budget once and is not repeated: overspending
+ *   on an essential (a dearer hotel than planned) and day-to-day things bought before the trip.
+ *
+ * The run-out day is the first day where one-offs plus the projected pace pass the day-to-day budget.
  */
 export function forecastRunOut(input: {
-  spentMyr: number;
+  paceSpentMyr: number;
+  oneOffMyr: number;
+  dayToDayBudgetMyr: number;
   daysElapsed: number;
   totalDays: number;
-  totalBudgetMyr: number;
-  reserveMyr: number;
   startDate: IsoDate;
 }): Forecast {
-  const { spentMyr, daysElapsed, totalDays, totalBudgetMyr, reserveMyr, startDate } = input;
-  if (daysElapsed <= 0 || spentMyr <= 0) return { burnRateMyr: 0, runOutDayNumber: null, runOutDate: null };
-  const burnRate = spentMyr / daysElapsed;
-  const spendable = totalBudgetMyr - reserveMyr;
+  const { paceSpentMyr, oneOffMyr, dayToDayBudgetMyr, daysElapsed, totalDays, startDate } = input;
+  if (daysElapsed <= 0) return { burnRateMyr: 0, runOutDayNumber: null, runOutDate: null };
+  const burnRate = Math.max(0, paceSpentMyr) / daysElapsed;
   for (let day = daysElapsed; day <= totalDays; day++) {
-    if (burnRate * day > spendable) {
+    if (oneOffMyr + burnRate * day > dayToDayBudgetMyr) {
       return { burnRateMyr: Math.round(burnRate), runOutDayNumber: day, runOutDate: addDays(startDate, day - 1) };
     }
   }
@@ -140,9 +146,17 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
   const spentMyr = sumMinor(tripExpenses.map((e) => e.amountMyr));
   const remainingMyr = trip.totalBudgetMyr - spentMyr;
   const categories = summarizeCategories(trip.id, categoryBudgets, tripExpenses);
-  const essentials = categories.filter((c) => budgetRules.essentialCategories.includes(c.category));
+  const isEssential = (category: Category) => budgetRules.essentialCategories.includes(category);
+  const essentials = categories.filter((c) => isEssential(c.category));
   const essentialsLeftMyr = sumMinor(essentials.map((c) => c.unspentMyr));
   const plannedEssentialsMyr = sumMinor(essentials.map((c) => c.plannedMyr));
+
+  // The forecast uses the same money as safe-to-spend (see forecastRunOut).
+  const essentialOverspendMyr = sumMinor(essentials.map((c) => Math.max(0, c.spentMyr - c.plannedMyr)));
+  const dayToDay = tripExpenses.filter((e) => !isEssential(e.category));
+  const isTripDaySoFar = (e: Expense) => e.purchaseDate >= trip.startDate && e.purchaseDate <= today;
+  const paceSpentMyr = sumMinor(dayToDay.filter(isTripDaySoFar).map((e) => e.amountMyr));
+  const otherDayToDayMyr = sumMinor(dayToDay.filter((e) => !isTripDaySoFar(e)).map((e) => e.amountMyr));
 
   const safePerDayMyr = safeToSpendPerDay(remainingMyr, essentialsLeftMyr, trip.reserveMyr, daysLeft);
   const plannedPerDayMyr = safeToSpendPerDay(trip.totalBudgetMyr, plannedEssentialsMyr, trip.reserveMyr, totalDays);
@@ -170,11 +184,11 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
     categories,
     dailySpend,
     forecast: forecastRunOut({
-      spentMyr,
+      paceSpentMyr,
+      oneOffMyr: essentialOverspendMyr + otherDayToDayMyr,
+      dayToDayBudgetMyr: trip.totalBudgetMyr - trip.reserveMyr - plannedEssentialsMyr,
       daysElapsed,
       totalDays,
-      totalBudgetMyr: trip.totalBudgetMyr,
-      reserveMyr: trip.reserveMyr,
       startDate: trip.startDate,
     }),
   };
