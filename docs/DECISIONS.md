@@ -99,6 +99,29 @@ The forecast now works on the same money as safe-to-spend:
 - Safe-to-spend (§9.1) and the status (§9.2) were already consistent with this and are unchanged.
 - The "Each day" chart still shows everything spent each day, hotel included.
 
+## Phase 3 notes (14 Oct 2026)
+
+- Endpoints: `POST /api/scan-receipt` and `POST /api/scan-menu` (brief §5.2's `/scan/receipt` and `/scan/menu`).
+  The app sends the photo as base64 JSON with a random device id in the `X-Device-Id` header.
+- Models: Claude Haiku 5.5 reads first (low effort, for speed); Claude Sonnet 5.5 takes a second look when Haiku's
+  confidence is below 0.7 or the numbers fail a check. The reading with fewer problems is kept. A confident "this is
+  not a receipt" is accepted without asking Sonnet. If Sonnet declines a request, Anthropic's server retries it on
+  another model by itself (the API's "fallbacks" option).
+- The AI returns amounts exactly as printed; the backend converts them to minor units and checks them. Tax marked
+  as included (内税) is not added again. One smallest unit of rounding is allowed per printed figure.
+- If no currency is printed, the trip's currency is assumed and flagged. A currency ITER does not support is refused
+  rather than guessed. A date outside the trip is flagged, not changed.
+- Server limits (`backend/scan/limits.ts`): 30 receipt and 15 menu scans per device per UTC day, 1,000 scans a day in
+  total. Cached and demo answers are not counted; a scan the AI could not read is given back. If the counter is
+  unreachable the scan still goes ahead: the prepaid Anthropic credit with auto-reload off is the final cap.
+  These are separate from the plan limits the app shows (Free: 5 receipts, 3 menus per trip), which arrive in Phase 8.
+- Cache: results are stored by a hash of the photo (Supabase `scan_cache`), so the same photo is never paid for twice.
+  This also covers brief §5.3's "cache menu results per restaurant" for repeat photos.
+- Demo samples: two receipts (a tax-free drugstore receipt over ¥5,000 and a convenience-store receipt) and two menus
+  (Japanese ramen with 税抜 prices, Thai with "++"), drawn by `scripts/make-samples.ts` and marked SAMPLE. They are
+  read by the real AI; only if it is unavailable or today's limit is reached does the backend use their printed contents.
+- Menu prices come back as printed plus the tax and service rates to add; the app calculates Ringgit prices in Phase 6.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

@@ -13,6 +13,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["api", "backend", "*.ts"],
+  "include": ["api", "backend", "scripts", "*.ts"],
   "exclude": ["mobile", "node_modules"]
 }

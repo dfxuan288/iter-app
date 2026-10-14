@@ -1,5 +1,6 @@
 import { getHealth } from './handlers/health.js';
 import { getRateHistory, getRates } from './handlers/rates.js';
+import { postScanMenu, postScanReceipt } from './handlers/scan.js';
 import type { Handler } from './http.js';
 
 type Method = 'GET' | 'POST';
@@ -12,4 +13,6 @@ export const routes: Record<string, Partial<Record<Method, Handler>>> = {
   '/api/health': { GET: getHealth },
   '/api/rates': { GET: getRates },
   '/api/rate-history': { GET: getRateHistory },
+  '/api/scan-receipt': { POST: postScanReceipt },
+  '/api/scan-menu': { POST: postScanMenu },
 };
