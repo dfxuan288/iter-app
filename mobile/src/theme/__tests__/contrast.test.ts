@@ -36,8 +36,11 @@ describe('ITER palette meets WCAG AA', () => {
     ['accent text on cards', colors.accentText, colors.card],
     ['accent text on the page', colors.accentText, colors.surface],
     ['accent text on the soft accent fill', colors.accentText, colors.accentSoft],
+    ['muted text on the soft accent fill', colors.textMuted, colors.accentSoft],
     ['teal links on cards', colors.teal, colors.card],
     ['warning text on warning surface', colors.warning, colors.warningSurface],
+    ['warning text on cards', colors.warning, colors.card],
+    ['warning text on the page', colors.warning, colors.surface],
     ['danger text on danger surface', colors.danger, colors.dangerSurface],
   ];
 

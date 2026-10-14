@@ -4,6 +4,8 @@ import { StyleSheet, View } from 'react-native';
 
 import { ExpenseForm } from '@/components/expense/ExpenseForm';
 import { ReceiptItems } from '@/components/scan/ReceiptItems';
+import { RefundBadge } from '@/components/tax/RefundBadge';
+import { RefundStatusPicker } from '@/components/tax/RefundStatusPicker';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -15,6 +17,7 @@ import { StoredImage } from '@/components/ui/StoredImage';
 import { TicketCard } from '@/components/ui/TicketCard';
 import { formatFullDate } from '@/domain/dates';
 import { formatMoney } from '@/domain/money';
+import { checkRefund } from '@/domain/taxRefund';
 import { categoryLabels } from '@/domain/types';
 import { useAppData } from '@/state/AppDataProvider';
 import { colors, spacing } from '@/theme/tokens';
@@ -24,7 +27,7 @@ type Mode = 'view' | 'edit' | 'confirm-delete';
 export default function ExpenseDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data, today, updateExpense, deleteExpense } = useAppData();
+  const { data, today, updateExpense, deleteExpense, updateRefund } = useAppData();
   const [mode, setMode] = useState<Mode>('view');
 
   const expense = data.expenses.find((e) => e.id === id);
@@ -61,6 +64,7 @@ export default function ExpenseDetailScreen() {
     );
   }
 
+  const refund = checkRefund(expense, trip, data.expenses.filter((e) => e.tripId === trip.id));
   const foreign = expense.currency !== 'MYR';
   const scanned = expense.source !== 'manual';
 
@@ -93,6 +97,23 @@ export default function ExpenseDetailScreen() {
           {formatMoney(expense.amountMyr, 'MYR')}
         </AppText>
       </TicketCard>
+
+      {refund.eligibility !== 'not_checked' ? (
+        <Card style={styles.receipt}>
+          <AppText variant="heading">Tax refund</AppText>
+          <RefundBadge check={refund} onAnswerShop={(shopIsTaxFree) => updateRefund(expense.id, { shopIsTaxFree })} />
+          {refund.eligibility === 'eligible' ? (
+            <RefundStatusPicker
+              shop={expense.merchantName}
+              value={expense.taxRefund?.status ?? 'to_claim'}
+              onChange={(status) => updateRefund(expense.id, { status })}
+            />
+          ) : null}
+          {expense.taxRefund?.shopIsTaxFree !== undefined ? (
+            <Button label="Change my answer about the shop" variant="quiet" onPress={() => updateRefund(expense.id, { shopIsTaxFree: undefined })} />
+          ) : null}
+        </Card>
+      ) : null}
 
       {expense.receipt ? (
         <Card style={styles.receipt}>

@@ -24,8 +24,8 @@ database, as recommended for the course.
 | 2. Currency and manual entry: live rates, converter, history, add/edit/delete expenses | Done |
 | 3. Scan backend (AI): receipt and menu reading, checks, limits, cache, demo samples | Done |
 | 4. Receipt scan flow: photo or sample, review with highlighted fields, save, offline waiting list | Done |
-| 5. Tax refund | Next |
-| 6. Menu translate | |
+| 5. Tax refund: Japan rules as config, eligibility on every receipt, tracker, checklist, reminder | Done |
+| 6. Menu translate | Next |
 | 7. Community | |
 | 8. Plans and Me | |
 | 9. Polish | |
@@ -135,7 +135,7 @@ These are deliberately kept out of the screens, each in one config file:
 | The demo date and the seeded exchange rates | `mobile/src/config/demo.ts` | Now |
 | The demo trip and its expenses | `mobile/src/data/seed.ts` | Now |
 | Destinations, their currencies and photos | `mobile/src/data/destinations.ts` | Now |
-| Tax refund rules per country, each with a source link and "last verified" date | `mobile/src/config/taxRules.ts` | Phase 5 |
+| Tax refund rules per country, each with a source link and "last verified" date (including the handling fee placeholder) | `mobile/src/config/taxRules.ts` | Now |
 | Colours, spacing and type sizes | `mobile/src/theme/tokens.ts` | Now |
 
 After changing one, run the checks above: the tests will tell you if a number no longer adds up.

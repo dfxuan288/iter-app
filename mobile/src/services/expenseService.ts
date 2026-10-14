@@ -1,6 +1,6 @@
 import { isIsoDate, type IsoDate } from '@/domain/dates';
 import { convertToMyr, currencies, type CurrencyCode } from '@/domain/money';
-import { CATEGORIES, type AppData, type Category, type Expense, type ExpenseSource, type ReceiptDetails } from '@/domain/types';
+import { CATEGORIES, type AppData, type Category, type Expense, type ExpenseSource, type ReceiptDetails, type RefundState } from '@/domain/types';
 
 /** What the add/edit form collects. `amountOriginal` is in the minor unit of `currency`. */
 export interface ExpenseDraft {
@@ -98,8 +98,17 @@ export function updateExpense(data: AppData, expenseId: string, draft: ExpenseDr
   const problems = validateExpenseDraft(draft, rateToUse);
   if (problems.length > 0) return { ok: false, problems };
   const expense = build(draft, rateToUse, existing);
+  if (existing.taxRefund) expense.taxRefund = existing.taxRefund;
   if (sameMoney) expense.rateDate = existing.rateDate;
   return { ok: true, expense, data: { ...data, expenses: data.expenses.map((e) => (e.id === expenseId ? expense : e)) } };
+}
+
+/** Records the user's answers about a purchase's tax refund (shop confirmed, claimed, received). */
+export function setRefundState(data: AppData, expenseId: string, change: RefundState): AppData {
+  return {
+    ...data,
+    expenses: data.expenses.map((e) => (e.id === expenseId ? { ...e, taxRefund: { ...e.taxRefund, ...change } } : e)),
+  };
 }
 
 export function deleteExpense(data: AppData, expenseId: string): AppData {

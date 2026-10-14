@@ -1,7 +1,7 @@
 import { SEED_RATE_DATE, seedRatesPerMyr } from '@/config/demo';
 import type { IsoDate } from '@/domain/dates';
 import { convertToMyr, toMinor } from '@/domain/money';
-import type { AppData, Category, CategoryBudget, Expense, ExpenseSource, Trip, User } from '@/domain/types';
+import type { AppData, Category, CategoryBudget, Expense, ExpenseSource, ReceiptDetails, Trip, User } from '@/domain/types';
 
 /**
  * The demo account: Amanda T. on day 7 of a 10-day Tokyo trip (brief §11, docs/DECISIONS.md).
@@ -82,6 +82,73 @@ const rows: SeedRow[] = [
   ['2026-11-14', 'Sushiro Shibuya', 'Lunch', 'food', 'manual', 1250, 'JPY'],
 ];
 
+/**
+ * What the four scanned receipts showed (brief §11 tax refund demo). Two are refundable:
+ * UNIQLO (¥869 tax) and Bic Camera (¥1,480 tax), up to about RM 60.66 at the seed rate.
+ * Ichiran is a restaurant meal; Don Quijote is under the ¥5,000 minimum.
+ */
+const receipt = (fields: Pick<ReceiptDetails, 'merchantNameOriginal' | 'items' | 'subtotal' | 'taxLines' | 'total' | 'taxIncluded' | 'taxFreeShop'>): ReceiptDetails => ({
+  imageId: null,
+  currency: 'JPY',
+  serviceCharge: null,
+  language: 'ja',
+  confidence: 0.95,
+  readBy: 'ai',
+  modelUsed: 'claude-haiku-5-5',
+  ...fields,
+});
+
+const scannedReceipts: Record<string, ReceiptDetails> = {
+  'UNIQLO Ginza': receipt({
+    merchantNameOriginal: 'ユニクロ 銀座店',
+    items: [
+      { name: 'HEATTECH crew neck T-shirt', nameOriginal: 'ヒートテッククルーネックT', quantity: 2, lineTotal: 2580 },
+      { name: 'Ultra Light Down jacket', nameOriginal: 'ウルトラライトダウンジャケット', quantity: 1, lineTotal: 6990 },
+    ],
+    subtotal: 9570,
+    taxLines: [{ ratePercent: 10, amount: 869 }],
+    total: 9570,
+    taxIncluded: true,
+    taxFreeShop: 'yes',
+  }),
+  'Bic Camera Shinjuku': receipt({
+    merchantNameOriginal: 'ビックカメラ 新宿西口店',
+    items: [{ name: 'Wireless earbuds', nameOriginal: 'ワイヤレスイヤホン', quantity: 1, lineTotal: 14800 }],
+    subtotal: 14800,
+    taxLines: [{ ratePercent: 10, amount: 1480 }],
+    total: 16280,
+    taxIncluded: false,
+    taxFreeShop: 'yes',
+  }),
+  'Ichiran Shibuya': receipt({
+    merchantNameOriginal: '一蘭 渋谷店',
+    items: [
+      { name: 'Classic tonkotsu ramen', nameOriginal: '天然とんこつラーメン', quantity: 1, lineTotal: 1480 },
+      { name: 'Extra noodles', nameOriginal: '替玉', quantity: 1, lineTotal: 210 },
+    ],
+    subtotal: 1690,
+    taxLines: [{ ratePercent: 10, amount: 153 }],
+    total: 1690,
+    taxIncluded: true,
+    taxFreeShop: 'no',
+  }),
+  'Don Quijote Shibuya': receipt({
+    merchantNameOriginal: 'ドン・キホーテ 渋谷本店',
+    items: [
+      { name: 'Umaibo snack assortment', nameOriginal: 'うまい棒 詰め合わせ', quantity: 1, lineTotal: 450 },
+      { name: 'LuLuLun face masks, 7-pack', nameOriginal: 'ルルルン フェイスマスク 7枚', quantity: 1, lineTotal: 660 },
+    ],
+    subtotal: 1110,
+    taxLines: [
+      { ratePercent: 8, amount: 36 },
+      { ratePercent: 10, amount: 66 },
+    ],
+    total: 1212,
+    taxIncluded: false,
+    taxFreeShop: 'yes',
+  }),
+};
+
 const expenses: Expense[] = rows.map(([purchaseDate, merchantName, note, category, source, amount, currency], index) => {
   const amountOriginal = toMinor(amount, currency);
   const rateUsed = currency === 'MYR' ? 1 : seedRatesPerMyr.JPY;
@@ -100,6 +167,7 @@ const expenses: Expense[] = rows.map(([purchaseDate, merchantName, note, categor
     source,
     merchantName,
     purchaseDate,
+    ...(scannedReceipts[merchantName] ? { receipt: scannedReceipts[merchantName] } : {}),
   };
 });
 

@@ -1,5 +1,6 @@
 import { isIsoDate, type IsoDate } from '@/domain/dates';
-import type { ReceiptDetails, Trip } from '@/domain/types';
+import { convertToMyr } from '@/domain/money';
+import type { Expense, ReceiptDetails, Trip } from '@/domain/types';
 import { MAX_TEXT_LENGTH, type ExpenseDraft } from '@/services/expenseService';
 import type { ReceiptScan } from '@/services/scanService';
 
@@ -54,6 +55,31 @@ export function reviewHighlights(scan: ReceiptScan, trip: Pick<Trip, 'startDate'
   if (!scan.receipt.purchaseDate) note('date', 'No date could be read, so today was used. Check this.');
   else if (scan.receipt.purchaseDate < trip.startDate || scan.receipt.purchaseDate > trip.endDate) note('date', 'This date is outside your trip. Check it.');
   return highlights;
+}
+
+/**
+ * The expense as it would be saved, so the tax refund check can run on the review screen before
+ * anything is saved. `ratePerMyr` is today's rate for the receipt's currency, if known.
+ */
+export function previewExpense(scan: ReceiptScan, trip: Pick<Trip, 'id'>, today: IsoDate, details: ReceiptDetails, ratePerMyr: number | null): Expense {
+  const draft = draftFromScan(scan, today);
+  const rate = draft.currency === 'MYR' ? 1 : ratePerMyr;
+  return {
+    id: 'preview',
+    tripId: trip.id,
+    createdAt: '',
+    note: '',
+    amountOriginal: draft.amountOriginal,
+    currency: draft.currency,
+    rateUsed: rate ?? 1,
+    rateDate: today,
+    amountMyr: rate ? convertToMyr(draft.amountOriginal, draft.currency, rate) : 0,
+    category: draft.category,
+    source: 'scan',
+    merchantName: draft.merchantName,
+    purchaseDate: draft.purchaseDate,
+    receipt: details,
+  };
 }
 
 export function receiptDetailsFromScan(scan: ReceiptScan, imageId: string | null): ReceiptDetails {
