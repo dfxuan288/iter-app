@@ -1,10 +1,9 @@
-import { Asset } from 'expo-asset';
 import { Image } from 'expo-image';
-import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Platform, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
+import { bundledPhoto, choosePhoto, takePhoto, type PickResult } from '@/components/scan/photoPicker';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -21,48 +20,24 @@ export function ReceiptCapture() {
   const [preparing, setPreparing] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const begin = async (getUri: () => Promise<{ uri: string; sampleId?: string } | null>) => {
+  const begin = async (pick: () => Promise<PickResult>, sampleId?: string) => {
     setMessage(null);
-    let photo;
-    try {
-      photo = await getUri();
-    } catch {
-      setMessage('The camera or photos could not be opened. Check that ITER is allowed to use them.');
+    const photo = await pick();
+    if (!photo) return;
+    if ('error' in photo) {
+      setMessage(photo.error);
       return;
     }
-    if (!photo) return;
     setPreparing(true);
-    const result = await startScan(photo);
+    const result = await startScan({ uri: photo.uri, sampleId });
     setPreparing(false);
     if (result.ok) router.push({ pathname: '/scan/[id]', params: { id: result.id } });
     else setMessage(result.message);
   };
 
-  const fromCamera = () =>
-    begin(async () => {
-      // A phone browser asks for camera access itself; the native app needs to ask first.
-      if (Platform.OS !== 'web') {
-        const permission = await ImagePicker.requestCameraPermissionsAsync();
-        if (!permission.granted) {
-          setMessage('ITER needs the camera to scan receipts. You can allow it in your phone’s settings, or choose a photo instead.');
-          return null;
-        }
-      }
-      const result = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 1 });
-      return result.canceled ? null : result.assets[0] ? { uri: result.assets[0].uri } : null;
-    });
-
-  const fromGallery = () =>
-    begin(async () => {
-      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1 });
-      return result.canceled ? null : result.assets[0] ? { uri: result.assets[0].uri } : null;
-    });
-
-  const fromSample = (sample: SampleReceipt) =>
-    begin(async () => {
-      const asset = await Asset.fromModule(sample.image as number).downloadAsync();
-      return { uri: asset.localUri ?? asset.uri, sampleId: sample.id };
-    });
+  const fromCamera = () => begin(takePhoto);
+  const fromGallery = () => begin(choosePhoto);
+  const fromSample = (sample: SampleReceipt) => begin(() => bundledPhoto(sample.image), sample.id);
 
   return (
     <View style={styles.stack}>

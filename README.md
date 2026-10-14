@@ -25,8 +25,8 @@ database, as recommended for the course.
 | 3. Scan backend (AI): receipt and menu reading, checks, limits, cache, demo samples | Done |
 | 4. Receipt scan flow: photo or sample, review with highlighted fields, save, offline waiting list | Done |
 | 5. Tax refund: Japan rules as config, eligibility on every receipt, tracker, checklist, reminder | Done |
-| 6. Menu translate | Next |
-| 7. Community | |
+| 6. Menu translate: dishes in English, Ringgit prices with tax and service, pork and alcohol flags, log your order | Done |
+| 7. Community | Next |
 | 8. Plans and Me | |
 | 9. Polish | |
 | 10. Final deployment checks and demo rehearsal | |

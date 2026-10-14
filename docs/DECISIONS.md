@@ -182,6 +182,23 @@ today's spending was taken off before dividing by days left (which include today
 - Demo: the four seeded scanned receipts now carry their printed lines from brief §11, giving "Up to RM 60.66".
 - Screens now wait for the phone's saved data before showing anything, so a tap can never save the demo data over it.
 
+## Phase 6 notes (15 Oct 2026)
+
+- Scan tab → **Menu**: take a photo, choose one, or try a sample (the ramen menu with 税抜 prices, the Thai menu with "++").
+- Each dish shows its English name, the original, a one-line description, the printed price and the Ringgit price with
+  tax and service added. "Contains pork" and "Alcohol" appear only when the menu makes it clear, with a note to ask the
+  staff if it matters.
+- Prices are worked out in code (`mobile/src/domain/menuPricing.ts`): Japan 税抜 adds 10%; Thai "++" adds a 10% service
+  charge, then 7% VAT on the price and service together (฿180 becomes ฿211.86). If a menu says tax is extra but not how
+  much, prices stay as printed and the menu says so.
+- Tap + on dishes to build the order; the bill adds the charges once on the whole order, like a real bill. "Log this as an
+  expense" opens the usual form already filled in (amount, restaurant, dishes as the note, Food); it is saved as a
+  "From a menu" expense.
+- Menus are read straight away rather than waiting in the background: a menu is needed at the table. Without a
+  connection the app says so and offers Try again. The last 10 menus are kept on the phone to reopen.
+- The sample Thai menu tells the backend to expect baht, so it reads correctly on the Tokyo demo trip.
+- Free-plan menu scan limits (3 per trip) arrive with Plans in Phase 8.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

@@ -1,15 +1,29 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useMemo } from 'react';
 
 import { ExpenseForm } from '@/components/expense/ExpenseForm';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { StackScreen } from '@/components/ui/StackScreen';
+import { currencies, type CurrencyCode } from '@/domain/money';
+import type { ExpenseDraft } from '@/services/expenseService';
 import { useAppData } from '@/state/AppDataProvider';
+
+/** Values passed in from a menu's "Log this as an expense". Anything malformed is ignored. */
+function menuOrder(params: Record<string, string | string[] | undefined>, today: string): ExpenseDraft | undefined {
+  const value = (key: string) => (typeof params[key] === 'string' ? (params[key] as string) : '');
+  const amount = Number(value('amount'));
+  const currency = value('currency');
+  if (value('from') !== 'menu' || !Number.isSafeInteger(amount) || amount <= 0 || !(currency in currencies)) return undefined;
+  return { amountOriginal: amount, currency: currency as CurrencyCode, category: 'food', merchantName: value('merchant'), note: value('note'), purchaseDate: today };
+}
 
 export default function NewExpenseScreen() {
   const router = useRouter();
   const { trip, today, addExpense } = useAppData();
+  const params = useLocalSearchParams();
+  const fromMenu = useMemo(() => menuOrder(params, today), [params, today]);
 
   if (!trip) {
     return (
@@ -24,14 +38,15 @@ export default function NewExpenseScreen() {
   }
 
   return (
-    <StackScreen title="Add an expense">
+    <StackScreen title={fromMenu ? 'Log your meal' : 'Add an expense'}>
       <ExpenseForm
         trip={trip}
         today={today}
-        quickEntry
+        initial={fromMenu}
+        quickEntry={!fromMenu}
         submitLabel="Save expense"
         onSubmit={(draft, rate) => {
-          const result = addExpense(draft, rate);
+          const result = addExpense(draft, rate, { source: fromMenu ? 'menu' : 'manual' });
           if (result.ok) router.replace('/');
           return result;
         }}
