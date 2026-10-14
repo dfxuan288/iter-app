@@ -66,6 +66,8 @@ export function claudeReader(apiKey: string): ReadImage {
         },
       ],
     });
+    // For checking the cost estimate in brief §5.3 against real scans (Vercel -> Logs).
+    console.info(`[scan] ${kind} ${response.model}: ${response.usage.input_tokens} in, ${response.usage.output_tokens} out, ${response.stop_reason}`);
     if (response.stop_reason === 'refusal') throw new Error(`${model} declined to read the image`);
     if (response.stop_reason === 'max_tokens') throw new Error(`${model} ran out of room before finishing`);
     if (!response.parsed_output) throw new Error(`${model} did not return the expected JSON`);
