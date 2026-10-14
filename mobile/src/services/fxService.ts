@@ -27,9 +27,11 @@ export type RateTable = Partial<Record<ForeignCurrency, number>>;
 export type RatesOrigin = 'live' | 'saved' | 'builtin';
 
 export interface RatesSnapshot {
-  /** The market date the rates are for. */
+  /** The newest market date among the rates. */
   date: IsoDate;
   rates: RateTable;
+  /** Each currency's own market date, when it differs from `date` (sources publish at different times). */
+  dates: Partial<Record<ForeignCurrency, IsoDate>>;
   previous: { date: IsoDate; rates: RateTable } | null;
   origin: RatesOrigin;
 }
@@ -64,12 +66,19 @@ function toSnapshot(input: unknown, origin: RatesOrigin): RatesSnapshot | null {
   if (!isDate(value.date) || Object.keys(rates).length === 0) return null;
   const prev = value.previous as Record<string, unknown> | null | undefined;
   const previous = prev && isDate(prev.date) ? { date: prev.date, rates: cleanTable(prev.rates) } : null;
-  return { date: value.date, rates, previous, origin };
+  const dates: RatesSnapshot['dates'] = {};
+  const rawDates = (typeof value.dates === 'object' && value.dates !== null ? value.dates : {}) as Record<string, unknown>;
+  for (const currency of FOREIGN_CURRENCIES) {
+    const date = rawDates[currency];
+    if (rates[currency] !== undefined && isDate(date)) dates[currency] = date;
+  }
+  return { date: value.date, rates, dates, previous, origin };
 }
 
 export const builtinRates: RatesSnapshot = {
   date: SEED_RATE_DATE,
   rates: { ...seedRatesPerMyr },
+  dates: {},
   previous: null,
   origin: 'builtin',
 };
@@ -132,11 +141,16 @@ export const fxService = {
   },
 };
 
+/** The market date of one currency's rate. */
+export function rateDateFor(snapshot: Pick<RatesSnapshot, 'date' | 'dates'>, currency: CurrencyCode): IsoDate {
+  return currency === 'MYR' ? snapshot.date : (snapshot.dates[currency] ?? snapshot.date);
+}
+
 /** The rate to store with a new expense in `currency`, or null if there is none. */
 export function rateQuoteFor(snapshot: RatesSnapshot, currency: CurrencyCode): RateQuote | null {
   if (currency === 'MYR') return { ratePerMyr: 1, rateDate: snapshot.date };
   const rate = snapshot.rates[currency];
-  return rate ? { ratePerMyr: rate, rateDate: snapshot.date } : null;
+  return rate ? { ratePerMyr: rate, rateDate: rateDateFor(snapshot, currency) } : null;
 }
 
 /** Percentage change in what one unit of `currency` costs in Ringgit since the previous market day. */

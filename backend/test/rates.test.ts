@@ -84,6 +84,14 @@ describe('loadSeries', () => {
     expect(fetchImpl).not.toHaveBeenCalled();
   });
 
+  it('refreshes later the same day, so currencies published late are filled in', async () => {
+    const fetchImpl = vi.fn(frankfurterUp);
+    const later = new Date('2026-10-14T09:00:00.000Z');
+    const series = await loadSeries({ store: fakeStore(rows, '2026-10-14T00:05:00.000Z'), fetchImpl, now: later });
+    expect(series.servedFrom).toBe('frankfurter');
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
   it('refreshes and saves when the database was last filled on an earlier day', async () => {
     const store = fakeStore(rows.slice(0, 2), '2026-10-13T00:05:00.000Z');
     const series = await loadSeries({ store, fetchImpl: frankfurterUp, now: NOW });
@@ -123,6 +131,17 @@ describe('shaping the reply', () => {
     expect(latest.date).toBe('2026-10-13');
     expect(latest.rates).toEqual({ JPY: 38.775, USD: 0.24477 });
     expect(latest.previous).toEqual({ date: '2026-10-12', rates: { JPY: 38.7, USD: 0.2446 } });
+  });
+
+  it('keeps every currency when some have not published the newest day yet', () => {
+    // As seen live: just after midnight only JPY had the 14 Oct rate.
+    const ragged = { ...series, rows: [...rows, { date: '2026-10-14', quote: 'JPY' as const, rate: 38.784 }] };
+    const latest = latestFromSeries(ragged);
+    expect(latest.date).toBe('2026-10-14');
+    expect(latest.rates).toEqual({ JPY: 38.784, USD: 0.24477 });
+    expect(latest.dates).toEqual({ JPY: '2026-10-14', USD: '2026-10-13' });
+    // Each currency's change is against its own previous day.
+    expect(latest.previous?.rates).toEqual({ JPY: 38.775, USD: 0.2446 });
   });
 
   it('gives one currency’s history in date order', () => {

@@ -130,7 +130,7 @@ export function ExpenseForm({ trip, today, existing, quickEntry = false, submitL
             <AppText variant="caption" color="muted">
               {keepsOriginalRate
                 ? `Keeps the rate it was saved with: 1 MYR = ${quote.ratePerMyr} ${currency}`
-                : `1 MYR = ${quote.ratePerMyr} ${currency}. ${rateLabel(rates)}`}
+                : `1 MYR = ${quote.ratePerMyr} ${currency}. ${rateLabel(rates, currency)}`}
             </AppText>
           ) : (
             <AppText variant="caption" color="danger" role="alert">

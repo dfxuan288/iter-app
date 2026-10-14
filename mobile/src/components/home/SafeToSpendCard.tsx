@@ -35,12 +35,18 @@ function headline(trip: Trip, summary: TripSummary): { dayChip: string; amount: 
         amount: rm(summary.remainingMyr),
         caption: summary.remainingMyr >= 0 ? 'left over from your budget' : 'over your budget',
       };
-    case 'active':
-      return {
-        dayChip: `Day ${summary.dayNumber} of ${summary.totalDays}`,
-        amount: rm(summary.safePerDayMyr),
-        caption: summary.daysLeft === 1 ? 'left to spend today, your last day' : `a day for the next ${days(summary.daysLeft)}`,
-      };
+    case 'active': {
+      // The allowance is fixed for the day; the big number is what is left of it.
+      const allowance = rm(summary.safePerDayMyr);
+      const lastDay = summary.daysLeft === 1;
+      let caption = `left today, of today's ${allowance}`;
+      if (summary.leftTodayMyr < 0) {
+        caption = `left today. You are ${rm(-summary.leftTodayMyr)} over today's ${allowance}${lastDay ? '.' : ', so tomorrow gets a little less.'}`;
+      } else if (lastDay) {
+        caption += ', your last day';
+      }
+      return { dayChip: `Day ${summary.dayNumber} of ${summary.totalDays}`, amount: rm(Math.max(0, summary.leftTodayMyr)), caption };
+    }
   }
 }
 

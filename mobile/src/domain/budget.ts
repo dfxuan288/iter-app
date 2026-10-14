@@ -49,8 +49,15 @@ export interface TripSummary {
   remainingMyr: number;
   essentialsLeftMyr: number;
   reserveMyr: number;
-  /** What can be spent per remaining day without touching essentials or the reserve. */
+  /**
+   * Today's allowance: the day-to-day money left at the start of today, shared over the days left
+   * including today. It is set once per day, so spending during the day does not shrink it.
+   */
   safePerDayMyr: number;
+  /** Day-to-day spending dated today (stay and transport only count where they go over their plan). */
+  spentTodayMyr: number;
+  /** Today's allowance minus what was spent today. Negative when today went over. */
+  leftTodayMyr: number;
   /** Safe-to-spend per day as the trip was planned, before anything was spent. */
   plannedPerDayMyr: number;
   status: BudgetStatus;
@@ -158,7 +165,18 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
   const paceSpentMyr = sumMinor(dayToDay.filter(isTripDaySoFar).map((e) => e.amountMyr));
   const otherDayToDayMyr = sumMinor(dayToDay.filter((e) => !isTripDaySoFar(e)).map((e) => e.amountMyr));
 
-  const safePerDayMyr = safeToSpendPerDay(remainingMyr, essentialsLeftMyr, trip.reserveMyr, daysLeft);
+  // Day-to-day spending: everything except stay and transport, plus whatever those go over their plan.
+  const dayToDaySpent = (list: readonly Expense[]) =>
+    sumMinor(list.filter((e) => !isEssential(e.category)).map((e) => e.amountMyr)) +
+    sumMinor(
+      essentials.map((c) => Math.max(0, sumMinor(list.filter((e) => e.category === c.category).map((e) => e.amountMyr)) - c.plannedMyr)),
+    );
+  const dayToDayBudgetMyr = trip.totalBudgetMyr - trip.reserveMyr - plannedEssentialsMyr;
+  const spentTodayMyr = phase === 'active' ? dayToDaySpent(tripExpenses) - dayToDaySpent(tripExpenses.filter((e) => e.purchaseDate !== today)) : 0;
+  // Fixed for the whole day: what was left this morning, over the days left including today.
+  // Equal to (remaining − essentialsLeft − reserve) / daysLeft, taken before today's spending (brief §9.1).
+  const safePerDayMyr = safeToSpendPerDay(dayToDayBudgetMyr - (dayToDaySpent(tripExpenses) - spentTodayMyr), 0, 0, daysLeft);
+  const leftTodayMyr = phase === 'active' ? safePerDayMyr - spentTodayMyr : safePerDayMyr;
   const plannedPerDayMyr = safeToSpendPerDay(trip.totalBudgetMyr, plannedEssentialsMyr, trip.reserveMyr, totalDays);
 
   const dailySpend = eachDay(trip.startDate, trip.endDate).map((date, index) => ({
@@ -179,6 +197,8 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
     essentialsLeftMyr,
     reserveMyr: trip.reserveMyr,
     safePerDayMyr,
+    spentTodayMyr,
+    leftTodayMyr,
     plannedPerDayMyr,
     status: budgetStatus({ remainingMyr, essentialsLeftMyr, reserveMyr: trip.reserveMyr, safePerDayMyr, plannedPerDayMyr }),
     categories,
@@ -186,7 +206,7 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
     forecast: forecastRunOut({
       paceSpentMyr,
       oneOffMyr: essentialOverspendMyr + otherDayToDayMyr,
-      dayToDayBudgetMyr: trip.totalBudgetMyr - trip.reserveMyr - plannedEssentialsMyr,
+      dayToDayBudgetMyr,
       daysElapsed,
       totalDays,
       startDate: trip.startDate,

@@ -1,5 +1,5 @@
 import type { KeyValueStorage } from '../appDataStore';
-import { builtinRates, dailyChangePercent, fxService, rateQuoteFor, type RatesSnapshot } from '../fxService';
+import { builtinRates, dailyChangePercent, fxService, rateDateFor, rateQuoteFor, type RatesSnapshot } from '../fxService';
 
 function memoryStorage(): KeyValueStorage & { items: Record<string, string> } {
   const items: Record<string, string> = {};
@@ -64,6 +64,31 @@ describe('fxService.refreshRates', () => {
   });
 });
 
+describe('currencies on different days', () => {
+  // As served live on 14 Oct: yen had that day's rate, the dollar only the day before.
+  const reply = {
+    date: '2026-10-14',
+    rates: { JPY: 38.784, USD: 0.24478 },
+    dates: { JPY: '2026-10-14', USD: '2026-10-13', THB: '2026-10-13', EUR: 'soon' },
+    previous: { date: '2026-10-13', rates: { JPY: 38.781, USD: 0.24484 } },
+  };
+
+  it('keeps every currency, each with its own date', async () => {
+    const snapshot = await fxService.refreshRates({ storage: memoryStorage(), fetchImpl: ok(reply) });
+    expect(snapshot.rates).toEqual({ JPY: 38.784, USD: 0.24478 });
+    expect(snapshot.dates).toEqual({ JPY: '2026-10-14', USD: '2026-10-13' });
+    expect(rateQuoteFor(snapshot, 'USD')).toEqual({ ratePerMyr: 0.24478, rateDate: '2026-10-13' });
+    expect(rateDateFor(snapshot, 'JPY')).toBe('2026-10-14');
+  });
+
+  it('still reads rates saved by the older version, which had one date for all', async () => {
+    const storage = memoryStorage();
+    storage.items['iter.fx.latest.v1'] = JSON.stringify({ date: '2026-10-13', rates: { JPY: 38.7 }, previous: null });
+    const snapshot = await fxService.loadSavedRates({ storage });
+    expect(rateDateFor(snapshot, 'JPY')).toBe('2026-10-13');
+  });
+});
+
 describe('fxService.loadHistory', () => {
   const points = Array.from({ length: 12 }, (_, i) => ({ date: `2026-10-${String(i + 2).padStart(2, '0')}`, rate: 38.7 + i / 100 }));
 
@@ -89,6 +114,7 @@ describe('rate helpers', () => {
   const snapshot: RatesSnapshot = {
     date: '2026-10-13',
     rates: { JPY: 38.775, USD: 0.24477 },
+    dates: {},
     previous: { date: '2026-10-12', rates: { JPY: 38.785 } },
     origin: 'live',
   };

@@ -14,6 +14,13 @@ export type Quote = (typeof QUOTES)[number];
 /** How far back rates are kept for the history chart. */
 export const HISTORY_DAYS = 30;
 
+/**
+ * How long stored rates are served before Frankfurter is asked again. Its sources publish at
+ * different times of day, so a copy taken just after midnight can hold today's rate for some
+ * currencies only; refreshing every few hours fills in the rest.
+ */
+export const REFRESH_AFTER_MS = 3 * 60 * 60 * 1000;
+
 const FRANKFURTER_URL = 'https://api.frankfurter.dev/v2/rates';
 const UPSTREAM_TIMEOUT_MS = 8_000;
 
@@ -108,9 +115,9 @@ export interface LoadSeriesOptions {
 }
 
 /**
- * Returns the last month of rates. With a store: refresh from Frankfurter once per UTC day and
- * otherwise read the database. Without one (Supabase not set up yet): fetch from Frankfurter.
- * Throws only when no source at all can supply rates.
+ * Returns the last month of rates. With a store: read the database, and refresh it from
+ * Frankfurter when it is older than REFRESH_AFTER_MS. Without one (Supabase not set up yet):
+ * fetch from Frankfurter. Throws only when no source at all can supply rates.
  */
 export async function loadSeries({ store, fetchImpl = fetch, now = new Date() }: LoadSeriesOptions = {}): Promise<RateSeries> {
   const today = now.toISOString().slice(0, 10);
@@ -121,7 +128,8 @@ export async function loadSeries({ store, fetchImpl = fetch, now = new Date() }:
   if (store) {
     try {
       stored = await store.read(from);
-      if (stored.rows.length > 0 && stored.lastFetchedAt?.slice(0, 10) === today) {
+      const age = stored.lastFetchedAt ? now.getTime() - Date.parse(stored.lastFetchedAt) : Infinity;
+      if (stored.rows.length > 0 && stored.lastFetchedAt && age >= 0 && age < REFRESH_AFTER_MS) {
         return { rows: stored.rows, fetchedAt: stored.lastFetchedAt, stale: false, servedFrom: 'database' };
       }
     } catch (error) {
@@ -147,31 +155,48 @@ export async function loadSeries({ store, fetchImpl = fetch, now = new Date() }:
 
 export interface LatestRates {
   base: typeof BASE;
-  /** The market date the rates are for. */
+  /** The newest market date among the rates. */
   date: string;
+  /** Each currency's most recent rate. */
   rates: Partial<Record<Quote, number>>;
-  /** The previous market day, for showing the daily change. */
+  /** The market date of each currency's rate. Currencies can be a day apart, since sources publish at different times. */
+  dates: Partial<Record<Quote, string>>;
+  /** Each currency's rate on its previous market day, for showing the daily change. */
   previous: { date: string; rates: Partial<Record<Quote, number>> } | null;
   fetchedAt: string;
   stale: boolean;
 }
 
-function ratesOn(rows: RateRow[], date: string): Partial<Record<Quote, number>> {
-  const rates: Partial<Record<Quote, number>> = {};
-  for (const row of rows) if (row.date === date) rates[row.quote] = row.rate;
-  return rates;
-}
-
+/**
+ * Gives every currency its own latest rate. Taking only the newest date would drop any currency
+ * whose source has not published that day yet.
+ */
 export function latestFromSeries(series: RateSeries): LatestRates {
-  const dates = [...new Set(series.rows.map((row) => row.date))].sort();
-  const latest = dates.at(-1);
-  if (!latest) throw new Error('No exchange rates are available right now');
-  const previous = dates.at(-2);
+  const rates: Partial<Record<Quote, number>> = {};
+  const dates: Partial<Record<Quote, string>> = {};
+  const previousRates: Partial<Record<Quote, number>> = {};
+  let newest = '';
+  let previousNewest = '';
+  for (const quote of QUOTES) {
+    const own = series.rows.filter((row) => row.quote === quote).sort((a, b) => a.date.localeCompare(b.date));
+    const last = own.at(-1);
+    if (!last) continue;
+    rates[quote] = last.rate;
+    dates[quote] = last.date;
+    if (last.date > newest) newest = last.date;
+    const before = own.at(-2);
+    if (before) {
+      previousRates[quote] = before.rate;
+      if (before.date > previousNewest) previousNewest = before.date;
+    }
+  }
+  if (!newest) throw new Error('No exchange rates are available right now');
   return {
     base: BASE,
-    date: latest,
-    rates: ratesOn(series.rows, latest),
-    previous: previous ? { date: previous, rates: ratesOn(series.rows, previous) } : null,
+    date: newest,
+    rates,
+    dates,
+    previous: previousNewest ? { date: previousNewest, rates: previousRates } : null,
     fetchedAt: series.fetchedAt,
     stale: series.stale,
   };
