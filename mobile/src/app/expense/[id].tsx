@@ -10,15 +10,15 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
-import { Chip } from '@/components/ui/Chip';
-import { PencilSimpleIcon, ReceiptIcon } from '@/components/ui/icons';
+import { Chip, type ChipTone } from '@/components/ui/Chip';
+import { ForkKnifeIcon, PencilSimpleIcon, ReceiptIcon, type Icon } from '@/components/ui/icons';
 import { StackScreen } from '@/components/ui/StackScreen';
 import { StoredImage } from '@/components/ui/StoredImage';
 import { TicketCard } from '@/components/ui/TicketCard';
 import { formatFullDate } from '@/domain/dates';
 import { formatMoney } from '@/domain/money';
 import { checkRefund } from '@/domain/taxRefund';
-import { categoryLabels } from '@/domain/types';
+import { categoryLabels, type Expense } from '@/domain/types';
 import { useAppData } from '@/state/AppDataProvider';
 import { colors, spacing } from '@/theme/tokens';
 
@@ -66,7 +66,12 @@ export default function ExpenseDetailScreen() {
 
   const refund = checkRefund(expense, trip, data.expenses.filter((e) => e.tripId === trip.id));
   const foreign = expense.currency !== 'MYR';
-  const scanned = expense.source !== 'manual';
+  const sourceChip = {
+    scan: { tone: 'success', icon: ReceiptIcon, label: 'Scanned receipt' },
+    menu: { tone: 'success', icon: ForkKnifeIcon, label: 'From a menu' },
+    manual: { tone: 'neutral', icon: PencilSimpleIcon, label: 'Typed in' },
+  } as const satisfies Record<Expense['source'], { tone: ChipTone; icon: Icon; label: string }>;
+  const chip = sourceChip[expense.source];
 
   return (
     <StackScreen title="Expense">
@@ -87,9 +92,9 @@ export default function ExpenseDetailScreen() {
           <View style={styles.headerText}>
             <AppText variant="heading">{expense.merchantName}</AppText>
             <Chip
-              tone={scanned ? 'success' : 'neutral'}
-              icon={scanned ? ReceiptIcon : PencilSimpleIcon}
-              label={scanned ? 'Scanned receipt' : 'Typed in'}
+              tone={chip.tone}
+              icon={chip.icon}
+              label={chip.label}
             />
           </View>
         </View>

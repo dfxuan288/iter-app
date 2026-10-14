@@ -14,7 +14,7 @@ import { categoryLabels, type Expense } from '@/domain/types';
 import { colors, MIN_TOUCH_TARGET, radius, spacing } from '@/theme/tokens';
 
 function ExpenseRow({ expense, onPress }: { expense: Expense; onPress: () => void }) {
-  const scanned = expense.source !== 'manual';
+  const scanned = expense.source === 'scan';
   const amountMyr = formatMoney(expense.amountMyr, 'MYR');
   const foreign = expense.currency === 'MYR' ? null : formatMoney(expense.amountOriginal, expense.currency);
   return (
