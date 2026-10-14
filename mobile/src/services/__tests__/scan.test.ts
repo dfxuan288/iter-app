@@ -172,3 +172,15 @@ describe('reviewing a scan', () => {
     expect(edited.ok && edited.expense.receipt?.items).toHaveLength(2);
   });
 });
+
+describe('item labels', () => {
+  // Imported here so the label rule is tested without rendering the screen.
+  const { itemLabel } = jest.requireActual<typeof import('@/components/scan/ReceiptItems')>('@/components/scan/ReceiptItems');
+
+  it('adds the quantity once', () => {
+    expect(itemLabel({ name: 'Pocky', quantity: 3 })).toBe('Pocky × 3');
+    expect(itemLabel({ name: 'Onigiri salmon x2', quantity: 2 })).toBe('Onigiri salmon x2');
+    expect(itemLabel({ name: 'Green tea', quantity: 1 })).toBe('Green tea');
+    expect(itemLabel({ name: 'Green tea', quantity: null })).toBe('Green tea');
+  });
+});

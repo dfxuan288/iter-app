@@ -5,6 +5,12 @@ import { formatMoney } from '@/domain/money';
 import type { ReceiptDetails } from '@/domain/types';
 import { colors, spacing } from '@/theme/tokens';
 
+/** "Pocky × 3", unless the name already ends with its quantity (e.g. "Onigiri x2"). */
+export function itemLabel(item: { name: string; quantity: number | null }): string {
+  if (!item.quantity || item.quantity <= 1 || /[x×]\s*\d+\s*$/i.test(item.name)) return item.name;
+  return `${item.name} × ${item.quantity}`;
+}
+
 /** The lines of a receipt, as printed: items, then subtotal, tax, service charge and total. */
 export function ReceiptItems({ receipt }: { receipt: Pick<ReceiptDetails, 'currency' | 'items' | 'subtotal' | 'taxLines' | 'serviceCharge' | 'total' | 'taxIncluded'> }) {
   const money = (minor: number) => formatMoney(minor, receipt.currency);
@@ -14,7 +20,7 @@ export function ReceiptItems({ receipt }: { receipt: Pick<ReceiptDetails, 'curre
       {receipt.items.map((item, index) => (
         <View key={`${item.name}-${index}`} style={styles.row}>
           <View style={styles.name}>
-            <AppText>{item.quantity && item.quantity > 1 ? `${item.name} × ${item.quantity}` : item.name}</AppText>
+            <AppText>{itemLabel(item)}</AppText>
             {item.nameOriginal ? (
               <AppText variant="caption" color="muted">
                 {item.nameOriginal}

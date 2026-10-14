@@ -20,7 +20,7 @@ How to fill each field:
 - isReceipt: false if the image is not a receipt or bill. Then fill the other fields with empty values.
 - merchantName: the shop's name in English or romanised (for example "UNIQLO Ginza"). merchantNameOriginal: the name as printed if it is in another script, otherwise null.
 - purchaseDate: YYYY-MM-DD. Convert Japanese era years (令和8年 is 2026) and two-digit years. Copy the date as printed, even if it seems unusual. Null if there is no readable date.
-- items: one entry per purchased line, in order. name in English; nameOriginal as printed when in another language. lineTotal is the price printed on that line. A discount or coupon line is its own item with a negative lineTotal. Do not list subtotal, tax, total, payment, change or points lines as items. taxRatePercent: the rate the receipt marks for that line (for example a ※ or 軽 mark meaning 8% in Japan), else null.
+- items: one entry per purchased line, in order. name in English, without the quantity; nameOriginal as printed when in another language. lineTotal is the price printed on that line. A discount or coupon line is its own item with a negative lineTotal. Do not list subtotal, tax, total, payment, change or points lines as items. taxRatePercent: the rate the receipt marks for that line (for example a ※ or 軽 mark meaning 8% in Japan), else null.
 - subtotal: the printed subtotal (小計), else null.
 - taxLines: each printed tax amount with its rate, including "tax included" lines such as 内消費税 or (内税 10% ¥870). Empty if none are printed.
 - taxIncluded: true when the item prices already include tax (税込, 内税, "incl. VAT"), false when tax is added on top.
