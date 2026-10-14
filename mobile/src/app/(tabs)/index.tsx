@@ -6,6 +6,7 @@ import { CategoryList } from '@/components/home/CategoryList';
 import { DailySpendBars } from '@/components/home/DailySpendBars';
 import { ExpenseList } from '@/components/home/ExpenseList';
 import { PaceWarning } from '@/components/home/PaceWarning';
+import { RefundCard } from '@/components/home/RefundCard';
 import { SafeToSpendCard } from '@/components/home/SafeToSpendCard';
 import { ScanQueueList } from '@/components/scan/ScanQueueList';
 import { AppText } from '@/components/ui/AppText';
@@ -16,12 +17,13 @@ import { PlusIcon, WarningIcon } from '@/components/ui/icons';
 import { Reveal } from '@/components/ui/Reveal';
 import { Screen } from '@/components/ui/Screen';
 import { formatDayMonth } from '@/domain/dates';
+import { summarizeRefunds } from '@/domain/taxRefund';
 import { useAppData } from '@/state/AppDataProvider';
 import { colors, radius, spacing } from '@/theme/tokens';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { ready, trip, summary, expenses, saveFailed } = useAppData();
+  const { ready, trip, summary, expenses, saveFailed, data, today } = useAppData();
   const planTrip = () => router.push('/trip/new');
 
   const brand = (
@@ -84,6 +86,7 @@ export default function HomeScreen() {
         <SafeToSpendCard trip={trip} summary={summary} />
       </Reveal>
       <Button label="Add an expense" variant="accent" icon={PlusIcon} onPress={() => router.push('/expense/new')} />
+      <RefundCard summary={summarizeRefunds(trip, data.expenses)} trip={trip} today={today} />
       <PaceWarning summary={summary} />
       <ScanQueueList tripId={trip.id} title="Receipts not saved yet" />
       <Reveal index={1}>

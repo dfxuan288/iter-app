@@ -164,6 +164,24 @@ today's spending was taken off before dividing by days left (which include today
 - The four seeded "scanned" expenses have no photos yet; sample photos for them are planned for Phase 9 (polish).
 - Free-plan scan limits (5 receipts per trip) arrive with Plans in Phase 8.
 
+## Phase 5 notes (15 Oct 2026)
+
+- Rules live in `mobile/src/config/taxRules.ts`. Japan only, verified 15 Oct 2026 against the National Tax Agency's English
+  guide (refund system from 1 Nov 2026; ¥5,000 before tax, same shop, same day; goods out within 90 days; a missing item
+  voids the whole purchase; refunds paid by the shop or its refund company). Other countries get added once verified.
+- **Handling fee: 0% placeholder, amounts shown as "up to"** (confirmed by the team, 15 Oct 2026). One number in config.
+- The check runs on every scanned receipt, in code: purchases before 1 Nov 2026, stays, transport and tickets are not
+  refundable; food only from a registered tax-free shop (restaurant meals are not); the shop's receipts that day must
+  reach the minimum before tax; then "possibly" when the receipt does not show a tax-free shop, with a yes/no question.
+- When a receipt prints no tax, the tax is estimated at the standard 10% and labelled "tax estimated".
+- Refunds in Ringgit use the rate saved with the expense, so they do not drift with today's rates.
+- The "to collect" total is separate from the budget and never raises safe-to-spend (brief §9.6).
+- Statuses: To claim, Claimed, Received, Not claimed. "To collect" counts To claim and Claimed.
+- The departure reminder is an in-app card on Home (and on the tracker) on the last two days of the trip while refunds
+  are still to claim.
+- Demo: the four seeded scanned receipts now carry their printed lines from brief §11, giving "Up to RM 60.66".
+- Screens now wait for the phone's saved data before showing anything, so a tap can never save the demo data over it.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

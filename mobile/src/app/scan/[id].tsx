@@ -1,20 +1,24 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ExpenseForm } from '@/components/expense/ExpenseForm';
 import { ReceiptItems } from '@/components/scan/ReceiptItems';
 import { scanStatusText } from '@/components/scan/ScanQueueList';
 import { ScanningPhoto } from '@/components/scan/ScanningPhoto';
+import { RefundBadge } from '@/components/tax/RefundBadge';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Chip } from '@/components/ui/Chip';
 import { ArrowCounterClockwiseIcon, HourglassIcon, PencilSimpleIcon, SparkleIcon, TrashIcon, WarningIcon, WifiSlashIcon } from '@/components/ui/icons';
 import { StackScreen } from '@/components/ui/StackScreen';
-import { draftFromScan, receiptDetailsFromScan, reviewHighlights } from '@/services/receiptReview';
+import { checkRefund } from '@/domain/taxRefund';
+import { rateQuoteFor } from '@/services/fxService';
+import { draftFromScan, previewExpense, receiptDetailsFromScan, reviewHighlights } from '@/services/receiptReview';
 import type { PendingScan } from '@/services/scanQueue';
 import { useAppData } from '@/state/AppDataProvider';
+import { useFx } from '@/state/FxProvider';
 import { useScanQueue } from '@/state/ScanQueueProvider';
 import { colors, spacing } from '@/theme/tokens';
 
@@ -94,6 +98,9 @@ export default function ScanReviewScreen() {
 function Review({ item, onSaved, onDiscard }: { item: PendingScan; onSaved: () => void; onDiscard: () => void }) {
   const router = useRouter();
   const { data, today, addExpense } = useAppData();
+  const { rates } = useFx();
+  // The user's answer to "is this a tax-free shop?", when the receipt does not say.
+  const [shopIsTaxFree, setShopIsTaxFree] = useState<boolean | undefined>(undefined);
   const scan = item.scan;
   const trip = data.trips.find((t) => t.id === item.tripId);
   const initial = useMemo(() => (scan ? draftFromScan(scan, today) : undefined), [scan, today]);
@@ -112,6 +119,12 @@ function Review({ item, onSaved, onDiscard }: { item: PendingScan; onSaved: () =
   const highlights = reviewHighlights(scan, trip);
   const details = receiptDetailsFromScan(scan, item.keepImageId);
   const notes = scan.checks.filter((check) => !['date_outside_trip', 'date_missing'].includes(check.code));
+  const taxRefund = shopIsTaxFree === undefined ? undefined : { shopIsTaxFree };
+  const refund = checkRefund(
+    { ...previewExpense(scan, trip, today, details, rateQuoteFor(rates, scan.receipt.currency)?.ratePerMyr ?? null), taxRefund },
+    trip,
+    data.expenses,
+  );
   const readLabel = scan.readBy === 'demo' ? 'Sample answer (AI unavailable)' : scan.readBy === 'cache' ? 'Read by AI earlier' : 'Read by AI';
 
   return (
@@ -124,6 +137,7 @@ function Review({ item, onSaved, onDiscard }: { item: PendingScan; onSaved: () =
         <AppText variant="heading">{scan.receipt.merchantName}</AppText>
         {scan.receipt.merchantNameOriginal ? <AppText color="muted">{scan.receipt.merchantNameOriginal}</AppText> : null}
         <ReceiptItems receipt={details} />
+        <RefundBadge check={refund} onAnswerShop={setShopIsTaxFree} />
       </Card>
 
       {notes.length > 0 || Object.keys(highlights).length > 0 ? (
@@ -149,7 +163,7 @@ function Review({ item, onSaved, onDiscard }: { item: PendingScan; onSaved: () =
         highlights={highlights}
         submitLabel="Save expense"
         onSubmit={(draft, rate) => {
-          const result = addExpense(draft, rate, { source: 'scan', receipt: details });
+          const result = addExpense(draft, rate, { source: 'scan', receipt: details, taxRefund });
           if (result.ok) {
             onSaved();
             router.replace('/');

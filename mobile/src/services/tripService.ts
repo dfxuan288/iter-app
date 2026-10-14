@@ -101,6 +101,18 @@ export function createTrip(data: AppData, draft: TripDraft, id: string, now: str
   };
 }
 
+/** Ticks or unticks an item on a trip's tax refund departure checklist. */
+export function toggleRefundChecklist(data: AppData, tripId: string, itemId: string): AppData {
+  return {
+    ...data,
+    trips: data.trips.map((trip) => {
+      if (trip.id !== tripId) return trip;
+      const ticked = trip.refundChecklist ?? [];
+      return { ...trip, refundChecklist: ticked.includes(itemId) ? ticked.filter((id) => id !== itemId) : [...ticked, itemId] };
+    }),
+  };
+}
+
 export function newTripId(): string {
   return `trip-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }

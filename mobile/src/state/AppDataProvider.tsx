@@ -4,11 +4,11 @@ import { today as currentDay } from '@/config/demo';
 import { createSeedData } from '@/data/seed';
 import { summarizeTrip, type TripSummary } from '@/domain/budget';
 import type { IsoDate } from '@/domain/dates';
-import type { AppData, Expense, ExpenseSource, ReceiptDetails, Trip } from '@/domain/types';
+import type { AppData, Expense, ExpenseSource, ReceiptDetails, RefundState, Trip } from '@/domain/types';
 import { loadAppData, saveAppData, type LoadOutcome } from '@/services/appDataStore';
 import { imageStore } from '@/services/imageStore';
-import { addExpense, deleteExpense, newExpenseId, updateExpense, type ExpenseDraft, type ExpenseProblem, type RateQuote } from '@/services/expenseService';
-import { activeTrip, createTrip, newTripId, type TripDraft, type TripDraftProblem } from '@/services/tripService';
+import { addExpense, deleteExpense, newExpenseId, setRefundState, updateExpense, type ExpenseDraft, type ExpenseProblem, type RateQuote } from '@/services/expenseService';
+import { activeTrip, createTrip, newTripId, toggleRefundChecklist, type TripDraft, type TripDraftProblem } from '@/services/tripService';
 
 export interface AppDataContextValue {
   /** False until saved data has been read from the phone. */
@@ -25,9 +25,16 @@ export interface AppDataContextValue {
   saveFailed: boolean;
   addTrip: (draft: TripDraft) => { ok: true } | { ok: false; problems: TripDraftProblem[] };
   /** Adds an expense to the active trip. `rate` is the exchange rate to save with it. */
-  addExpense: (draft: ExpenseDraft, rate: RateQuote | null, extras?: { source?: ExpenseSource; receipt?: ReceiptDetails }) => ExpenseActionResult;
+  addExpense: (
+    draft: ExpenseDraft,
+    rate: RateQuote | null,
+    extras?: { source?: ExpenseSource; receipt?: ReceiptDetails; taxRefund?: RefundState },
+  ) => ExpenseActionResult;
   updateExpense: (expenseId: string, draft: ExpenseDraft, rate: RateQuote | null) => ExpenseActionResult;
   deleteExpense: (expenseId: string) => void;
+  /** Saves the user's answers about a purchase's tax refund. */
+  updateRefund: (expenseId: string, change: RefundState) => void;
+  toggleRefundChecklist: (tripId: string, itemId: string) => void;
   resetDemo: () => void;
 }
 
@@ -92,7 +99,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         if (!trip) return { ok: false, problems: ['not_found'] };
         const result = addExpense(data, trip.id, draft, rate, newExpenseId(), new Date().toISOString(), extras.source, extras.receipt);
         if (!result.ok) return result;
-        commit(result.data);
+        commit(extras.taxRefund ? setRefundState(result.data, result.expense.id, extras.taxRefund) : result.data);
         return { ok: true };
       },
       updateExpense: (expenseId, draft, rate) => {
@@ -106,10 +113,15 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         commit(deleteExpense(data, expenseId));
         if (imageId) void imageStore.remove(imageId);
       },
+      updateRefund: (expenseId, change) => commit(setRefundState(data, expenseId, change)),
+      toggleRefundChecklist: (tripId, itemId) => commit(toggleRefundChecklist(data, tripId, itemId)),
       resetDemo: () => commit(createSeedData()),
     };
   }, [data, loadOutcome, saveFailed]);
 
+  // Nothing is shown until the phone's saved data has been read (it takes a moment). Otherwise a
+  // screen could briefly show the demo data, and a tap in that moment would save over the real data.
+  if (loadOutcome === null) return null;
   return <AppDataContext value={value}>{children}</AppDataContext>;
 }
 

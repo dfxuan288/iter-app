@@ -43,6 +43,8 @@ export interface Trip {
   reserveMyr: number;
   status: TripStatus;
   createdAt: string;
+  /** Ids of the tax refund departure checklist items the user has ticked. */
+  refundChecklist?: string[];
 }
 
 export interface CategoryBudget {
@@ -53,6 +55,17 @@ export interface CategoryBudget {
 }
 
 export type ExpenseSource = 'scan' | 'manual' | 'menu';
+
+/** Where a tax refund is up to (brief §8 TaxRefundItem.status). */
+export type RefundStatus = 'to_claim' | 'claimed' | 'received' | 'missed';
+
+/** The user's own answers about a purchase's tax refund. Eligibility itself is always calculated. */
+export interface RefundState {
+  /** Set when the user confirms whether the shop is a registered tax-free shop. */
+  shopIsTaxFree?: boolean;
+  /** Missing means "to claim". */
+  status?: RefundStatus;
+}
 
 /** What a receipt showed, kept with an expense that was scanned (brief §8 Receipt, items and tax). */
 export interface ReceiptDetails {
@@ -97,6 +110,7 @@ export interface Expense {
   purchaseDate: IsoDate;
   /** Present on scanned expenses. */
   receipt?: ReceiptDetails;
+  taxRefund?: RefundState;
 }
 
 /** Everything saved on the phone. `version` lets later releases upgrade older saved data. */
