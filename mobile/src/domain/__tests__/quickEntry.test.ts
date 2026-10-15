@@ -56,7 +56,6 @@ describe('guessCategory', () => {
   it.each([
     ['ramen at Ichiran', 'food'],
     ['Suica top-up', 'transport'],
-    ['hotel deposit', 'stay'],
     ['teamLab ticket', 'activities'],
     ['Uniqlo jacket', 'shopping'],
   ] as const)('puts "%s" in %s', (text, category) => {

@@ -28,7 +28,7 @@ const rm = (sen: number) => formatMoney(sen, 'MYR', { trimZeros: true });
 const asInput = (sen: number) => formatMoney(sen, 'MYR', { trimZeros: true }).replace('RM ', '').replace(/,/g, '');
 
 type CategoryText = Record<Category, string>;
-const emptyCategories = (): CategoryText => ({ food: '', transport: '', stay: '', activities: '', shopping: '' });
+const emptyCategories = (): CategoryText => ({ food: '', transport: '', activities: '', shopping: '' });
 
 export default function PlanTripScreen() {
   const router = useRouter();
@@ -79,13 +79,7 @@ export default function PlanTripScreen() {
   const fillSuggestedSplit = () => {
     if (spendable === null || spendable <= 0) return;
     const split = splitByPercent(spendable, budgetRules.suggestedSplitPercent);
-    setCategoryText({
-      food: asInput(split.food),
-      transport: asInput(split.transport),
-      stay: asInput(split.stay),
-      activities: asInput(split.activities),
-      shopping: asInput(split.shopping),
-    });
+    setCategoryText(Object.fromEntries(CATEGORIES.map((c) => [c, asInput(split[c])])) as CategoryText);
   };
 
   const goBack = () => {
@@ -113,20 +107,13 @@ export default function PlanTripScreen() {
       endDate: dates.end,
       totalBudgetMyr: budget,
       reserveMyr: reserve,
-      categoryPlanMyr: {
-        food: categoryAmounts[0] ?? 0,
-        transport: categoryAmounts[1] ?? 0,
-        stay: categoryAmounts[2] ?? 0,
-        activities: categoryAmounts[3] ?? 0,
-        shopping: categoryAmounts[4] ?? 0,
-      },
+      categoryPlanMyr: Object.fromEntries(CATEGORIES.map((c, index) => [c, categoryAmounts[index] ?? 0])) as Record<Category, number>,
     });
     if (result.ok) router.replace('/');
     else setSaveProblems(result.problems.map((problem) => tripProblemMessages[problem]));
   };
 
-  const essentialsPlanned = (categoryAmounts[1] ?? 0) + (categoryAmounts[2] ?? 0);
-  const perDay = budget !== null && reserve !== null && totalDays ? safeToSpendPerDay(budget, essentialsPlanned, reserve, totalDays) : 0;
+  const perDay = budget !== null && reserve !== null && totalDays ? safeToSpendPerDay(budget, reserve, 0, totalDays) : 0;
 
   return (
     <View style={styles.screen}>
@@ -168,8 +155,8 @@ export default function PlanTripScreen() {
         {step === 2 ? (
           <>
             <AppText variant="title">What is your budget?</AppText>
-            <AppText color="muted">Everything you plan to spend on this trip, in Ringgit.</AppText>
-            <MoneyField label="Total budget" value={budgetText} onChangeText={setBudgetText} placeholder="4200" />
+            <AppText color="muted">What you plan to spend day to day, in Ringgit: food, getting around, activities and shopping. Leave out your hotel and flights.</AppText>
+            <MoneyField label="Total budget" value={budgetText} onChangeText={setBudgetText} placeholder="2600" />
             <MoneyField
               label="Reserve (optional)"
               value={reserveText}
@@ -190,8 +177,8 @@ export default function PlanTripScreen() {
           <>
             <AppText variant="title">Split it by category</AppText>
             <AppText color="muted">
-              {spendable !== null ? `You have ${rm(spendable)} to plan after your reserve.` : 'Plan how you expect to spend.'} Stay
-              and transport are held back from your daily amount until you pay for them.
+              {spendable !== null ? `You have ${rm(spendable)} to plan after your reserve.` : 'Plan how you expect to spend.'} This
+              is a guide for you; your daily amount uses the whole budget.
             </AppText>
             {CATEGORIES.map((category) => (
               <MoneyField
@@ -234,7 +221,7 @@ export default function PlanTripScreen() {
             <Card>
               <AppText color="muted">Safe to spend when you start</AppText>
               <AppText variant="title">{`${rm(perDay)} a day`}</AppText>
-              <AppText color="muted">After holding back your stay, transport and reserve.</AppText>
+              <AppText color="muted">Your budget after the reserve, shared over every day of the trip.</AppText>
             </Card>
             <AppText variant="caption" color="muted">
               Starting this trip moves your current trip to your history.

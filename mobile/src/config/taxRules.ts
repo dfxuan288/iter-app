@@ -54,7 +54,6 @@ const japan: TaxRule = {
   standardRatePercent: 10,
   estHandlingFeePct: 0,
   notRefundable: {
-    stay: 'Hotel stays are not tax-free.',
     transport: 'Transport is not tax-free.',
     activities: 'Tickets and services are not tax-free.',
   },

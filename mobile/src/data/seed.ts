@@ -6,7 +6,9 @@ import type { AppData, Category, CategoryBudget, Expense, ExpenseSource, Receipt
 /**
  * The demo account: Amanda T. on day 7 of a 10-day Tokyo trip (brief §11, docs/DECISIONS.md).
  * Everything shown in the app is calculated from these expenses, and a test checks that they
- * reconcile: RM 2,700 spent, RM 1,500 remaining, RM 200 a day safe to spend.
+ * reconcile: RM 1,450 spent, RM 1,100 remaining, RM 200 a day safe to spend:
+ * (RM 2,550 budget − RM 300 reserve − RM 1,450 spent) ÷ 4 days left = RM 200.
+ * The budget covers everyday spending only: hotels and flights are not tracked (15 Oct 2026).
  */
 
 export const DEMO_USER_ID = 'user-amanda';
@@ -30,18 +32,18 @@ const trip: Trip = {
   localCurrency: 'JPY',
   startDate: '2026-11-09',
   endDate: '2026-11-18',
-  totalBudgetMyr: toMinor(4200, 'MYR'),
+  totalBudgetMyr: toMinor(2550, 'MYR'),
   reserveMyr: toMinor(300, 'MYR'),
   status: 'active',
   createdAt: '2026-10-28T12:00:00.000Z',
 };
 
+/** Adds up to the budget minus the reserve (RM 2,250). */
 const plannedRinggit: Record<Category, number> = {
-  food: 900,
-  transport: 440,
-  stay: 1470,
+  food: 700,
+  transport: 350,
   activities: 400,
-  shopping: 690,
+  shopping: 800,
 };
 
 const categoryBudgets: CategoryBudget[] = (Object.keys(plannedRinggit) as Category[]).map((category) => ({
@@ -52,15 +54,12 @@ const categoryBudgets: CategoryBudget[] = (Object.keys(plannedRinggit) as Catego
 
 type SeedRow = [date: IsoDate, merchant: string, note: string, category: Category, source: ExpenseSource, amount: number, currency: 'JPY' | 'MYR'];
 
-// Yen amounts are whole yen. Ringgit rows are online bookings paid from home, in ringgit.
-// The demo opens on the morning of day 7: only the metro ticket (transport, within plan) is dated
-// today, so today's allowance shows in full (RM 200 left of RM 200) until something is scanned.
+// Yen amounts are whole yen. The Ringgit row is a ticket booked from home, in ringgit.
+// The demo opens on the morning of day 7 with nothing spent yet today, so today's RM 200 shows in
+// full until something is scanned.
 const rows: SeedRow[] = [
-  ['2026-11-09', 'Agoda', 'Hotel, first 6 nights', 'stay', 'manual', 705.6, 'MYR'],
-  ['2026-11-09', 'Klook', 'Narita Express ticket', 'transport', 'manual', 89.19, 'MYR'],
   ['2026-11-09', 'JR East', 'Suica top-up', 'transport', 'manual', 3000, 'JPY'],
   ['2026-11-09', 'Matsuya Shinjuku', 'Beef bowl set', 'food', 'manual', 980, 'JPY'],
-  ['2026-11-10', 'Agoda', 'Hotel, nights 7 and 8', 'stay', 'manual', 470.4, 'MYR'],
   ['2026-11-10', '7-Eleven Shinjuku', 'Breakfast and drinks', 'food', 'scan', 620, 'JPY'],
   ['2026-11-10', 'Shibuya Sky', 'Observation deck', 'activities', 'manual', 2100, 'JPY'],
   ['2026-11-10', 'Uobei Shibuya', 'Conveyor sushi', 'food', 'manual', 1450, 'JPY'],
@@ -70,14 +69,14 @@ const rows: SeedRow[] = [
   ['2026-11-11', 'FamilyMart Asakusa', 'Snacks', 'food', 'scan', 540, 'JPY'],
   ['2026-11-12', 'Bic Camera Shinjuku', 'Electronics', 'shopping', 'scan', 16280, 'JPY'],
   ['2026-11-12', 'CoCo Ichibanya', 'Curry rice', 'food', 'manual', 880, 'JPY'],
-  ['2026-11-12', 'Klook', 'teamLab Planets ticket', 'activities', 'manual', 61.22, 'MYR'],
+  ['2026-11-12', 'Klook', 'teamLab Planets ticket', 'activities', 'manual', 76.41, 'MYR'],
   ['2026-11-13', 'JR East', 'Suica top-up', 'transport', 'manual', 3000, 'JPY'],
   ['2026-11-13', 'Afuri Harajuku', 'Yuzu ramen', 'food', 'manual', 1100, 'JPY'],
   ['2026-11-13', 'Gyukatsu Motomura', 'Beef cutlet set', 'food', 'manual', 1980, 'JPY'],
   ['2026-11-14', 'UNIQLO Ginza', 'HEATTECH ×2, Ultra Light Down jacket', 'shopping', 'scan', 9570, 'JPY'],
   ['2026-11-14', 'Ichiran Shibuya', 'Tonkotsu ramen, extra noodles', 'food', 'scan', 1690, 'JPY'],
   ['2026-11-14', 'Lawson Ginza', 'Onigiri and coffee', 'food', 'manual', 760, 'JPY'],
-  ['2026-11-15', 'Tokyo Metro', '24-hour ticket ×2 and fares', 'transport', 'manual', 1480, 'JPY'],
+  ['2026-11-14', 'Tokyo Metro', '24-hour ticket ×2 and fares', 'transport', 'manual', 1480, 'JPY'],
   ['2026-11-14', 'Don Quijote Shibuya', 'Umaibo snacks, LuLuLun face masks', 'shopping', 'scan', 1212, 'JPY'],
   ['2026-11-14', 'Sushiro Shibuya', 'Lunch', 'food', 'manual', 1250, 'JPY'],
 ];

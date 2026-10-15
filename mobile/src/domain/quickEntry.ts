@@ -37,10 +37,9 @@ const categoryWords: Record<Category, string[]> = {
     'bakery', 'dessert', 'supper', 'bubble tea', 'boba', 'street food', 'convenience store', 'groceries',
   ],
   transport: [
-    'train', 'metro', 'subway', 'mrt', 'bus', 'taxi', 'grab', 'uber', 'flight', 'ferry', 'boat', 'tram', 'fare',
+    'train', 'metro', 'subway', 'mrt', 'bus', 'taxi', 'grab', 'uber', 'ferry', 'boat', 'tram', 'fare',
     'suica', 'pasmo', 'top-up', 'topup', 'top up', 'petrol', 'fuel', 'parking', 'toll', 'shinkansen', 'tuk tuk', 'tuktuk',
   ],
-  stay: ['hotel', 'hostel', 'airbnb', 'guesthouse', 'ryokan', 'resort', 'room', 'accommodation', 'lodging', 'villa'],
   activities: [
     'ticket', 'tickets', 'museum', 'tour', 'temple', 'shrine', 'show', 'concert', 'park', 'zoo', 'aquarium', 'onsen',
     'spa', 'massage', 'cinema', 'movie', 'karaoke', 'entrance', 'admission', 'class', 'diving', 'snorkeling', 'hike',

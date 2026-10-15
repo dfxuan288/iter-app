@@ -2,17 +2,17 @@ import { budgetRules } from '@/config/budget';
 import { createSeedData, DEMO_TRIP_ID } from '@/data/seed';
 
 import { budgetStatus, forecastRunOut, safeToSpendPerDay, splitByPercent, summarizeTrip } from '../budget';
-import type { CategoryBudget, Expense, Trip } from '../types';
+import { CATEGORIES, type CategoryBudget, type Expense, type Trip } from '../types';
 
 const RM = (ringgit: number) => Math.round(ringgit * 100);
 
-describe('safeToSpendPerDay', () => {
-  it('matches the demo in the brief: (1,500 − 400 − 300) / 4 = RM 200', () => {
-    expect(safeToSpendPerDay(RM(1500), RM(400), RM(300), 4)).toBe(RM(200));
+describe('safeToSpendPerDay: (budget − reserve − spent so far) ÷ days left', () => {
+  it('matches the demo: (2,550 − 300 − 1,450) ÷ 4 = RM 200', () => {
+    expect(safeToSpendPerDay(RM(2550), RM(300), RM(1450), 4)).toBe(RM(200));
   });
 
   it('never goes below zero', () => {
-    expect(safeToSpendPerDay(RM(500), RM(400), RM(300), 4)).toBe(0);
+    expect(safeToSpendPerDay(RM(1000), RM(300), RM(900), 4)).toBe(0);
   });
 
   it('rounds down to the sen, so it never promises money that is not there', () => {
@@ -25,10 +25,11 @@ describe('safeToSpendPerDay', () => {
 });
 
 describe('budgetStatus', () => {
-  const base = { essentialsLeftMyr: RM(400), reserveMyr: RM(300), plannedPerDayMyr: RM(200) };
+  const base = { reserveMyr: RM(300), plannedPerDayMyr: RM(200) };
 
-  it('is "running short" when what remains cannot cover essentials and the reserve', () => {
-    expect(budgetStatus({ ...base, remainingMyr: RM(650), safePerDayMyr: 0 })).toBe('running_short');
+  it('is "running short" when what remains is less than the reserve', () => {
+    expect(budgetStatus({ ...base, remainingMyr: RM(299), safePerDayMyr: 0 })).toBe('running_short');
+    expect(budgetStatus({ ...base, remainingMyr: RM(300), safePerDayMyr: 0 })).not.toBe('running_short');
   });
 
   it('is "spending fast" when safe-to-spend falls below 70% of the planned daily amount', () => {
@@ -46,8 +47,8 @@ describe('budgetStatus', () => {
 });
 
 describe('forecastRunOut', () => {
-  // RM 2,000 of day-to-day money over 10 days.
-  const trip = { totalDays: 10, dayToDayBudgetMyr: RM(2000), oneOffMyr: 0, startDate: '2026-11-09' };
+  // RM 2,000 to spend over 10 days, after the reserve.
+  const trip = { totalDays: 10, spendableMyr: RM(2000), oneOffMyr: 0, startDate: '2026-11-09' };
 
   it('reports no run-out when the pace lasts the whole trip', () => {
     const forecast = forecastRunOut({ ...trip, paceSpentMyr: RM(1190), daysElapsed: 7 });
@@ -55,15 +56,14 @@ describe('forecastRunOut', () => {
     expect(forecast.burnRateMyr).toBe(RM(170));
   });
 
-  it('finds the first day the projected pace passes the day-to-day budget', () => {
+  it('finds the first day the projected pace passes the budget', () => {
     // RM 250 a day: day 8 reaches RM 2,000 exactly, day 9 passes it.
     const forecast = forecastRunOut({ ...trip, paceSpentMyr: RM(1250), daysElapsed: 5 });
     expect(forecast.runOutDayNumber).toBe(9);
     expect(forecast.runOutDate).toBe('2026-11-17');
   });
 
-  it('takes one-offs out of the budget once instead of repeating them every day', () => {
-    // RM 170 a day reaches RM 1,700 by day 10. A RM 400 one-off on top passes RM 2,000 on day 10, not sooner.
+  it('takes spending from outside the trip days out once, instead of repeating it every day', () => {
     const forecast = forecastRunOut({ ...trip, oneOffMyr: RM(400), paceSpentMyr: RM(1190), daysElapsed: 7 });
     expect(forecast.burnRateMyr).toBe(RM(170));
     expect(forecast.runOutDayNumber).toBe(10);
@@ -71,7 +71,6 @@ describe('forecastRunOut', () => {
 
   it('says today when the money has already run out', () => {
     expect(forecastRunOut({ ...trip, paceSpentMyr: RM(2100), daysElapsed: 6 }).runOutDayNumber).toBe(6);
-    expect(forecastRunOut({ ...trip, oneOffMyr: RM(2100), paceSpentMyr: 0, daysElapsed: 2 }).runOutDayNumber).toBe(2);
   });
 
   it('makes no forecast before anything is spent or before the trip starts', () => {
@@ -92,10 +91,9 @@ describe('summarizeTrip with the demo data', () => {
     expect(summary.daysLeft).toBe(4);
   });
 
-  it('reconciles to the agreed demo figures', () => {
-    expect(summary.spentMyr).toBe(RM(2700));
-    expect(summary.remainingMyr).toBe(RM(1500));
-    expect(summary.essentialsLeftMyr).toBe(RM(400));
+  it('reconciles to the demo figures: RM 1,450 spent, RM 1,100 left, RM 200 a day, on track', () => {
+    expect(summary.spentMyr).toBe(RM(1450));
+    expect(summary.remainingMyr).toBe(RM(1100));
     expect(summary.safePerDayMyr).toBe(RM(200));
     expect(summary.status).toBe('on_track');
     expect(summary.forecast.runOutDayNumber).toBeNull();
@@ -106,8 +104,13 @@ describe('summarizeTrip with the demo data', () => {
     expect(summary.leftTodayMyr).toBe(RM(200));
   });
 
+  it('has no hotel or flight spending', () => {
+    expect(data.expenses.every((e) => (CATEGORIES as readonly string[]).includes(e.category))).toBe(true);
+    expect(data.expenses.some((e) => /hotel|agoda|narita/i.test(`${e.merchantName} ${e.note}`))).toBe(false);
+  });
+
   it('does not warn about running out after one more small expense', () => {
-    const ramen: Expense = { ...data.expenses[0], id: 'ramen', category: 'food', amountMyr: RM(31), purchaseDate: '2026-11-15' } as Expense;
+    const ramen = { ...data.expenses[0], id: 'ramen', category: 'food', amountMyr: RM(31), purchaseDate: '2026-11-15' } as Expense;
     const after = summarizeTrip({ trip, categoryBudgets: data.categoryBudgets, expenses: [...data.expenses, ramen], today: '2026-11-15' });
     expect(after.forecast.runOutDayNumber).toBeNull();
   });
@@ -137,122 +140,32 @@ describe('summarizeTrip with the demo data', () => {
   });
 });
 
-describe('summarizeTrip in other situations', () => {
-  const trip: Trip = {
-    id: 't1',
-    userId: 'u1',
-    destinationId: 'bangkok',
-    city: 'Bangkok',
-    country: 'Thailand',
-    localCurrency: 'THB',
-    startDate: '2026-12-01',
-    endDate: '2026-12-05',
-    totalBudgetMyr: RM(2000),
-    reserveMyr: RM(200),
-    status: 'active',
-    createdAt: '2026-11-01T00:00:00.000Z',
-  };
-  const budgets: CategoryBudget[] = [
-    { tripId: 't1', category: 'stay', plannedMyr: RM(600) },
-    { tripId: 't1', category: 'transport', plannedMyr: RM(200) },
-    { tripId: 't1', category: 'food', plannedMyr: RM(500) },
-  ];
-  const expense = (overrides: Partial<Expense>): Expense => ({
-    id: 'e',
-    tripId: 't1',
-    createdAt: '2026-12-01T10:00:00.000Z',
-    note: '',
-    amountOriginal: 0,
-    currency: 'MYR',
-    rateUsed: 1,
-    rateDate: '2026-12-01',
-    amountMyr: 0,
-    category: 'food',
-    source: 'manual',
-    merchantName: 'Test',
-    purchaseDate: '2026-12-01',
-    ...overrides,
-  });
-
-  it('before the trip, spreads the budget over every day', () => {
-    const summary = summarizeTrip({ trip, categoryBudgets: budgets, expenses: [], today: '2026-11-20' });
-    expect(summary.phase).toBe('upcoming');
-    expect(summary.daysLeft).toBe(5);
-    // (2,000 − 800 essentials − 200 reserve) / 5
-    expect(summary.safePerDayMyr).toBe(RM(200));
-    expect(summary.safePerDayMyr).toBe(summary.plannedPerDayMyr);
-    expect(summary.forecast.runOutDayNumber).toBeNull();
-  });
-
-  it('after the trip, has no days left and nothing safe to spend', () => {
-    const summary = summarizeTrip({ trip, categoryBudgets: budgets, expenses: [], today: '2026-12-09' });
-    expect(summary.phase).toBe('ended');
-    expect(summary.daysLeft).toBe(0);
-    expect(summary.safePerDayMyr).toBe(0);
-    expect(summary.dayNumber).toBe(5);
-  });
-
-  it('stops holding money back for an essential once it has been paid', () => {
-    const paidStay = expense({ id: 'e1', category: 'stay', amountMyr: RM(600) });
-    const summary = summarizeTrip({ trip, categoryBudgets: budgets, expenses: [paidStay], today: '2026-12-01' });
-    expect(summary.essentialsLeftMyr).toBe(RM(200));
-    // (1,400 remaining − 200 − 200) / 5
-    expect(summary.safePerDayMyr).toBe(RM(200));
-  });
-
-  it('does not treat overspending on an essential as extra money', () => {
-    const bigStay = expense({ id: 'e1', category: 'stay', amountMyr: RM(900) });
-    const summary = summarizeTrip({ trip, categoryBudgets: budgets, expenses: [bigStay], today: '2026-12-01' });
-    expect(summary.essentialsLeftMyr).toBe(RM(200));
-    // The RM 300 over the stay plan comes out of today's allowance...
-    expect(summary.safePerDayMyr).toBe(RM(200));
-    expect(summary.leftTodayMyr).toBe(RM(-100));
-    // ...and the next day is rebalanced: (1,000 − 300) / 4.
-    expect(summarizeTrip({ trip, categoryBudgets: budgets, expenses: [bigStay], today: '2026-12-02' }).safePerDayMyr).toBe(RM(175));
-  });
-
-  it('ignores expenses that belong to another trip', () => {
-    const other = expense({ id: 'e9', tripId: 'someone-else', amountMyr: RM(999) });
-    const summary = summarizeTrip({ trip, categoryBudgets: budgets, expenses: [other], today: '2026-12-01' });
-    expect(summary.spentMyr).toBe(0);
-  });
-
-  it('shows running short and zero safe-to-spend when the budget is blown', () => {
-    const blowout = expense({ id: 'e1', category: 'shopping', amountMyr: RM(1700) });
-    const summary = summarizeTrip({ trip, categoryBudgets: budgets, expenses: [blowout], today: '2026-12-02' });
-    expect(summary.status).toBe('running_short');
-    expect(summary.safePerDayMyr).toBe(0);
-    expect(summary.forecast.runOutDayNumber).not.toBeNull();
-  });
-});
-
-describe('stay and transport do not count as spending pace', () => {
-  // The case raised by the team: RM 5,000 for 4 days, RM 2,000 stay, RM 500 transport, RM 2,500 for the rest.
-  const trip: Trip = {
-    id: 't2',
-    userId: 'u1',
-    destinationId: 'seoul',
-    city: 'Seoul',
-    country: 'South Korea',
-    localCurrency: 'KRW',
-    startDate: '2026-12-01',
-    endDate: '2026-12-04',
-    totalBudgetMyr: RM(5000),
-    reserveMyr: 0,
-    status: 'active',
-    createdAt: '2026-11-01T00:00:00.000Z',
-  };
-  const budgets: CategoryBudget[] = [
-    { tripId: 't2', category: 'stay', plannedMyr: RM(2000) },
-    { tripId: 't2', category: 'transport', plannedMyr: RM(500) },
-    { tripId: 't2', category: 'food', plannedMyr: RM(1200) },
-    { tripId: 't2', category: 'activities', plannedMyr: RM(700) },
-    { tripId: 't2', category: 'shopping', plannedMyr: RM(600) },
-  ];
-  let n = 0;
-  const spend = (category: Expense['category'], ringgit: number, purchaseDate = '2026-12-01'): Expense => ({
+/** A 4-day trip: RM 2,000 budget, RM 200 reserve, so RM 450 a day to start. */
+const trip: Trip = {
+  id: 't1',
+  userId: 'u1',
+  destinationId: 'bangkok',
+  city: 'Bangkok',
+  country: 'Thailand',
+  localCurrency: 'THB',
+  startDate: '2026-12-01',
+  endDate: '2026-12-04',
+  totalBudgetMyr: RM(2000),
+  reserveMyr: RM(200),
+  status: 'active',
+  createdAt: '2026-11-01T00:00:00.000Z',
+};
+const budgets: CategoryBudget[] = [
+  { tripId: 't1', category: 'food', plannedMyr: RM(900) },
+  { tripId: 't1', category: 'transport', plannedMyr: RM(300) },
+  { tripId: 't1', category: 'activities', plannedMyr: RM(300) },
+  { tripId: 't1', category: 'shopping', plannedMyr: RM(300) },
+];
+let n = 0;
+const spend = (category: string, ringgit: number, purchaseDate = '2026-12-01', tripId = 't1'): Expense =>
+  ({
     id: `e${++n}`,
-    tripId: 't2',
+    tripId,
     createdAt: '2026-12-01T10:00:00.000Z',
     note: '',
     amountOriginal: RM(ringgit),
@@ -264,119 +177,84 @@ describe('stay and transport do not count as spending pace', () => {
     source: 'manual',
     merchantName: 'Test',
     purchaseDate,
-  });
-  const summarize = (expenses: Expense[], today = '2026-12-01') => summarizeTrip({ trip, categoryBudgets: budgets, expenses, today });
+  }) as Expense;
+const on = (today: string, expenses: Expense[]) => summarizeTrip({ trip, categoryBudgets: budgets, expenses, today });
 
-  it('starts at RM 625 a day', () => {
-    expect(summarize([]).safePerDayMyr).toBe(RM(625));
-  });
-
-  it('paying the planned hotel and transport keeps RM 625 a day and raises no warning', () => {
-    const summary = summarize([spend('stay', 2000), spend('transport', 500)]);
-    expect(summary.safePerDayMyr).toBe(RM(625));
-    expect(summary.status).toBe('on_track');
-    expect(summary.forecast.burnRateMyr).toBe(0);
-    expect(summary.forecast.runOutDayNumber).toBeNull();
+describe('the new rule (15 Oct 2026): every category is everyday spending', () => {
+  it('starts at (2,000 − 200) ÷ 4 = RM 450 a day', () => {
+    expect(on('2026-12-01', []).safePerDayMyr).toBe(RM(450));
+    expect(on('2026-12-01', []).plannedPerDayMyr).toBe(RM(450));
   });
 
-  it('also when the hotel was paid before the trip', () => {
-    const summary = summarize([spend('stay', 2000, '2026-10-15')]);
-    expect(summary.forecast.runOutDayNumber).toBeNull();
+  it('counts daily transport like food: it lowers tomorrow’s amount', () => {
+    const grab = spend('transport', 60, '2026-12-01');
+    expect(on('2026-12-01', [grab]).leftTodayMyr).toBe(RM(390));
+    // (1,800 − 60) ÷ 3
+    expect(on('2026-12-02', [grab]).safePerDayMyr).toBe(RM(580));
   });
 
-  it('counts food, activities and shopping as the pace', () => {
-    // RM 700 on day 1: RM 2,800 by day 4 is more than RM 2,500.
-    const summary = summarize([spend('stay', 2000), spend('food', 400), spend('shopping', 300)]);
-    expect(summary.forecast.burnRateMyr).toBe(RM(700));
+  it('includes daily transport in the forecast pace', () => {
+    const summary = on('2026-12-02', [spend('transport', 500, '2026-12-01'), spend('food', 500, '2026-12-02')]);
+    expect(summary.forecast.burnRateMyr).toBe(RM(500));
+    // RM 500 a day reaches RM 2,000 on day 4, past the RM 1,800 after the reserve.
     expect(summary.forecast.runOutDayNumber).toBe(4);
   });
 
-  it('takes a dearer hotel out of the day-to-day money once, without treating it as a daily habit', () => {
-    // RM 300 over the stay plan, then RM 500 a day: 300 + 2,000 by day 4 still fits in RM 2,500.
-    const summary = summarize([spend('stay', 2300), spend('food', 500)]);
-    expect(summary.safePerDayMyr).toBe(RM(625)); // set this morning, before anything was spent
-    expect(summary.leftTodayMyr).toBe(RM(-175)); // 625 − 300 over the stay plan − 500 food
-    expect(summary.forecast.burnRateMyr).toBe(RM(500));
-    expect(summary.forecast.runOutDayNumber).toBeNull();
+  it('is running short only when what remains is less than the reserve', () => {
+    expect(on('2026-12-02', [spend('shopping', 1790)]).status).not.toBe('running_short');
+    expect(on('2026-12-02', [spend('shopping', 1801)]).status).toBe('running_short');
+    expect(on('2026-12-02', [spend('shopping', 1801)]).safePerDayMyr).toBe(0);
   });
 
-  it('agrees with safe-to-spend: spending exactly the safe amount each day never warns', () => {
-    const days = ['2026-12-01', '2026-12-02'];
-    const summary = summarize([spend('stay', 2000), ...days.map((d) => spend('food', 625, d))], '2026-12-03');
-    expect(summary.safePerDayMyr).toBe(RM(625));
-    expect(summary.forecast.runOutDayNumber).toBeNull();
+  it('ignores old saved hotel ("stay") expenses: they do not crash anything or count in totals', () => {
+    const summary = on('2026-12-01', [spend('stay', 900), spend('food', 50)]);
+    expect(summary.spentMyr).toBe(RM(50));
+    expect(summary.categories.map((c) => c.category)).toEqual(['food', 'transport', 'activities', 'shopping']);
+    expect(summary.leftTodayMyr).toBe(RM(400));
+  });
+
+  it('ignores expenses that belong to another trip', () => {
+    expect(on('2026-12-01', [spend('food', 999, '2026-12-01', 'someone-else')]).spentMyr).toBe(0);
   });
 });
 
-describe('today’s allowance is set once at the start of the day', () => {
-  // RM 1,400 of day-to-day money over 4 days: RM 350 a day.
-  const trip: Trip = {
-    id: 't3',
-    userId: 'u1',
-    destinationId: 'tokyo',
-    city: 'Tokyo',
-    country: 'Japan',
-    localCurrency: 'JPY',
-    startDate: '2026-12-01',
-    endDate: '2026-12-04',
-    totalBudgetMyr: RM(2000),
-    reserveMyr: RM(100),
-    status: 'active',
-    createdAt: '2026-11-01T00:00:00.000Z',
-  };
-  const budgets: CategoryBudget[] = [
-    { tripId: 't3', category: 'stay', plannedMyr: RM(400) },
-    { tripId: 't3', category: 'transport', plannedMyr: RM(100) },
-    { tripId: 't3', category: 'food', plannedMyr: RM(1400) },
-  ];
-  let n = 0;
-  const spend = (category: Expense['category'], ringgit: number, purchaseDate: string): Expense => ({
-    id: `a${++n}`,
-    tripId: 't3',
-    createdAt: '2026-12-01T10:00:00.000Z',
-    note: '',
-    amountOriginal: RM(ringgit),
-    currency: 'MYR',
-    rateUsed: 1,
-    rateDate: purchaseDate,
-    amountMyr: RM(ringgit),
-    category,
-    source: 'manual',
-    merchantName: 'Test',
-    purchaseDate,
-  });
-  const on = (today: string, expenses: Expense[]) => summarizeTrip({ trip, categoryBudgets: budgets, expenses, today });
-
-  it('buying lunch lowers what is left today, not the allowance itself', () => {
-    const before = on('2026-12-01', []);
-    const after = on('2026-12-01', [spend('food', 40, '2026-12-01')]);
-    expect(before.safePerDayMyr).toBe(RM(350));
-    expect(after.safePerDayMyr).toBe(RM(350));
+describe('today’s amount is set once at the start of the day (the Home card)', () => {
+  it('buying lunch lowers what is left today, not the daily amount', () => {
+    const after = on('2026-12-01', [spend('food', 40)]);
+    expect(after.safePerDayMyr).toBe(RM(450));
     expect(after.spentTodayMyr).toBe(RM(40));
-    expect(after.leftTodayMyr).toBe(RM(310));
-  });
-
-  it('paying for planned stay or transport today leaves today alone', () => {
-    const summary = on('2026-12-01', [spend('stay', 400, '2026-12-01'), spend('transport', 30, '2026-12-01')]);
-    expect(summary.spentTodayMyr).toBe(0);
-    expect(summary.leftTodayMyr).toBe(RM(350));
+    expect(after.leftTodayMyr).toBe(RM(410));
   });
 
   it('can go below zero today, and says by how much', () => {
-    expect(on('2026-12-01', [spend('food', 400, '2026-12-01')]).leftTodayMyr).toBe(RM(-50));
+    expect(on('2026-12-01', [spend('food', 500)]).leftTodayMyr).toBe(RM(-50));
   });
 
   it('rebalances the next morning: underspend raises it, overspend lowers it', () => {
-    // Spent RM 200 on day 1: (1,400 − 200) / 3 = 400.
-    expect(on('2026-12-02', [spend('food', 200, '2026-12-01')]).safePerDayMyr).toBe(RM(400));
-    // Spent RM 500 on day 1: (1,400 − 500) / 3 = 300.
-    expect(on('2026-12-02', [spend('food', 500, '2026-12-01')]).safePerDayMyr).toBe(RM(300));
+    // (1,800 − 300) ÷ 3 = 500, and (1,800 − 600) ÷ 3 = 400.
+    expect(on('2026-12-02', [spend('food', 300, '2026-12-01')]).safePerDayMyr).toBe(RM(500));
+    expect(on('2026-12-02', [spend('food', 600, '2026-12-01')]).safePerDayMyr).toBe(RM(400));
   });
 
   it('before the trip, spreads what is left over every day and counts nothing as today', () => {
     const summary = on('2026-11-20', [spend('activities', 100, '2026-11-20')]);
-    expect(summary.safePerDayMyr).toBe(RM(325)); // (1,400 − 100) / 4
+    expect(summary.phase).toBe('upcoming');
+    expect(summary.safePerDayMyr).toBe(RM(425)); // (1,800 − 100) ÷ 4
     expect(summary.spentTodayMyr).toBe(0);
+  });
+
+  it('after the trip, has no days left and nothing safe to spend', () => {
+    const summary = on('2026-12-09', []);
+    expect(summary.phase).toBe('ended');
+    expect(summary.daysLeft).toBe(0);
+    expect(summary.safePerDayMyr).toBe(0);
+    expect(summary.dayNumber).toBe(4);
+  });
+
+  it('agrees with the forecast: spending exactly the daily amount never warns', () => {
+    const summary = on('2026-12-03', [spend('food', 450, '2026-12-01'), spend('food', 450, '2026-12-02')]);
+    expect(summary.safePerDayMyr).toBe(RM(450));
+    expect(summary.forecast.runOutDayNumber).toBeNull();
   });
 });
 
@@ -384,10 +262,11 @@ describe('splitByPercent', () => {
   it('splits into whole ringgit that add up exactly to the amount', () => {
     const split = splitByPercent(RM(3905.55), budgetRules.suggestedSplitPercent);
     expect(Object.values(split).reduce((a, b) => a + b, 0)).toBe(RM(3905.55));
-    expect(split.stay % 100).toBe(0);
+    expect(split.transport % 100).toBe(0);
   });
 
-  it('has suggested percentages that add up to 100', () => {
+  it('has suggested percentages for every category that add up to 100', () => {
+    expect(Object.keys(budgetRules.suggestedSplitPercent).sort()).toEqual([...CATEGORIES].sort());
     expect(Object.values(budgetRules.suggestedSplitPercent).reduce((a, b) => a + b, 0)).toBe(100);
   });
 });

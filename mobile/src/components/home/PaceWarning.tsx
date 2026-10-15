@@ -18,14 +18,14 @@ export function paceMessage(summary: TripSummary): { title: string; body: string
     return {
       tone: 'danger',
       title: 'Running short',
-      body: `What is left (${rm(summary.remainingMyr)}) no longer covers your stay, transport and reserve. Try to hold spending until you have checked your plan.`,
+      body: `What is left (${rm(summary.remainingMyr)}) is now less than the ${rm(summary.reserveMyr)} you kept in reserve. Try to hold spending until you have checked your plan.`,
     };
   }
   if (forecast.runOutDayNumber !== null && forecast.runOutDate !== null && forecast.runOutDayNumber <= summary.totalDays) {
     return {
       tone: 'warning',
       title: `At this pace, money runs out on day ${forecast.runOutDayNumber}`,
-      body: `Leaving out your stay and transport, you are averaging ${rm(forecast.burnRateMyr)} a day. Keeping to ${rm(summary.safePerDayMyr)} a day gets you to the end of the trip (${formatDayMonth(forecast.runOutDate)} is when it would run out).`,
+      body: `You are averaging ${rm(forecast.burnRateMyr)} a day. Keeping to ${rm(summary.safePerDayMyr)} a day gets you to the end of the trip (${formatDayMonth(forecast.runOutDate)} is when it would run out).`,
     };
   }
   if (summary.status === 'spending_fast') {

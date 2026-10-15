@@ -8,9 +8,10 @@ import { z } from 'zod';
  * Bump PROMPT_VERSION whenever these shapes or the prompts change, so cached results made by an
  * older prompt are not reused.
  */
-export const PROMPT_VERSION = 'v3';
+export const PROMPT_VERSION = 'v4';
 
-export const CATEGORY_VALUES = ['food', 'transport', 'stay', 'activities', 'shopping'] as const;
+/** Everyday spending only: ITER does not track hotels or flights (team decision, 15 Oct 2026). */
+export const CATEGORY_VALUES = ['food', 'transport', 'activities', 'shopping'] as const;
 
 const receiptItem = z.object({
   /** In English. */

@@ -26,7 +26,7 @@ How to fill each field:
 - taxIncluded: true when the item prices already include tax (税込, 内税, "incl. VAT"), false when tax is added on top.
 - serviceCharge: a printed service charge amount, else null.
 - total: the final amount paid (合計), else null.
-- suggestedCategory: food (restaurants, cafes, convenience-store food), transport, stay (hotels), activities (tickets, tours, entry fees), or shopping (clothes, electronics, cosmetics, souvenirs, medicine).
+- suggestedCategory: food (restaurants, cafes, convenience-store food), transport (daily transport: trains, metro, buses, taxis, ride-hailing, travel-card top-ups, fuel), activities (tickets, tours, entry fees), or shopping (clothes, electronics, cosmetics, souvenirs, medicine). For anything else, choose the closest.
 - taxFreeShop: yes if the receipt shows the shop is a registered tax-free shop (免税, Tax-Free, Tax Refund), no if it clearly says it is not, otherwise unknown.
 - uncertainFields: names of the fields above you could not read clearly. Empty if all were clear.`;
 
