@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppDataProvider } from '@/state/AppDataProvider';
+import { CommunityProvider } from '@/state/CommunityProvider';
 import { FxProvider } from '@/state/FxProvider';
 import { MenuProvider } from '@/state/MenuProvider';
 import { ScanQueueProvider } from '@/state/ScanQueueProvider';
@@ -51,13 +52,15 @@ export default function RootLayout() {
         <FxProvider>
           <ScanQueueProvider>
             <MenuProvider>
-              <StatusBar style="dark" />
-              {/* On a laptop or projector the app is shown as a centred phone-width column. */}
-              <View style={styles.backdrop}>
-                <View style={styles.app}>
-                  <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }} />
+              <CommunityProvider>
+                <StatusBar style="dark" />
+                {/* On a laptop or projector the app is shown as a centred phone-width column. */}
+                <View style={styles.backdrop}>
+                  <View style={styles.app}>
+                    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }} />
+                  </View>
                 </View>
-              </View>
+              </CommunityProvider>
             </MenuProvider>
           </ScanQueueProvider>
         </FxProvider>

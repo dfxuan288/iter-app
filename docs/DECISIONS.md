@@ -199,6 +199,27 @@ today's spending was taken off before dividing by days left (which include today
 - The sample Thai menu tells the backend to expect baht, so it reads correctly on the Tokyo demo trip.
 - Free-plan menu scan limits (3 per trip) arrive with Plans in Phase 8.
 
+## Phase 7 notes (15 Oct 2026)
+
+- Layout follows the team's reference: the destination photo across the top with the city name and a row of
+  destination pills, a green "+" (share) button on its edge, and a panel overlapping the photo with the typical trip.
+- **Typical trip** is worked out in code from shared trip summaries (`mobile/src/domain/community.ts`): the usual
+  length (median days), the usual spend per day (median), and the overall split weighted by spend. The total is rounded
+  to RM 100. It needs at least three finished trips; with fewer, the app says so rather than show a misleading figure.
+  Tokyo's sample gives the brief's "5 days, RM 2,900, Food 34%, Stay 31%".
+- The split is shown as one labelled bar per category in a single colour, so it never relies on telling colours apart.
+- Sample community (`mobile/src/data/communitySeed.ts`): 30 fictional Malaysian travellers, six trip summaries and three
+  posts each for Tokyo, Bangkok, Seoul, Bali and Singapore, and 25 comments. Tips are kept general so the demo makes no
+  claims about real businesses. Ho Chi Minh City, New York and Paris start empty.
+- This user's posts, comments, likes, reports and blocks are saved on the phone (no shared server, as the tutor allowed).
+  Reporting hides the post at once; blocking hides that person's posts and comments, with Unblock at the bottom of the
+  feed. People show as initials and a display name only.
+- **Share my trip**: one tap, choosing whether to show the amount and the split, plus an optional tip, with a preview.
+  A trip still under way is shared as "Day 7 of 10, so far" and is not counted in the typical trip until it ends.
+  **A tip or question**: text with an optional photo, for any destination.
+- New posts and comments are dated on the demo clock (15 Nov 2026), like everything else.
+- "Reset the demo" on the Me tab now also clears community activity.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

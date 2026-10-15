@@ -26,8 +26,8 @@ database, as recommended for the course.
 | 4. Receipt scan flow: photo or sample, review with highlighted fields, save, offline waiting list | Done |
 | 5. Tax refund: Japan rules as config, eligibility on every receipt, tracker, checklist, reminder | Done |
 | 6. Menu translate: dishes in English, Ringgit prices with tax and service, pork and alcohol flags, log your order | Done |
-| 7. Community | Next |
-| 8. Plans and Me | |
+| 7. Community: typical trip per destination, feed, likes, comments, report and block, share your trip | Done |
+| 8. Plans and Me | Next |
 | 9. Polish | |
 | 10. Final deployment checks and demo rehearsal | |
 
@@ -134,6 +134,7 @@ These are deliberately kept out of the screens, each in one config file:
 | Safe-to-spend rules: which categories are essentials, the "spending fast" threshold, suggested split | `mobile/src/config/budget.ts` | Now |
 | The demo date and the seeded exchange rates | `mobile/src/config/demo.ts` | Now |
 | The demo trip and its expenses | `mobile/src/data/seed.ts` | Now |
+| The sample community: travellers, trip summaries, posts and comments | `mobile/src/data/communitySeed.ts` | Now |
 | Destinations, their currencies and photos | `mobile/src/data/destinations.ts` | Now |
 | Tax refund rules per country, each with a source link and "last verified" date (including the handling fee placeholder) | `mobile/src/config/taxRules.ts` | Now |
 | Colours, spacing and type sizes | `mobile/src/theme/tokens.ts` | Now |
