@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { CategoryList } from '@/components/home/CategoryList';
 import { DailySpendBars } from '@/components/home/DailySpendBars';
 import { ExpenseList } from '@/components/home/ExpenseList';
+import { MissedDayCard } from '@/components/home/MissedDayCard';
 import { PaceWarning } from '@/components/home/PaceWarning';
 import { RefundCard } from '@/components/home/RefundCard';
 import { SafeToSpendCard } from '@/components/home/SafeToSpendCard';
@@ -17,6 +18,7 @@ import { PlusIcon, WarningIcon } from '@/components/ui/icons';
 import { Reveal } from '@/components/ui/Reveal';
 import { Screen } from '@/components/ui/Screen';
 import { formatDayMonth } from '@/domain/dates';
+import { unloggedYesterday } from '@/domain/budget';
 import { summarizeRefunds } from '@/domain/taxRefund';
 import { useAppData } from '@/state/AppDataProvider';
 import { colors, radius, spacing } from '@/theme/tokens';
@@ -69,6 +71,8 @@ export default function HomeScreen() {
     );
   }
 
+  const missedDay = unloggedYesterday(summary);
+
   return (
     <Screen
       title="Safe to spend"
@@ -88,6 +92,7 @@ export default function HomeScreen() {
       <Button label="Add an expense" variant="accent" icon={PlusIcon} onPress={() => router.push('/expense/new')} />
       <RefundCard summary={summarizeRefunds(trip, data.expenses)} trip={trip} today={today} />
       <PaceWarning summary={summary} />
+      {missedDay ? <MissedDayCard day={missedDay} /> : null}
       <ScanQueueList tripId={trip.id} title="Receipts not saved yet" />
       <Reveal index={1}>
         <DailySpendBars days={summary.dailySpend} />

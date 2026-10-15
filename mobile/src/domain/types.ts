@@ -1,4 +1,5 @@
 import type { IsoDate } from '@/domain/dates';
+import type { AppClock } from '@/domain/clock';
 import type { CurrencyCode } from '@/domain/money';
 
 /** Shapes of the data ITER stores (brief §8). Amounts are integers in minor units. */
@@ -126,4 +127,6 @@ export interface AppData {
   categoryBudgets: CategoryBudget[];
   expenses: Expense[];
   activeTripId: string | null;
+  /** What "today" is inside the app (see domain/clock.ts). Missing means the demo's default date. */
+  clock?: AppClock;
 }
