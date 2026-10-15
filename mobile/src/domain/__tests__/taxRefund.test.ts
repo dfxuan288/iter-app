@@ -115,8 +115,8 @@ describe('checkRefund', () => {
     expect(checkRefund({ ...unknown, taxRefund: { shopIsTaxFree: false } }, tokyo)).toMatchObject({ eligibility: 'not_eligible', reason: 'This shop is not a registered tax-free shop.' });
   });
 
-  it('does not refund stays, transport or tickets', () => {
-    expect(checkRefund(purchase({ category: 'stay' }), tokyo).reason).toBe('Hotel stays are not tax-free.');
+  it('does not refund transport or tickets', () => {
+    expect(checkRefund(purchase({ category: 'transport' }), tokyo).reason).toBe('Transport is not tax-free.');
     expect(checkRefund(purchase({ category: 'activities' }), tokyo).eligibility).toBe('not_eligible');
   });
 

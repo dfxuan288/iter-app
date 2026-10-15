@@ -21,7 +21,7 @@ const statusChips: Record<BudgetStatus, { label: string; icon: Icon; tone: ChipT
 const rm = (sen: number) => formatMoney(sen, 'MYR', { trimZeros: true });
 const days = (count: number) => (count === 1 ? '1 day' : `${count} days`);
 
-function headline(trip: Trip, summary: TripSummary): { dayChip: string; amount: string; caption: string } {
+function headline(trip: Trip, summary: TripSummary): { dayChip: string; amount: string; caption: string; today?: string } {
   switch (summary.phase) {
     case 'upcoming':
       return {
@@ -36,16 +36,18 @@ function headline(trip: Trip, summary: TripSummary): { dayChip: string; amount: 
         caption: summary.remainingMyr >= 0 ? 'left over from your budget' : 'over your budget',
       };
     case 'active': {
-      // The allowance is fixed for the day; the big number is what is left of it.
-      const allowance = rm(summary.safePerDayMyr);
+      // The daily amount is set each morning and stays put all day; today's spending shows on the line under it.
       const lastDay = summary.daysLeft === 1;
-      let caption = `left today, of today's ${allowance}`;
-      if (summary.leftTodayMyr < 0) {
-        caption = `left today. You are ${rm(-summary.leftTodayMyr)} over today's ${allowance}${lastDay ? '.' : ', so tomorrow gets a little less.'}`;
-      } else if (lastDay) {
-        caption += ', your last day';
-      }
-      return { dayChip: `Day ${summary.dayNumber} of ${summary.totalDays}`, amount: rm(Math.max(0, summary.leftTodayMyr)), caption };
+      const today =
+        summary.leftTodayMyr >= 0
+          ? `${rm(summary.leftTodayMyr)} left today`
+          : `${rm(-summary.leftTodayMyr)} over today's amount${lastDay ? '' : ', so tomorrow gets a little less'}`;
+      return {
+        dayChip: `Day ${summary.dayNumber} of ${summary.totalDays}`,
+        amount: rm(summary.safePerDayMyr),
+        caption: lastDay ? 'to spend today, your last day' : `a day across your ${days(summary.daysLeft)} left`,
+        today,
+      };
     }
   }
 }
@@ -53,7 +55,7 @@ function headline(trip: Trip, summary: TripSummary): { dayChip: string; amount: 
 /** The main card on Home: the safe-to-spend number over a photo of the destination. */
 export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSummary }) {
   const destination = findDestination(trip.destinationId);
-  const { dayChip, amount, caption } = headline(trip, summary);
+  const { dayChip, amount, caption, today } = headline(trip, summary);
   const status = statusChips[summary.status];
 
   return (
@@ -64,13 +66,18 @@ export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSu
       </View>
       {/* Leaves the top of the photo clear, so the destination is recognisable. */}
       <View style={styles.photoWindow} />
-      <View accessible aria-label={`Safe to spend: ${amount} ${caption}`}>
+      <View accessible aria-label={`Safe to spend: ${amount} ${caption}.${today ? ` ${today}.` : ''}`}>
         <AppText variant="display" color="inverse" style={styles.onPhoto}>
           {amount}
         </AppText>
         <AppText color="inverse" style={styles.onPhoto}>
           {caption}
         </AppText>
+        {today ? (
+          <AppText variant="bodyStrong" color="inverse" style={[styles.onPhoto, styles.today]}>
+            {today}
+          </AppText>
+        ) : null}
       </View>
       <GlassPanel style={styles.statRow}>
         <View style={styles.stat}>
@@ -99,6 +106,7 @@ export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSu
 const styles = StyleSheet.create({
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   photoWindow: { height: 112 },
+  today: { marginTop: spacing.sm },
   // A soft shadow keeps the white text readable where the photo is bright.
   onPhoto: { textShadowColor: 'rgba(5,59,80,0.55)', textShadowRadius: 12, textShadowOffset: { width: 0, height: 1 } },
   statRow: { flexDirection: 'row', alignItems: 'center' },

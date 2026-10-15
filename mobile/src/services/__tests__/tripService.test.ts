@@ -12,7 +12,7 @@ const draft: TripDraft = {
   endDate: '2026-12-05',
   totalBudgetMyr: RM(2000),
   reserveMyr: RM(200),
-  categoryPlanMyr: { food: RM(500), transport: RM(200), stay: RM(600), activities: RM(200), shopping: RM(300) },
+  categoryPlanMyr: { food: RM(800), transport: RM(300), activities: RM(300), shopping: RM(400) },
 };
 
 describe('validateTripDraft', () => {
@@ -49,7 +49,7 @@ describe('createTrip', () => {
     expect(result.trip.localCurrency).toBe('THB');
     expect(result.trip.city).toBe('Bangkok');
     expect(result.data.trips.find((t) => t.id === DEMO_TRIP_ID)?.status).toBe('completed');
-    expect(result.data.categoryBudgets.filter((b) => b.tripId === 'trip-new')).toHaveLength(5);
+    expect(result.data.categoryBudgets.filter((b) => b.tripId === 'trip-new')).toHaveLength(4);
   });
 
   it('keeps every existing expense and does not change the data it was given', () => {
@@ -71,8 +71,8 @@ describe('createTrip', () => {
       today: '2026-11-15',
     });
     expect(summary.spentMyr).toBe(0);
-    // (2,000 − 800 essentials − 200 reserve) / 5 days
-    expect(summary.safePerDayMyr).toBe(RM(200));
+    // (2,000 − 200 reserve − 0 spent) / 5 days
+    expect(summary.safePerDayMyr).toBe(RM(360));
   });
 
   it('changes nothing when the draft is invalid', () => {
@@ -139,5 +139,39 @@ describe('appDataStore', () => {
     expect(result.outcome).toBe('storage_unavailable');
     expect(result.data.activeTripId).toBe(DEMO_TRIP_ID);
     expect(await saveAppData(result.data, broken)).toBe(false);
+  });
+});
+
+describe('old saved data with hotel ("stay") entries, from before 15 Oct 2026', () => {
+  const oldData = () => {
+    const data = createSeedData();
+    const hotel = { ...data.expenses[0], id: 'old-hotel', category: 'stay', merchantName: 'Agoda', amountMyr: RM(705.6) };
+    return {
+      ...data,
+      expenses: [...data.expenses, hotel],
+      categoryBudgets: [...data.categoryBudgets, { tripId: DEMO_TRIP_ID, category: 'stay', plannedMyr: RM(1470) }],
+    };
+  };
+
+  it('loads without crashing, leaves the hotel out of the trip, and keeps it aside rather than losing it', async () => {
+    const storage = memoryStorage({ 'iter.appData.v1': JSON.stringify(oldData()) });
+    const result = await loadAppData(storage);
+    expect(result.outcome).toBe('loaded');
+    expect(result.data.expenses.some((e) => e.id === 'old-hotel')).toBe(false);
+    expect(result.data.categoryBudgets.some((b) => (b.category as string) === 'stay')).toBe(false);
+    const kept = JSON.parse(storage.items['iter.appData.retiredCategories'] ?? '{}');
+    expect(kept.expenses.map((e: { id: string }) => e.id)).toEqual(['old-hotel']);
+    expect(kept.categoryBudgets).toHaveLength(1);
+    // The cleaned data is saved, so the next load is clean too.
+    expect(JSON.parse(storage.items['iter.appData.v1'] ?? '{}').expenses.some((e: { id: string }) => e.id === 'old-hotel')).toBe(false);
+  });
+
+  it('shows the demo figures as if the hotel were never there', async () => {
+    const { data } = await loadAppData(memoryStorage({ 'iter.appData.v1': JSON.stringify(oldData()) }));
+    const trip = activeTrip(data);
+    if (!trip) throw new Error('expected the demo trip');
+    const summary = summarizeTrip({ trip, categoryBudgets: data.categoryBudgets, expenses: data.expenses, today: '2026-11-15' });
+    expect(summary.spentMyr).toBe(RM(1450));
+    expect(summary.safePerDayMyr).toBe(RM(200));
   });
 });

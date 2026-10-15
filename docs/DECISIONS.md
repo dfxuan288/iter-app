@@ -220,6 +220,35 @@ today's spending was taken off before dividing by days left (which include today
 - New posts and comments are dated on the demo clock (15 Nov 2026), like everything else.
 - "Reset the demo" on the Me tab now also clears community activity.
 
+## Hotels and flights removed; one simple rule (15 Oct 2026)
+
+Team decision. Replaces brief §9.1 to §9.3 and the "essentials" notes above.
+
+- ITER tracks **everyday spending only**. The trip budget leaves out hotel and flights, and neither is tracked. The
+  "Stay" category is gone everywhere (app, AI scanning, tax rules, quick entry, sample data).
+- "Transport" is now **"Daily transport"** (metro, ride-hailing, travel-card top-ups): everyday spending like food.
+  The stored key stays `transport`.
+- No category is held back any more.
+- **Safe to spend per day = (trip budget − reserve − spent so far) ÷ days left** (days left includes today).
+  The Home card still works the same way: the amount is set each morning from what was left then, and today's
+  purchases count against it.
+- **Running short** = what remains is less than the reserve. **Spending fast** is unchanged (below 70% of the planned
+  daily amount, which is now (budget − reserve) ÷ trip days).
+- **Forecast pace** includes daily transport: all spending dated on trip days so far ÷ days so far. Spending dated
+  outside the trip days comes out once and is not projected forward.
+- Old saved data: expenses and plans in "stay" are moved to a separate backup on the phone when the app loads (kept,
+  not deleted) and are never counted. Old community splits that mention it are simply ignored.
+- **Home card wording** (chosen by the team): big "RM 200", then "a day across your 4 days left", then a smaller line
+  "RM 200 left today" (or "RM 12 over today's amount, so tomorrow gets a little less"). On the last day it says
+  "to spend today, your last day".
+- **Demo** (replaces the brief's RM 4,200 / RM 2,700 figures): the two hotel bookings and the Narita Express ticket are
+  deleted; the metro ticket moved to 14 Nov so the demo opens with nothing spent today; the teamLab ticket is RM 76.41.
+  Budget **RM 2,550**, reserve **RM 300**, spent **RM 1,450**, remaining **RM 1,100**:
+  (2,550 − 300 − 1,450) ÷ 4 = **RM 200 a day**. Planned: Food 700, Daily transport 350, Activities 400, Shopping 800.
+- The suggested split for new trips is Food 40%, Daily transport 15%, Activities 20%, Shopping 25%.
+- Sample community trips had their hotel share taken out of each total and their split rescaled, so the typical
+  Tokyo trip is now "5 days, RM 2,000, Food 49%". Two hotel tips were replaced.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

@@ -3,13 +3,18 @@ import type { CurrencyCode } from '@/domain/money';
 
 /** Shapes of the data ITER stores (brief §8). Amounts are integers in minor units. */
 
-export const CATEGORIES = ['food', 'transport', 'stay', 'activities', 'shopping'] as const;
+/**
+ * Everyday spending only. Hotels and flights are not tracked: the trip budget leaves them out
+ * (team decision, 15 Oct 2026). Saved data from before may still hold 'stay'; it is ignored.
+ */
+export const CATEGORIES = ['food', 'transport', 'activities', 'shopping'] as const;
 export type Category = (typeof CATEGORIES)[number];
+
+export const isCategory = (value: unknown): value is Category => CATEGORIES.includes(value as Category);
 
 export const categoryLabels: Record<Category, string> = {
   food: 'Food',
-  transport: 'Transport',
-  stay: 'Stay',
+  transport: 'Daily transport',
   activities: 'Activities',
   shopping: 'Shopping',
 };

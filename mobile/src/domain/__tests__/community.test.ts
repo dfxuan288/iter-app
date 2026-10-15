@@ -45,11 +45,10 @@ describe('the sample community', () => {
 });
 
 describe('destinationStats', () => {
-  it('gives the brief’s typical Tokyo trip: 5 days, RM 2,900, Food 34%, Stay 31%', () => {
+  it('gives the typical Tokyo trip without hotel or flights: 5 days, RM 2,000, Food 49%', () => {
     const stats = destinationStats(tokyo());
-    expect(stats).toMatchObject({ typicalDays: 5, typicalTotalMyr: 290000, tripCount: 6, tipCount: 9 });
-    expect(stats?.split.food).toBe(34);
-    expect(stats?.split.stay).toBe(31);
+    expect(stats).toMatchObject({ typicalDays: 5, typicalTotalMyr: 200000, tripCount: 6, tipCount: 9 });
+    expect(stats?.split.food).toBe(49);
     expect(Object.values(stats?.split ?? {}).reduce((a, b) => a + b, 0)).toBe(100);
   });
 
@@ -70,25 +69,25 @@ describe('destinationStats', () => {
       destinationId: 'tokyo',
       type: 'trip_summary',
       body: '',
-      tripSummary: { days: 10, totalMyr: 99_000_00, split: { food: 100, transport: 0, stay: 0, activities: 0, shopping: 0 }, tip: '', when: 'Nov 2026', dayOf: 7 },
+      tripSummary: { days: 10, totalMyr: 99_000_00, split: { food: 100, transport: 0, activities: 0, shopping: 0 }, tip: '', when: 'Nov 2026', dayOf: 7 },
       likes: 0,
       createdAt: '2026-11-15T10:00:00.000Z',
     };
     const feed = feedFor('tokyo', samples, addPost(emptyActivity(), halfway));
-    expect(destinationStats(feed)?.typicalTotalMyr).toBe(290000);
+    expect(destinationStats(feed)?.typicalTotalMyr).toBe(200000);
   });
 });
 
 describe('splitFromAmounts', () => {
   it('turns amounts into whole percentages that add up to exactly 100', () => {
-    const split = splitFromAmounts({ food: 1, transport: 1, stay: 1, activities: 0, shopping: 0 });
+    const split = splitFromAmounts({ food: 1, transport: 1, activities: 1, shopping: 0 });
     expect(Object.values(split ?? {}).reduce((a, b) => a + b, 0)).toBe(100);
-    expect(splitFromAmounts({ food: 0, transport: 0, stay: 0, activities: 0, shopping: 0 })).toBeNull();
+    expect(splitFromAmounts({ food: 0, transport: 0, activities: 0, shopping: 0 })).toBeNull();
   });
 
   it('ranks categories biggest first', () => {
-    const ranked = rankedSplit({ food: 34, transport: 11, stay: 31, activities: 10, shopping: 14 });
-    expect(ranked.map((r) => r.category)).toEqual(['food', 'stay', 'shopping', 'transport', 'activities']);
+    const ranked = rankedSplit({ food: 49, transport: 17, activities: 14, shopping: 20 });
+    expect(ranked.map((r) => r.category)).toEqual(['food', 'shopping', 'transport', 'activities']);
     expect(ranked).toHaveLength(CATEGORIES.length);
   });
 });

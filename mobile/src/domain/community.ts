@@ -144,7 +144,7 @@ export interface DestinationStats {
 export const MIN_TRIPS_FOR_STATS = 3;
 
 /**
- * "Typical 5-day Tokyo trip: RM 2,900 · Food 34% · Stay 31%" (brief §7.9), worked out from the trip
+ * "Typical 5-day Tokyo trip: RM 2,000 · Food 49%" (brief §7.9, without hotel or flights), worked out from the trip
  * summaries people shared: the usual length, the usual spend per day, and the overall split.
  */
 export function destinationStats(posts: readonly FeedPost[]): DestinationStats | null {

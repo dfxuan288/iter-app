@@ -131,7 +131,7 @@ These are deliberately kept out of the screens, each in one config file:
 |---|---|---|
 | Plan prices and free scan limits (placeholders) | `mobile/src/config/plans.ts` | Now |
 | Server-side daily scan limits that protect the AI bill | `backend/scan/limits.ts` | Now |
-| Safe-to-spend rules: which categories are essentials, the "spending fast" threshold, suggested split | `mobile/src/config/budget.ts` | Now |
+| Safe-to-spend rules: the "spending fast" threshold and the suggested split | `mobile/src/config/budget.ts` | Now |
 | The demo date and the seeded exchange rates | `mobile/src/config/demo.ts` | Now |
 | The demo trip and its expenses | `mobile/src/data/seed.ts` | Now |
 | The sample community: travellers, trip summaries, posts and comments | `mobile/src/data/communitySeed.ts` | Now |

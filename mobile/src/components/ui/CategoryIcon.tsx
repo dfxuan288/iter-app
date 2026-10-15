@@ -10,7 +10,6 @@ import { radius } from '@/theme/tokens';
 const sources: Record<Category, number> = {
   food: require('@/assets/images/categories/food.png'),
   transport: require('@/assets/images/categories/transport.png'),
-  stay: require('@/assets/images/categories/stay.png'),
   activities: require('@/assets/images/categories/activities.png'),
   shopping: require('@/assets/images/categories/shopping.png'),
 };

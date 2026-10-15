@@ -60,14 +60,18 @@ describe('addExpense', () => {
     expect(summarize(before).leftTodayMyr).toBe(20000);
     expect(summarize(result.data).safePerDayMyr).toBe(20000);
     expect(summarize(result.data).leftTodayMyr).toBe(12000);
-    expect(summarize(result.data).spentMyr).toBe(278000);
+    expect(summarize(result.data).spentMyr).toBe(145000 + 8000);
   });
 
-  it('paying for an essential does not lower safe-to-spend, because that money was already held back', () => {
-    const result = addExpense(createSeedData(), DEMO_TRIP_ID, { ...draft, currency: 'MYR', amountOriginal: 10000, category: 'stay' }, null, 'e-new', 'now');
+  it('counts daily transport like any other spending', () => {
+    const result = addExpense(createSeedData(), DEMO_TRIP_ID, { ...draft, currency: 'MYR', amountOriginal: 3000, category: 'transport' }, null, 'e-new', 'now');
     if (!result.ok) throw new Error('expected the expense to be added');
-    expect(summarize(result.data).safePerDayMyr).toBe(20000);
-    expect(summarize(result.data).leftTodayMyr).toBe(20000);
+    expect(summarize(result.data).leftTodayMyr).toBe(17000);
+  });
+
+  it('refuses a category ITER no longer tracks, such as a hotel stay', () => {
+    const result = addExpense(createSeedData(), DEMO_TRIP_ID, { ...draft, category: 'stay' as never }, rate, 'e-new', 'now');
+    expect(result).toEqual({ ok: false, problems: ['unknown_category'] });
   });
 
   it('fills in a name when none is given, and trims spaces', () => {
@@ -134,7 +138,7 @@ describe('deleteExpense', () => {
     const uniqlo = data.expenses.find((e) => e.merchantName === 'UNIQLO Ginza');
     const after = deleteExpense(data, uniqlo?.id ?? '');
     expect(after.expenses).toHaveLength(data.expenses.length - 1);
-    expect(summarize(after).spentMyr).toBe(270000 - 24713);
+    expect(summarize(after).spentMyr).toBe(145000 - 24713);
   });
 
   it('does nothing for an unknown id', () => {

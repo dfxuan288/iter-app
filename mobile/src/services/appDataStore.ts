@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { createSeedData } from '@/data/seed';
-import type { AppData } from '@/domain/types';
+import { isCategory, type AppData, type CategoryBudget, type Expense } from '@/domain/types';
 
 /**
  * Saves and loads everything ITER keeps on the phone. Nothing here throws: storage can fail
@@ -11,6 +11,29 @@ import type { AppData } from '@/domain/types';
 const STORAGE_KEY = 'iter.appData.v1';
 /** If saved data cannot be read, the raw text is kept here so it is not lost. */
 const BACKUP_KEY = 'iter.appData.unreadable';
+/** Expenses and plans in categories ITER no longer has (hotel stays, 15 Oct 2026) are kept here. */
+const RETIRED_KEY = 'iter.appData.retiredCategories';
+
+export interface Retired {
+  expenses: Expense[];
+  categoryBudgets: CategoryBudget[];
+}
+
+/**
+ * Takes out anything saved in a category ITER no longer tracks, such as 'stay' from before hotels
+ * were removed. Returns the cleaned data and what was taken out, so it can be kept rather than lost.
+ */
+export function withoutRetiredCategories(data: AppData): { data: AppData; retired: Retired } {
+  const retired: Retired = {
+    expenses: data.expenses.filter((e) => !isCategory(e.category)),
+    categoryBudgets: data.categoryBudgets.filter((b) => !isCategory(b.category)),
+  };
+  if (retired.expenses.length === 0 && retired.categoryBudgets.length === 0) return { data, retired };
+  return {
+    data: { ...data, expenses: data.expenses.filter((e) => isCategory(e.category)), categoryBudgets: data.categoryBudgets.filter((b) => isCategory(b.category)) },
+    retired,
+  };
+}
 
 /** The few storage operations needed, so tests can supply a fake. */
 export interface KeyValueStorage {
@@ -55,7 +78,22 @@ export async function loadAppData(storage: KeyValueStorage = AsyncStorage): Prom
 
   try {
     const parsed: unknown = JSON.parse(raw);
-    if (isAppData(parsed)) return { data: parsed, outcome: 'loaded' };
+    if (isAppData(parsed)) {
+      const { data, retired } = withoutRetiredCategories(parsed);
+      if (retired.expenses.length > 0 || retired.categoryBudgets.length > 0) {
+        try {
+          const earlier = JSON.parse((await storage.getItem(RETIRED_KEY)) ?? 'null') as Retired | null;
+          await storage.setItem(
+            RETIRED_KEY,
+            JSON.stringify({ expenses: [...(earlier?.expenses ?? []), ...retired.expenses], categoryBudgets: [...(earlier?.categoryBudgets ?? []), ...retired.categoryBudgets] }),
+          );
+          await storage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch {
+          // Keeping the old entries is a best effort; the app runs on the cleaned data either way.
+        }
+      }
+      return { data, outcome: 'loaded' };
+    }
   } catch {
     // Fall through to recovery.
   }
