@@ -1,8 +1,9 @@
 import { createContext, use, useEffect, useMemo, useState, type ReactNode } from 'react';
 
-import { today as currentDay } from '@/config/demo';
+import { defaultClock } from '@/config/demo';
 import { createSeedData } from '@/data/seed';
 import { summarizeTrip, type TripSummary } from '@/domain/budget';
+import { readClock, shiftDay, todayFor, type AppClock } from '@/domain/clock';
 import type { IsoDate } from '@/domain/dates';
 import type { AppData, Expense, ExpenseSource, ReceiptDetails, RefundState, Trip } from '@/domain/types';
 import { loadAppData, saveAppData, type LoadOutcome } from '@/services/appDataStore';
@@ -36,6 +37,11 @@ export interface AppDataContextValue {
   updateRefund: (expenseId: string, change: RefundState) => void;
   toggleRefundChecklist: (tripId: string, itemId: string) => void;
   resetDemo: () => void;
+  /** What "today" is inside the app: the demo date, or the phone's real date. */
+  clock: AppClock;
+  /** Moves the demo date a day forward (1) or back (-1). */
+  shiftDay: (days: number) => void;
+  setClock: (clock: AppClock) => void;
 }
 
 export type ExpenseActionResult = { ok: true } | { ok: false; problems: ExpenseProblem[] };
@@ -60,7 +66,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<AppDataContextValue>(() => {
-    const today = currentDay();
+    const clock = readClock(data.clock, defaultClock);
+    const today = todayFor(clock, new Date());
     const trip = activeTrip(data);
     // Newest day first; within a day, the one added last comes first. (Order of adding is used rather
     // than the saved time, because the demo runs on a fixed date that real clock times do not match.)
@@ -116,6 +123,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       updateRefund: (expenseId, change) => commit(setRefundState(data, expenseId, change)),
       toggleRefundChecklist: (tripId, itemId) => commit(toggleRefundChecklist(data, tripId, itemId)),
       resetDemo: () => commit(createSeedData()),
+      clock,
+      shiftDay: (days) => commit({ ...data, clock: shiftDay(clock, days, new Date()) }),
+      setClock: (next) => commit({ ...data, clock: next }),
     };
   }, [data, loadOutcome, saveFailed]);
 

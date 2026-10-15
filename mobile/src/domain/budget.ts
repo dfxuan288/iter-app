@@ -208,3 +208,13 @@ export function splitByPercent(amountMyr: number, percents: Record<Category, num
   result[first] += Math.max(0, amountMyr - assigned);
   return result;
 }
+
+/**
+ * Yesterday's date when nothing at all was logged for it during the trip, so Home can ask
+ * "Forgot something?". Null on the first day, outside the trip, or when yesterday has entries.
+ */
+export function unloggedYesterday(summary: Pick<TripSummary, 'phase' | 'dayNumber' | 'dailySpend'>): IsoDate | null {
+  if (summary.phase !== 'active' || summary.dayNumber < 2) return null;
+  const yesterday = summary.dailySpend.find((day) => day.dayNumber === summary.dayNumber - 1);
+  return yesterday && yesterday.spentMyr === 0 ? yesterday.date : null;
+}

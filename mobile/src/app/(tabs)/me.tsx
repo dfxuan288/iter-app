@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { ComingSoon } from '@/components/ComingSoon';
+import { DemoDateCard } from '@/components/me/DemoDateCard';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -86,12 +87,13 @@ export default function MeScreen() {
           <AppText color="muted">{`Earlier trips: ${pastTrips.map((t) => t.city).join(', ')}`}</AppText>
         ) : null}
       </Card>
+      <DemoDateCard />
       <Card>
         <AppText variant="heading">Demo data</AppText>
         <AppText color="muted">
           {confirmingReset
             ? 'This removes every trip, expense and community post you created on this phone and brings back the Tokyo demo. It cannot be undone.'
-            : 'Put the app back to the Tokyo demo trip, exactly as it was when first opened.'}
+            : 'Put the app back to the Tokyo demo trip and the demo date, exactly as it was when first opened.'}
         </AppText>
         {confirmingReset ? (
           <View style={styles.confirmRow}>

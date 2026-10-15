@@ -19,7 +19,6 @@ import { formatShortMonthYear } from '@/domain/dates';
 import type { Category } from '@/domain/types';
 import { imageStore } from '@/services/imageStore';
 import { prepareReceiptPhoto } from '@/services/imagePrep';
-import { today } from '@/config/demo';
 import { useAppData } from '@/state/AppDataProvider';
 import { useCommunity } from '@/state/CommunityProvider';
 import { colors, MIN_TOUCH_TARGET, spacing } from '@/theme/tokens';
@@ -33,7 +32,7 @@ type Mode = 'trip' | 'post';
 export default function ShareScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ destinationId?: string }>();
-  const { trip, summary } = useAppData();
+  const { trip, summary, today } = useAppData();
   const { post, myUserId } = useCommunity();
   const canShareTrip = trip !== undefined && summary !== undefined && summary.phase !== 'upcoming' && summary.spentMyr > 0;
   const [mode, setMode] = useState<Mode>(canShareTrip ? 'trip' : 'post');
@@ -92,7 +91,7 @@ export default function ShareScreen() {
   };
 
   const previewPost: FeedPost | null = sharedSummary
-    ? { id: 'preview', userId: myUserId, destinationId: trip?.destinationId ?? '', type: 'trip_summary', body: '', tripSummary: sharedSummary, likes: 0, likeCount: 0, likedByMe: false, commentCount: 0, createdAt: `${today()}T12:00:00.000Z` }
+    ? { id: 'preview', userId: myUserId, destinationId: trip?.destinationId ?? '', type: 'trip_summary', body: '', tripSummary: sharedSummary, likes: 0, likeCount: 0, likedByMe: false, commentCount: 0, createdAt: `${today}T12:00:00.000Z` }
     : null;
 
   return (

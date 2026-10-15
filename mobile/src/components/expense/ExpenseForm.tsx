@@ -26,6 +26,8 @@ export interface ExpenseFormProps {
   existing?: Expense;
   /** When reviewing a scan: the values the AI read. */
   initial?: ExpenseDraft;
+  /** The day to start on, e.g. yesterday from "Forgot something?". */
+  initialDate?: IsoDate;
   /** "Check this" notes for fields the AI was unsure of. */
   highlights?: Partial<Record<ReviewField, string>>;
   /** Show the "1200 yen ramen" box above the form. */
@@ -40,7 +42,7 @@ const amountAsText = (minor: number, currency: CurrencyCode) =>
 const ALL_CURRENCIES = Object.keys(currencies) as CurrencyCode[];
 
 /** The add and edit form for an expense. All validation lives in expenseService; this only collects input. */
-export function ExpenseForm({ trip, today, existing, initial, highlights = {}, quickEntry = false, submitLabel, onSubmit }: ExpenseFormProps) {
+export function ExpenseForm({ trip, today, existing, initial, initialDate, highlights = {}, quickEntry = false, submitLabel, onSubmit }: ExpenseFormProps) {
   const { rates } = useFx();
   const defaultDate = isWithin(today, trip.startDate, trip.endDate) ? today : trip.startDate;
   const start = existing ?? initial;
@@ -53,7 +55,7 @@ export function ExpenseForm({ trip, today, existing, initial, highlights = {}, q
   const [category, setCategory] = useState<Category>(start?.category ?? 'food');
   const [merchant, setMerchant] = useState(start?.merchantName ?? '');
   const [note, setNote] = useState(start?.note ?? '');
-  const [date, setDate] = useState<IsoDate>(start?.purchaseDate ?? defaultDate);
+  const [date, setDate] = useState<IsoDate>(start?.purchaseDate ?? initialDate ?? defaultDate);
   const [problems, setProblems] = useState<ExpenseProblem[]>([]);
 
   const amount = parseMoneyInput(amountText, currency);

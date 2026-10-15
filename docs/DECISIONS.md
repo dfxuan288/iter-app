@@ -249,6 +249,19 @@ Team decision. Replaces brief §9.1 to §9.3 and the "essentials" notes above.
 - Sample community trips had their hotel share taken out of each total and their split rescaled, so the typical
   Tokyo trip is now "5 days, RM 2,000, Food 49%". Two hotel tips were replaced.
 
+## App date control, forgotten days, chart labels (15 Oct 2026)
+
+- **App date** (Me tab): the demo opens on 15 Nov 2026 (day 7). Previous day / Next day move it, "Back to 15 Nov"
+  returns, and "Use the phone's real date" makes trips planned with real dates behave as on a real trip. It is saved
+  with the app's data, so "Reset the demo" puts it back. Next day from day 7 shows day 8 at
+  (2,550 − 300 − 1,450) ÷ 3 = RM 266.66 a day.
+- **Forgotten expenses**: any expense can be logged for an earlier day with the Day row on the form (a scanned receipt
+  uses its printed date). From day 2, if nothing was logged for yesterday, Home asks "Nothing logged for … Forgot
+  something?" with "Add for …" (opens the form on that day) and "I spent nothing". Money logged for an earlier day lowers
+  today's daily amount straight away, because it has already gone.
+- **Each day chart**: tap a bar (phone) or point at it (laptop) to see its date and amount; each bar is a button with
+  the same words for screen readers.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

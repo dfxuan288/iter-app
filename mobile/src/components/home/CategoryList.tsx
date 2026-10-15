@@ -27,7 +27,9 @@ export function CategoryList({ categories }: { categories: CategoryProgress[] })
             <CategoryIcon category={item.category} size={44} />
             <View style={styles.detail}>
               <View style={styles.labels}>
-                <AppText variant="bodyStrong">{categoryLabels[item.category]}</AppText>
+                <AppText variant="bodyStrong" numberOfLines={1}>
+                  {categoryLabels[item.category]}
+                </AppText>
                 <AppText variant="caption" color={over ? 'danger' : 'muted'}>
                   {`${rm(item.spentMyr)} of ${rm(item.plannedMyr)}`}
                 </AppText>
@@ -35,7 +37,7 @@ export function CategoryList({ categories }: { categories: CategoryProgress[] })
               <View style={styles.track}>
                 <View style={[styles.fill, { width: `${Math.round(share * 100)}%` }, over && styles.fillOver]} />
               </View>
-              </View>
+            </View>
           </View>
         );
       })}
@@ -47,7 +49,8 @@ const styles = StyleSheet.create({
   card: { gap: spacing.lg },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   detail: { flex: 1, gap: spacing.sm },
-  labels: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
+  // When the name and amount do not fit on one line, the amount moves under the name rather than the name breaking.
+  labels: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', columnGap: spacing.sm },
   track: { height: 8, borderRadius: radius.pill, backgroundColor: colors.surfaceSunken, overflow: 'hidden' },
   fill: { height: 8, borderRadius: radius.pill, backgroundColor: colors.teal },
   fillOver: { backgroundColor: colors.danger },

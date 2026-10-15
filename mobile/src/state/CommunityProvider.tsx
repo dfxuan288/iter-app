@@ -1,6 +1,5 @@
 import { createContext, use, useEffect, useMemo, useState, type ReactNode } from 'react';
 
-import { today } from '@/config/demo';
 import { communityComments, communityPosts, communityUsers } from '@/data/communitySeed';
 import {
   addComment,
@@ -44,7 +43,7 @@ const CommunityContext = createContext<CommunityContextValue | null>(null);
 const samples = { posts: communityPosts, comments: communityComments };
 
 export function CommunityProvider({ children }: { children: ReactNode }) {
-  const { data } = useAppData();
+  const { data, today } = useAppData();
   const [activity, setActivity] = useState<CommunityActivity>(emptyActivity);
   const [loaded, setLoaded] = useState(false);
 
@@ -66,8 +65,8 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CommunityContextValue>(() => {
     const me: CommunityUser = { id: data.user.id, displayName: data.user.displayName, from: 'Kuala Lumpur' };
-    // The demo runs on a fixed date (config/demo.ts), so new posts are dated on it, at the real time of day.
-    const now = () => `${today()}T${new Date().toISOString().slice(11)}`;
+    // New posts are dated on the app's "today" (the demo date unless it is set to the real date), at the real time of day.
+    const now = () => `${today}T${new Date().toISOString().slice(11)}`;
     return {
       activity,
       samples,
@@ -94,7 +93,7 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
         setActivity(emptyActivity());
       },
     };
-  }, [activity, data.user]);
+  }, [activity, data.user, today]);
 
   // Like the app's data, nothing is shown until saved activity is loaded, so a tap cannot overwrite it.
   if (!loaded) return null;

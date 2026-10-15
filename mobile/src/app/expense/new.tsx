@@ -6,6 +6,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { StackScreen } from '@/components/ui/StackScreen';
+import { isIsoDate } from '@/domain/dates';
 import { currencies, type CurrencyCode } from '@/domain/money';
 import type { ExpenseDraft } from '@/services/expenseService';
 import { useAppData } from '@/state/AppDataProvider';
@@ -24,6 +25,8 @@ export default function NewExpenseScreen() {
   const { trip, today, addExpense } = useAppData();
   const params = useLocalSearchParams();
   const fromMenu = useMemo(() => menuOrder(params, today), [params, today]);
+  // "Forgot something?" on Home opens this screen on the day that was missed.
+  const day = typeof params.date === 'string' && isIsoDate(params.date) ? params.date : undefined;
 
   if (!trip) {
     return (
@@ -43,6 +46,7 @@ export default function NewExpenseScreen() {
         trip={trip}
         today={today}
         initial={fromMenu}
+        initialDate={day}
         quickEntry={!fromMenu}
         submitLabel="Save expense"
         onSubmit={(draft, rate) => {
