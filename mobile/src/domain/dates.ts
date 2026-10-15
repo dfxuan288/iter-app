@@ -78,6 +78,12 @@ export function weekdayShort(date: IsoDate): string {
   return WEEKDAYS[new Date(toUtcMs(date)).getUTCDay()] as string;
 }
 
+/** "Nov 2026", from a date. */
+export function formatShortMonthYear(date: IsoDate): string {
+  const [month = '', year = ''] = formatMonthYear(Number(date.slice(0, 4)), Number(date.slice(5, 7)) - 1).split(' ');
+  return `${month.slice(0, 3)} ${year}`;
+}
+
 /** "November 2026" */
 export function formatMonthYear(year: number, monthIndex: number): string {
   const names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

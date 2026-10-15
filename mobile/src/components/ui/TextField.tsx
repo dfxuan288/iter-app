@@ -14,12 +14,14 @@ export interface TextFieldProps {
   /** Asks the user to double-check this field (e.g. something the AI found hard to read). */
   highlight?: string;
   maxLength?: number;
+  /** Several lines, for longer text such as a post. */
+  multiline?: boolean;
   /** Called when the user presses Enter / Done on the keyboard. */
   onSubmit?: () => void;
 }
 
 /** A labelled text input: label above, the field, then helper or error text below. */
-export function TextField({ label, value, onChangeText, placeholder, helper, error, highlight, maxLength, onSubmit }: TextFieldProps) {
+export function TextField({ label, value, onChangeText, placeholder, helper, error, highlight, maxLength, multiline = false, onSubmit }: TextFieldProps) {
   const id = useId();
   return (
     <View style={styles.field}>
@@ -32,11 +34,12 @@ export function TextField({ label, value, onChangeText, placeholder, helper, err
         placeholder={placeholder}
         placeholderTextColor={colors.textMuted}
         maxLength={maxLength}
+        multiline={multiline}
         onSubmitEditing={onSubmit}
         returnKeyType={onSubmit ? 'done' : undefined}
         aria-labelledby={`${id}-label`}
         aria-invalid={Boolean(error)}
-        style={[styles.input, highlight ? styles.inputHighlight : null, error ? styles.inputError : null]}
+        style={[styles.input, multiline ? styles.multiline : null, highlight ? styles.inputHighlight : null, error ? styles.inputError : null]}
       />
       {error ? (
         <AppText variant="caption" color="danger" role="alert">
@@ -70,5 +73,6 @@ const styles = StyleSheet.create({
     outlineWidth: 0,
   },
   inputError: { borderColor: colors.danger },
+  multiline: { minHeight: 120, paddingVertical: spacing.md, textAlignVertical: 'top' },
   inputHighlight: { borderColor: colors.warning, backgroundColor: colors.warningSurface },
 });

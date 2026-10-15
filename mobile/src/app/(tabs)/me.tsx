@@ -12,6 +12,7 @@ import { env } from '@/config/env';
 import { planFor } from '@/config/plans';
 import { formatDayMonth } from '@/domain/dates';
 import { useAppData } from '@/state/AppDataProvider';
+import { useCommunity } from '@/state/CommunityProvider';
 import { healthService, type ServerHealth } from '@/services/healthService';
 import type { RequestFailure, RequestResult } from '@/services/http';
 import { colors, spacing } from '@/theme/tokens';
@@ -71,6 +72,7 @@ export default function MeScreen() {
   const status = describe(server);
 
   const { data, trip, resetDemo } = useAppData();
+  const community = useCommunity();
   const [confirmingReset, setConfirmingReset] = useState(false);
   const pastTrips = data.trips.filter((t) => t.id !== trip?.id);
 
@@ -88,7 +90,7 @@ export default function MeScreen() {
         <AppText variant="heading">Demo data</AppText>
         <AppText color="muted">
           {confirmingReset
-            ? 'This removes every trip you created on this phone and brings back the Tokyo demo. It cannot be undone.'
+            ? 'This removes every trip, expense and community post you created on this phone and brings back the Tokyo demo. It cannot be undone.'
             : 'Put the app back to the Tokyo demo trip, exactly as it was when first opened.'}
         </AppText>
         {confirmingReset ? (
@@ -101,6 +103,7 @@ export default function MeScreen() {
                 label="Yes, reset"
                 onPress={() => {
                   resetDemo();
+                  community.reset();
                   setConfirmingReset(false);
                 }}
               />
