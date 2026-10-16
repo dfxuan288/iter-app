@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useReducedMotion, useScrollOffset, Extrapolation } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/community/Avatar';
@@ -44,13 +45,23 @@ export default function CommunityScreen() {
   const posts = sortFeed(feed, order);
   const blocked = activity.blocked.map((id) => userById(id)).filter((u) => u !== undefined);
 
+  // The photo scrolls a little slower than the page, for a sense of depth. Off when motion is reduced.
+  const reduceMotion = useReducedMotion();
+  const scrollRef = useAnimatedRef<Animated.ScrollView>();
+  const scrollY = useScrollOffset(scrollRef);
+  const photoStyle = useAnimatedStyle(() =>
+    reduceMotion ? {} : { transform: [{ translateY: interpolate(scrollY.get(), [0, HERO_HEIGHT], [0, HERO_HEIGHT * 0.4], Extrapolation.CLAMP) }] },
+  );
+
   return (
-    <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+    <Animated.ScrollView ref={scrollRef} style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
       <View style={[styles.hero, { paddingTop: insets.top + spacing.lg }]}>
-        <LinearGradient colors={gradients.ocean} style={StyleSheet.absoluteFill} />
-        {destination?.photo ? (
-          <Image source={destination.photo} style={StyleSheet.absoluteFill} contentFit="cover" accessibilityLabel={destination.photoAlt} transition={200} />
-        ) : null}
+        <Animated.View style={[StyleSheet.absoluteFill, photoStyle]}>
+          <LinearGradient colors={gradients.ocean} style={StyleSheet.absoluteFill} />
+          {destination?.photo ? (
+            <Image source={destination.photo} style={StyleSheet.absoluteFill} contentFit="cover" accessibilityLabel={destination.photoAlt} transition={200} />
+          ) : null}
+        </Animated.View>
         <LinearGradient colors={['rgba(5,59,80,0.55)', 'rgba(5,59,80,0.05)', 'rgba(5,59,80,0.75)']} style={StyleSheet.absoluteFill} />
 
         <AppText variant="heading" color="inverse" style={styles.onPhoto}>
@@ -171,7 +182,7 @@ export default function CommunityScreen() {
           </Card>
         ) : null}
       </View>
-    </ScrollView>
+    </Animated.ScrollView>
   );
 }
 

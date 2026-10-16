@@ -32,7 +32,7 @@ export default function ScanReviewScreen() {
   const { items, online, retry, discard, finish } = useScanQueue();
   const item = items.find((candidate) => candidate.id === id);
 
-  const close = (to: '/' | '/scan' = '/scan') => router.replace(to);
+  const close = (to: '/' | '/scan' = '/scan') => router.dismissTo(to);
 
   if (!item) {
     return (
@@ -166,7 +166,7 @@ function Review({ item, onSaved, onDiscard }: { item: PendingScan; onSaved: () =
           const result = addExpense(draft, rate, { source: 'scan', receipt: details, taxRefund });
           if (result.ok) {
             onSaved();
-            router.replace('/');
+            router.dismissTo('/');
           }
           return result;
         }}

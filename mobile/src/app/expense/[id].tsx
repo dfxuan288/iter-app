@@ -39,7 +39,7 @@ export default function ExpenseDetailScreen() {
         <Card>
           <AppText variant="heading">This expense is no longer here</AppText>
           <AppText color="muted">It may have been deleted.</AppText>
-          <Button label="Back to Home" onPress={() => router.replace('/')} />
+          <Button label="Back to Home" onPress={() => router.dismissTo('/')} />
         </Card>
       </StackScreen>
     );
@@ -146,7 +146,7 @@ export default function ExpenseDetailScreen() {
                 label="Yes, delete"
                 onPress={() => {
                   deleteExpense(expense.id);
-                  router.replace('/');
+                  router.dismissTo('/');
                 }}
               />
             </View>

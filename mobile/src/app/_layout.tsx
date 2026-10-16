@@ -57,7 +57,7 @@ export default function RootLayout() {
                 {/* On a laptop or projector the app is shown as a centred phone-width column. */}
                 <View style={styles.backdrop}>
                   <View style={styles.app}>
-                    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }} />
+                    <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right', contentStyle: { backgroundColor: colors.surface } }} />
                   </View>
                 </View>
               </CommunityProvider>

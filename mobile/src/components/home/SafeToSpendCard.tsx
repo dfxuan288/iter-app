@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
+import { AnimatedMoney } from '@/components/ui/AnimatedMoney';
 import { AppText } from '@/components/ui/AppText';
 import { Chip, type ChipTone } from '@/components/ui/Chip';
 import { CheckCircleIcon, LightningIcon, MapPinIcon, WarningIcon, type Icon } from '@/components/ui/icons';
@@ -19,34 +20,45 @@ const statusChips: Record<BudgetStatus, { label: string; icon: Icon; tone: ChipT
 };
 
 const rm = (sen: number) => formatMoney(sen, 'MYR', { trimZeros: true });
+/** Long amounts (thousands with sen, e.g. RM 1,038.03) step down a size so they stay on one line. */
+const statSize = (sen: number) => (rm(sen).length > 9 ? styles.statLong : null);
 const days = (count: number) => (count === 1 ? '1 day' : `${count} days`);
 
-function headline(trip: Trip, summary: TripSummary): { dayChip: string; amount: string; caption: string; today?: string } {
+interface Headline {
+  dayChip: string;
+  /** Sen, shown large. */
+  amountSen: number;
+  caption: string;
+  /** The smaller "left today" line: the amount (sen) and the words around it. */
+  today?: { sen: number; template: (amount: string) => string };
+}
+
+function headline(trip: Trip, summary: TripSummary): Headline {
   switch (summary.phase) {
     case 'upcoming':
       return {
         dayChip: `Starts ${formatDayMonth(trip.startDate)}`,
-        amount: rm(summary.safePerDayMyr),
+        amountSen: summary.safePerDayMyr,
         caption: `a day across your ${days(summary.totalDays)}`,
       };
     case 'ended':
       return {
         dayChip: 'Trip ended',
-        amount: rm(summary.remainingMyr),
+        amountSen: Math.abs(summary.remainingMyr),
         caption: summary.remainingMyr >= 0 ? 'left over from your budget' : 'over your budget',
       };
     case 'active': {
       // The daily amount is set each morning and stays put all day; today's spending shows on the line under it.
       const lastDay = summary.daysLeft === 1;
-      const today =
-        summary.leftTodayMyr >= 0
-          ? `${rm(summary.leftTodayMyr)} left today`
-          : `${rm(-summary.leftTodayMyr)} over today's amount${lastDay ? '' : ', so tomorrow gets a little less'}`;
+      const over = summary.leftTodayMyr < 0;
       return {
         dayChip: `Day ${summary.dayNumber} of ${summary.totalDays}`,
-        amount: rm(summary.safePerDayMyr),
+        amountSen: summary.safePerDayMyr,
         caption: lastDay ? 'to spend today, your last day' : `a day across your ${days(summary.daysLeft)} left`,
-        today,
+        today: {
+          sen: Math.abs(summary.leftTodayMyr),
+          template: over ? (amount) => `${amount} over today's amount${lastDay ? '' : ', so tomorrow gets a little less'}` : (amount) => `${amount} left today`,
+        },
       };
     }
   }
@@ -55,7 +67,8 @@ function headline(trip: Trip, summary: TripSummary): { dayChip: string; amount: 
 /** The main card on Home: the safe-to-spend number over a photo of the destination. */
 export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSummary }) {
   const destination = findDestination(trip.destinationId);
-  const { dayChip, amount, caption, today } = headline(trip, summary);
+  const { dayChip, amountSen, caption, today } = headline(trip, summary);
+  const todayText = today ? today.template(rm(today.sen)) : '';
   const status = statusChips[summary.status];
 
   return (
@@ -66,36 +79,26 @@ export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSu
       </View>
       {/* Leaves the top of the photo clear, so the destination is recognisable. */}
       <View style={styles.photoWindow} />
-      <View accessible aria-label={`Safe to spend: ${amount} ${caption}.${today ? ` ${today}.` : ''}`}>
-        <AppText variant="display" color="inverse" style={styles.onPhoto}>
-          {amount}
-        </AppText>
+      <View accessible aria-label={`Safe to spend: ${rm(amountSen)} ${caption}.${today ? ` ${todayText}.` : ''}`}>
+        <AnimatedMoney sen={amountSen} variant="display" color="inverse" style={styles.onPhoto} />
         <AppText color="inverse" style={styles.onPhoto}>
           {caption}
         </AppText>
-        {today ? (
-          <AppText variant="bodyStrong" color="inverse" style={[styles.onPhoto, styles.today]}>
-            {today}
-          </AppText>
-        ) : null}
+        {today ? <AnimatedMoney sen={today.sen} template={today.template} variant="bodyStrong" color="inverse" style={[styles.onPhoto, styles.today]} /> : null}
       </View>
       <GlassPanel style={styles.statRow}>
         <View style={styles.stat}>
           <AppText variant="caption" color="inverseMuted">
             Spent so far
           </AppText>
-          <AppText variant="number" color="inverse">
-            {rm(summary.spentMyr)}
-          </AppText>
+          <AnimatedMoney sen={summary.spentMyr} variant="number" color="inverse" style={statSize(summary.spentMyr)} />
         </View>
         <View style={styles.statDivider} />
         <View style={styles.stat}>
           <AppText variant="caption" color="inverseMuted">
             Remaining
           </AppText>
-          <AppText variant="number" color="inverse">
-            {rm(summary.remainingMyr)}
-          </AppText>
+          <AnimatedMoney sen={summary.remainingMyr} variant="number" color="inverse" style={statSize(summary.remainingMyr)} />
         </View>
       </GlassPanel>
       {summary.phase === 'active' ? <Chip tone={status.tone} icon={status.icon} label={status.label} /> : null}
@@ -111,5 +114,6 @@ const styles = StyleSheet.create({
   onPhoto: { textShadowColor: 'rgba(5,59,80,0.55)', textShadowRadius: 12, textShadowOffset: { width: 0, height: 1 } },
   statRow: { flexDirection: 'row', alignItems: 'center' },
   stat: { flex: 1, gap: spacing.xxs },
+  statLong: { fontSize: 18, lineHeight: 28 },
   statDivider: { width: 1, alignSelf: 'stretch', backgroundColor: colors.glassBorder, marginHorizontal: spacing.lg },
 });

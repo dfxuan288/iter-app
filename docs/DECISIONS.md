@@ -262,6 +262,22 @@ Team decision. Replaces brief §9.1 to §9.3 and the "essentials" notes above.
 - **Each day chart**: tap a bar (phone) or point at it (laptop) to see its date and amount; each bar is a button with
   the same words for screen readers.
 
+## Install as an app, full screen, motion (16 Oct 2026)
+
+- **Download ITER**: a "Get the ITER app" card (Home, can be hidden; always on Me) puts ITER on the phone's home
+  screen. Android Chrome, Edge and Samsung Internet show their install prompt from the button. iPhones have no prompt,
+  so the card shows the two steps (Share, then Add to Home Screen, in Safari). The card disappears once ITER is opened
+  from the home screen. Files: `mobile/public/manifest.json`, `mobile/public/icons/`, `mobile/public/index.html`.
+- **Full screen**: opened from the home screen, ITER has no browser bars and draws behind the notch
+  (`viewport-fit=cover`); the status bar takes the app's background colour, and content stays clear of the notch.
+  In a normal browser tab the browser's own bars stay; that cannot be changed by a website.
+- **Trip calendar**: the teal band now runs unbroken from the first day's circle to the last day's.
+- **Motion** (all switched off when the phone is set to reduce motion): amounts on Home and the tax refund total
+  count to their new value after a save; a newly saved expense slides into the Recent list; the daily bars grow on
+  first show; the heart pops on a like; photos breathe while loading; pages opened on top slide in from the right; the
+  Community photo scrolls slower than the page.
+- Saving or closing a screen now returns to the screen underneath instead of opening a fresh copy of it.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

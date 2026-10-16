@@ -32,7 +32,7 @@ export default function PostScreen() {
         <Card style={styles.card}>
           <AppText variant="heading">This post is not available</AppText>
           <AppText color="muted">It may have been deleted, reported, or written by someone you blocked.</AppText>
-          <Button label="Back to Community" onPress={() => router.replace('/community')} />
+          <Button label="Back to Community" onPress={() => router.dismissTo('/community')} />
         </Card>
       </StackScreen>
     );

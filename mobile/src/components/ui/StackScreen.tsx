@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeInRight, ReduceMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/ui/AppText';
@@ -21,7 +22,8 @@ export function StackScreen({ title, children, actions }: StackScreenProps) {
   const insets = useSafeAreaInsets();
   const goBack = () => (router.canGoBack() ? router.back() : router.replace('/'));
   return (
-    <View style={styles.screen}>
+    // Slides in a little from the right, the way a new page opens in a phone app.
+    <Animated.View style={styles.screen} entering={slideIn}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.lg }]}>
         <IconButton icon={ArrowLeftIcon} accessibilityLabel="Go back" onPress={goBack} />
         <AppText variant="heading" style={styles.title} numberOfLines={1}>
@@ -35,9 +37,11 @@ export function StackScreen({ title, children, actions }: StackScreenProps) {
         showsVerticalScrollIndicator={false}>
         {children}
       </ScrollView>
-    </View>
+    </Animated.View>
   );
 }
+
+const slideIn = FadeInRight.duration(240).reduceMotion(ReduceMotion.System);
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.surface },

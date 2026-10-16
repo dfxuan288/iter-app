@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
+import Animated, { FadeInUp, LayoutAnimationConfig, LinearTransition, ReduceMotion } from 'react-native-reanimated';
 
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -73,9 +74,14 @@ export function ExpenseList({ expenses, title = 'Recent', limit = 6 }: ExpenseLi
       {shown.length === 0 ? (
         <AppText color="muted">Nothing logged yet. Your expenses will appear here as you add them.</AppText>
       ) : (
-        shown.map((expense) => (
-          <ExpenseRow key={expense.id} expense={expense} onPress={() => router.push({ pathname: '/expense/[id]', params: { id: expense.id } })} />
-        ))
+        // Rows already there when the list first shows stay still; a newly saved expense slides into place.
+        <LayoutAnimationConfig skipEntering>
+          {shown.map((expense) => (
+            <Animated.View key={expense.id} entering={newRow} layout={moveRow}>
+              <ExpenseRow expense={expense} onPress={() => router.push({ pathname: '/expense/[id]', params: { id: expense.id } })} />
+            </Animated.View>
+          ))}
+        </LayoutAnimationConfig>
       )}
       {expenses.length > shown.length ? (
         <Button variant="quiet" label={`See all ${expenses.length} expenses`} onPress={() => router.push('/expenses')} />
@@ -83,6 +89,9 @@ export function ExpenseList({ expenses, title = 'Recent', limit = 6 }: ExpenseLi
     </Card>
   );
 }
+
+const newRow = FadeInUp.springify().damping(18).stiffness(220).reduceMotion(ReduceMotion.System);
+const moveRow = LinearTransition.duration(240).reduceMotion(ReduceMotion.System);
 
 const TILE = 48;
 const BADGE = 22;

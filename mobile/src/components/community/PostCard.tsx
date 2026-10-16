@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Chip } from '@/components/ui/Chip';
 import { ChatCircleIcon, DotsThreeIcon, FlagIcon, HeartIcon, LightbulbIcon, ProhibitIcon, TrashIcon } from '@/components/ui/icons';
+import { Pop } from '@/components/ui/Pop';
 import { PressableScale } from '@/components/ui/PressableScale';
 import { StoredImage } from '@/components/ui/StoredImage';
 import { reportReasonLabels, type FeedPost, type ReportReason } from '@/domain/community';
@@ -86,7 +87,9 @@ export function PostCard({ post, open = false, preview = false }: { post: FeedPo
             aria-pressed={post.likedByMe}
             aria-label={`${post.likedByMe ? 'Unlike' : 'Like'}. ${post.likeCount} likes`}
             style={styles.action}>
-            <HeartIcon size={22} color={post.likedByMe ? colors.danger : colors.textMuted} weight={post.likedByMe ? 'fill' : 'regular'} />
+            <Pop on={post.likedByMe}>
+              <HeartIcon size={22} color={post.likedByMe ? colors.danger : colors.textMuted} weight={post.likedByMe ? 'fill' : 'regular'} />
+            </Pop>
             <AppText variant="label" color={post.likedByMe ? 'danger' : 'muted'}>
               {String(post.likeCount)}
             </AppText>

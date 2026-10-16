@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { ComingSoon } from '@/components/ComingSoon';
+import { InstallAppCard } from '@/components/InstallAppCard';
 import { DemoDateCard } from '@/components/me/DemoDateCard';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -87,6 +88,7 @@ export default function MeScreen() {
           <AppText color="muted">{`Earlier trips: ${pastTrips.map((t) => t.city).join(', ')}`}</AppText>
         ) : null}
       </Card>
+      <InstallAppCard />
       <DemoDateCard />
       <Card>
         <AppText variant="heading">Demo data</AppText>

@@ -1,6 +1,7 @@
 import { Image, type ImageStyle } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import Animated, { cancelAnimation, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 import { ReceiptIcon } from '@/components/ui/icons';
 import { imageStore } from '@/services/imageStore';
@@ -31,17 +32,31 @@ export interface StoredImageProps {
   contentFit?: 'cover' | 'contain';
 }
 
-/** A receipt photo kept on the phone, with a plain placeholder while it loads or if it is missing. */
+/** A grey tile that gently breathes while something loads, so the screen does not look stuck. Still when motion is reduced. */
+export function LoadingTile({ style, alt }: { style: StyleProp<ViewStyle>; alt: string }) {
+  const reduceMotion = useReducedMotion();
+  const opacity = useSharedValue(1);
+  useEffect(() => {
+    if (reduceMotion) return;
+    opacity.set(withRepeat(withTiming(0.55, { duration: 700 }), -1, true));
+    return () => cancelAnimation(opacity);
+  }, [opacity, reduceMotion]);
+  const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.get() }));
+  return <Animated.View style={[styles.placeholder, style, animatedStyle]} aria-label={`${alt} (loading)`} role="img" />;
+}
+
+/** A receipt photo kept on the phone, with a placeholder while it loads or if it is missing. */
 export function StoredImage({ id, alt, style, contentFit = 'cover' }: StoredImageProps) {
   const uri = useStoredImage(id);
-  if (!uri) {
+  if (uri === undefined) return <LoadingTile style={style} alt={alt} />;
+  if (uri === null) {
     return (
-      <View style={[styles.placeholder, style]} aria-label={uri === null ? `${alt} (photo not available)` : alt} role="img">
+      <View style={[styles.placeholder, style]} aria-label={`${alt} (photo not available)`} role="img">
         <ReceiptIcon size={20} color={colors.textMuted} />
       </View>
     );
   }
-  return <Image source={{ uri }} style={style as StyleProp<ImageStyle>} contentFit={contentFit} accessibilityLabel={alt} />;
+  return <Image source={{ uri }} style={style as StyleProp<ImageStyle>} contentFit={contentFit} accessibilityLabel={alt} transition={150} />;
 }
 
 const styles = StyleSheet.create({

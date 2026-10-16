@@ -109,7 +109,7 @@ export default function PlanTripScreen() {
       reserveMyr: reserve,
       categoryPlanMyr: Object.fromEntries(CATEGORIES.map((c, index) => [c, categoryAmounts[index] ?? 0])) as Record<Category, number>,
     });
-    if (result.ok) router.replace('/');
+    if (result.ok) router.dismissTo('/');
     else setSaveProblems(result.problems.map((problem) => tripProblemMessages[problem]));
   };
 
