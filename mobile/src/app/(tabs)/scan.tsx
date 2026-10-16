@@ -11,12 +11,14 @@ import { Card } from '@/components/ui/Card';
 import { ChoiceChips } from '@/components/ui/ChoiceChips';
 import { Screen } from '@/components/ui/Screen';
 import { useAppData } from '@/state/AppDataProvider';
+import { useSavedToast } from '@/state/SavedToastProvider';
 
 type Mode = 'receipt' | 'menu' | 'type';
 
 export default function ScanScreen() {
   const router = useRouter();
   const { trip, today, addExpense } = useAppData();
+  const { showSaved } = useSavedToast();
   // Opening Scan with ?mode=type (e.g. "Type it in instead" after a failed scan) starts on the form.
   const params = useLocalSearchParams<{ mode?: string }>();
   const [mode, setMode] = useState<Mode>(params.mode === 'type' ? 'type' : 'receipt');
@@ -55,6 +57,7 @@ export default function ScanScreen() {
           onSubmit={(draft, rate) => {
             const result = addExpense(draft, rate);
             if (result.ok) {
+              showSaved('Expense saved');
               setFormVersion(formVersion + 1);
               router.navigate('/');
             }

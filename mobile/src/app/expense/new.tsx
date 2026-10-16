@@ -10,6 +10,7 @@ import { isIsoDate } from '@/domain/dates';
 import { currencies, type CurrencyCode } from '@/domain/money';
 import type { ExpenseDraft } from '@/services/expenseService';
 import { useAppData } from '@/state/AppDataProvider';
+import { useSavedToast } from '@/state/SavedToastProvider';
 
 /** Values passed in from a menu's "Log this as an expense". Anything malformed is ignored. */
 function menuOrder(params: Record<string, string | string[] | undefined>, today: string): ExpenseDraft | undefined {
@@ -23,6 +24,7 @@ function menuOrder(params: Record<string, string | string[] | undefined>, today:
 export default function NewExpenseScreen() {
   const router = useRouter();
   const { trip, today, addExpense } = useAppData();
+  const { showSaved } = useSavedToast();
   const params = useLocalSearchParams();
   const fromMenu = useMemo(() => menuOrder(params, today), [params, today]);
   // "Forgot something?" on Home opens this screen on the day that was missed.
@@ -51,7 +53,10 @@ export default function NewExpenseScreen() {
         submitLabel="Save expense"
         onSubmit={(draft, rate) => {
           const result = addExpense(draft, rate, { source: fromMenu ? 'menu' : 'manual' });
-          if (result.ok) router.dismissTo('/');
+          if (result.ok) {
+            showSaved(fromMenu ? 'Order logged' : 'Expense saved');
+            router.dismissTo('/');
+          }
           return result;
         }}
       />

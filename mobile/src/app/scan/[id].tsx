@@ -18,6 +18,7 @@ import { rateQuoteFor } from '@/services/fxService';
 import { draftFromScan, previewExpense, receiptDetailsFromScan, reviewHighlights } from '@/services/receiptReview';
 import type { PendingScan } from '@/services/scanQueue';
 import { useAppData } from '@/state/AppDataProvider';
+import { useSavedToast } from '@/state/SavedToastProvider';
 import { useFx } from '@/state/FxProvider';
 import { useScanQueue } from '@/state/ScanQueueProvider';
 import { colors, spacing } from '@/theme/tokens';
@@ -98,6 +99,7 @@ export default function ScanReviewScreen() {
 function Review({ item, onSaved, onDiscard }: { item: PendingScan; onSaved: () => void; onDiscard: () => void }) {
   const router = useRouter();
   const { data, today, addExpense } = useAppData();
+  const { showSaved } = useSavedToast();
   const { rates } = useFx();
   // The user's answer to "is this a tax-free shop?", when the receipt does not say.
   const [shopIsTaxFree, setShopIsTaxFree] = useState<boolean | undefined>(undefined);
@@ -165,6 +167,7 @@ function Review({ item, onSaved, onDiscard }: { item: PendingScan; onSaved: () =
         onSubmit={(draft, rate) => {
           const result = addExpense(draft, rate, { source: 'scan', receipt: details, taxRefund });
           if (result.ok) {
+            showSaved('Receipt saved');
             onSaved();
             router.dismissTo('/');
           }
