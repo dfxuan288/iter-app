@@ -32,7 +32,7 @@ export default function MenuScreen() {
         <Card style={styles.card}>
           <AppText variant="heading">This menu is no longer here</AppText>
           <AppText color="muted">ITER keeps your 10 most recent menus.</AppText>
-          <Button label="Back to Scan" onPress={() => router.replace('/scan')} />
+          <Button label="Back to Scan" onPress={() => router.dismissTo('/scan')} />
         </Card>
       </StackScreen>
     );
@@ -62,7 +62,7 @@ export default function MenuScreen() {
             variant="quiet"
             onPress={() => {
               remove(record.id);
-              router.replace('/scan');
+              router.dismissTo('/scan');
             }}
           />
         ) : null}

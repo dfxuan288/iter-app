@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
+import { AnimatedMoney } from '@/components/ui/AnimatedMoney';
 import { AppText } from '@/components/ui/AppText';
 import { AirplaneTakeoffIcon, CaretRightIcon, CoinsIcon } from '@/components/ui/icons';
 import { PressableScale } from '@/components/ui/PressableScale';
@@ -39,9 +40,14 @@ export function RefundCard({ summary, trip, today }: { summary: RefundSummary; t
         <Icon size={22} color={remind ? colors.warning : colors.accentText} weight="fill" />
       </View>
       <View style={styles.text}>
-        <AppText variant="bodyStrong" color={remind ? 'warning' : 'primary'}>
-          {title}
-        </AppText>
+        {remind ? (
+          <AppText variant="bodyStrong" color="warning">
+            {title}
+          </AppText>
+        ) : (
+          // The total ticks up when a refundable receipt is saved (brief §10).
+          <AnimatedMoney sen={summary.toCollectMyr} template={(total) => `Up to ${total} tax refund to collect`} trimZeros={false} variant="bodyStrong" />
+        )}
         <AppText variant="caption" color={remind ? 'warning' : 'muted'}>
           {detail}
         </AppText>

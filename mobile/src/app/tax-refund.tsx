@@ -3,6 +3,7 @@ import { Linking, StyleSheet, View } from 'react-native';
 
 import { RefundBadge } from '@/components/tax/RefundBadge';
 import { RefundStatusPicker } from '@/components/tax/RefundStatusPicker';
+import { AnimatedMoney } from '@/components/ui/AnimatedMoney';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -55,7 +56,7 @@ export default function TaxRefundScreen() {
         <AppText variant="label" color="accent">
           To collect when you leave
         </AppText>
-        <AppText variant="display" style={styles.total}>{`Up to ${rm(summary.toCollectMyr)}`}</AppText>
+        <AnimatedMoney sen={summary.toCollectMyr} template={(amount) => `Up to ${amount}`} trimZeros={false} variant="display" style={styles.total} />
         <AppText color="muted">
           {summary.eligible.length === 0
             ? 'Nothing yet. Scan receipts from tax-free shops and ITER checks each one.'

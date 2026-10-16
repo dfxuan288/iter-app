@@ -1,0 +1,19 @@
+{
+  "name": "ITER: travel money",
+  "short_name": "ITER",
+  "description": "Smarter journeys. Safer spends. Know what is safe to spend each day of your trip.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EDF5F4",
+  "theme_color": "#EDF5F4",
+  "lang": "en",
+  "categories": ["finance", "travel"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

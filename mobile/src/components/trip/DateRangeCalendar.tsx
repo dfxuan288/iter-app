@@ -60,24 +60,30 @@ export function DateRangeCalendar({ value, onChange, minDate }: DateRangeCalenda
           {week.map((date, dayIndex) => {
             if (date === null) return <View key={`empty-${dayIndex}`} style={styles.cell} />;
             const disabled = date < minDate;
-            const isEdge = date === value.start || date === value.end;
-            const inRange = value.start !== null && value.end !== null && isWithin(date, value.start, value.end);
+            const isStart = date === value.start;
+            const isEnd = date === value.end;
+            const isEdge = isStart || isEnd;
+            const hasRange = value.start !== null && value.end !== null && value.start !== value.end;
+            const inRange = hasRange && isWithin(date, value.start as IsoDate, value.end as IsoDate);
             return (
-              <Pressable
-                key={date}
-                disabled={disabled}
-                onPress={() => onChange(nextRange(value, date))}
-                role="button"
-                aria-label={`${formatFullDate(date)}${isEdge ? ', selected' : ''}`}
-                aria-disabled={disabled}
-                style={[styles.cell, inRange && styles.inRange, isEdge && styles.edge]}>
-                <AppText
-                  variant={isEdge ? 'bodyStrong' : 'body'}
-                  color={isEdge ? 'inverse' : disabled ? 'muted' : 'primary'}
-                  style={disabled && styles.disabledText}>
-                  {Number(date.slice(8, 10))}
-                </AppText>
-              </Pressable>
+              <View key={date} style={styles.cell}>
+                {/* The band runs behind the whole range, so it joins up with the first and last day's circles. */}
+                {inRange ? <View style={[styles.band, isStart && styles.bandFromMiddle, isEnd && styles.bandToMiddle]} /> : null}
+                <Pressable
+                  disabled={disabled}
+                  onPress={() => onChange(nextRange(value, date))}
+                  role="button"
+                  aria-label={`${formatFullDate(date)}${isStart ? ', first day' : isEnd ? ', last day' : inRange ? ', in your trip' : ''}`}
+                  aria-disabled={disabled}
+                  style={[styles.day, isEdge && styles.edge]}>
+                  <AppText
+                    variant={isEdge ? 'bodyStrong' : 'body'}
+                    color={isEdge ? 'inverse' : disabled ? 'muted' : 'primary'}
+                    style={disabled && styles.disabledText}>
+                    {Number(date.slice(8, 10))}
+                  </AppText>
+                </Pressable>
+              </View>
             );
           })}
         </View>
@@ -90,8 +96,12 @@ const styles = StyleSheet.create({
   calendar: { backgroundColor: colors.card, borderRadius: radius.card, padding: spacing.lg, gap: spacing.xs },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.sm },
   week: { flexDirection: 'row' },
-  cell: { flex: 1, height: MIN_TOUCH_TARGET, alignItems: 'center', justifyContent: 'center', borderRadius: radius.pill },
-  inRange: { backgroundColor: colors.accentSoft, borderRadius: 0 },
-  edge: { backgroundColor: colors.navy, borderRadius: radius.pill },
+  cell: { flex: 1, height: MIN_TOUCH_TARGET, alignItems: 'center', justifyContent: 'center' },
+  band: { position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, backgroundColor: colors.accentSoft },
+  // The first day's band starts at its centre; the last day's stops at its centre, under the circles.
+  bandFromMiddle: { left: '50%' },
+  bandToMiddle: { right: '50%' },
+  day: { width: MIN_TOUCH_TARGET, height: MIN_TOUCH_TARGET, alignItems: 'center', justifyContent: 'center', borderRadius: radius.pill },
+  edge: { backgroundColor: colors.navy },
   disabledText: { opacity: 0.45 },
 });

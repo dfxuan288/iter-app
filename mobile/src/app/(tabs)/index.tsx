@@ -6,6 +6,7 @@ import { CategoryList } from '@/components/home/CategoryList';
 import { DailySpendBars } from '@/components/home/DailySpendBars';
 import { ExpenseList } from '@/components/home/ExpenseList';
 import { MissedDayCard } from '@/components/home/MissedDayCard';
+import { InstallAppCard } from '@/components/InstallAppCard';
 import { PaceWarning } from '@/components/home/PaceWarning';
 import { RefundCard } from '@/components/home/RefundCard';
 import { SafeToSpendCard } from '@/components/home/SafeToSpendCard';
@@ -90,6 +91,7 @@ export default function HomeScreen() {
         <SafeToSpendCard trip={trip} summary={summary} />
       </Reveal>
       <Button label="Add an expense" variant="accent" icon={PlusIcon} onPress={() => router.push('/expense/new')} />
+      <InstallAppCard dismissible />
       <RefundCard summary={summarizeRefunds(trip, data.expenses)} trip={trip} today={today} />
       <PaceWarning summary={summary} />
       {missedDay ? <MissedDayCard day={missedDay} /> : null}

@@ -51,7 +51,7 @@ export default function NewExpenseScreen() {
         submitLabel="Save expense"
         onSubmit={(draft, rate) => {
           const result = addExpense(draft, rate, { source: fromMenu ? 'menu' : 'manual' });
-          if (result.ok) router.replace('/');
+          if (result.ok) router.dismissTo('/');
           return result;
         }}
       />

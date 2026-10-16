@@ -71,6 +71,11 @@ branches get their own preview address, so work in progress can be checked befor
 The settings Vercel needs are in `vercel.json`; nothing has to be configured by hand except the
 secret keys below.
 
+**Put it on a phone like an app**: open the live address on the phone, then tap **Download ITER** (Home or Me).
+On Android it installs straight away; on iPhone, in Safari, tap Share, then "Add to Home Screen". Opened from the home
+screen it runs full screen, without the browser's bars. If you added it before 16 Oct 2026, remove the old icon and
+add it again to get full screen.
+
 ### Secret keys
 
 Receipt scanning and menu translation use the Anthropic API, and the daily exchange rates are

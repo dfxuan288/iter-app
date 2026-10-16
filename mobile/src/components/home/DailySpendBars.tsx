@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui/AppText';
 import { Card } from '@/components/ui/Card';
+import { GrowBar } from '@/components/ui/GrowBar';
 import type { DailySpend } from '@/domain/budget';
 import { formatDayMonth, weekdayShort } from '@/domain/dates';
 import { formatMoney } from '@/domain/money';
@@ -62,7 +63,8 @@ export function DailySpendBars({ days }: { days: DailySpend[] }) {
                     </AppText>
                   </View>
                 ) : null}
-                <View
+                <GrowBar
+                  index={index}
                   style={[
                     styles.bar,
                     { height },

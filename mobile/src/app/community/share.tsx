@@ -87,7 +87,7 @@ export default function ShareScreen() {
       post({ destinationId, type: 'post', body: text, photoId });
     }
     if (router.canGoBack()) router.back();
-    else router.replace('/community');
+    else router.dismissTo('/community');
   };
 
   const previewPost: FeedPost | null = sharedSummary
