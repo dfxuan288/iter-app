@@ -9,6 +9,7 @@ import { AppDataProvider } from '@/state/AppDataProvider';
 import { CommunityProvider } from '@/state/CommunityProvider';
 import { FxProvider } from '@/state/FxProvider';
 import { MenuProvider } from '@/state/MenuProvider';
+import { SavedToastProvider } from '@/state/SavedToastProvider';
 import { ScanQueueProvider } from '@/state/ScanQueueProvider';
 import { colors, MAX_APP_WIDTH } from '@/theme/tokens';
 
@@ -57,7 +58,9 @@ export default function RootLayout() {
                 {/* On a laptop or projector the app is shown as a centred phone-width column. */}
                 <View style={styles.backdrop}>
                   <View style={styles.app}>
-                    <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right', contentStyle: { backgroundColor: colors.surface } }} />
+                    <SavedToastProvider>
+                      <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right', contentStyle: { backgroundColor: colors.surface } }} />
+                    </SavedToastProvider>
                   </View>
                 </View>
               </CommunityProvider>

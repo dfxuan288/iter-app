@@ -19,6 +19,7 @@ import { currencies, formatMoney, parseMoneyInput, sumMinor } from '@/domain/mon
 import { CATEGORIES, categoryLabels, type Category } from '@/domain/types';
 import { MAX_TRIP_DAYS, tripProblemMessages } from '@/services/tripService';
 import { useAppData } from '@/state/AppDataProvider';
+import { useSavedToast } from '@/state/SavedToastProvider';
 import { colors, radius, spacing } from '@/theme/tokens';
 
 const STEPS = ['Where', 'When', 'Budget', 'Categories', 'Review'] as const;
@@ -34,6 +35,7 @@ export default function PlanTripScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { today, addTrip } = useAppData();
+  const { showSaved } = useSavedToast();
 
   const [step, setStep] = useState(0);
   const [destinationId, setDestinationId] = useState<string | null>(null);
@@ -109,8 +111,10 @@ export default function PlanTripScreen() {
       reserveMyr: reserve,
       categoryPlanMyr: Object.fromEntries(CATEGORIES.map((c, index) => [c, categoryAmounts[index] ?? 0])) as Record<Category, number>,
     });
-    if (result.ok) router.dismissTo('/');
-    else setSaveProblems(result.problems.map((problem) => tripProblemMessages[problem]));
+    if (result.ok) {
+      showSaved('Trip ready');
+      router.dismissTo('/');
+    } else setSaveProblems(result.problems.map((problem) => tripProblemMessages[problem]));
   };
 
   const perDay = budget !== null && reserve !== null && totalDays ? safeToSpendPerDay(budget, reserve, 0, totalDays) : 0;

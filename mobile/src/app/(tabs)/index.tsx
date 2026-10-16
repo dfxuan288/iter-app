@@ -14,6 +14,7 @@ import { ScanQueueList } from '@/components/scan/ScanQueueList';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { Lottie } from '@/components/ui/Lottie';
 import { IconButton } from '@/components/ui/IconButton';
 import { PlusIcon, WarningIcon } from '@/components/ui/icons';
 import { Reveal } from '@/components/ui/Reveal';
@@ -23,6 +24,8 @@ import { unloggedYesterday } from '@/domain/budget';
 import { summarizeRefunds } from '@/domain/taxRefund';
 import { useAppData } from '@/state/AppDataProvider';
 import { colors, radius, spacing } from '@/theme/tokens';
+
+const planeAnimation = require('@/assets/lottie/plane.json');
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -61,7 +64,8 @@ export default function HomeScreen() {
   if (!trip || !summary) {
     return (
       <Screen title="Safe to spend" top={brand}>
-        <Card>
+        <Card style={styles.noTrip}>
+          <Lottie source={planeAnimation} size={200} height={140} loop style={styles.noTripArt} />
           <AppText variant="heading">No trip yet</AppText>
           <AppText color="muted">
             Tell ITER where you are going and how much you want to spend. It will work out what is safe to spend each day.
@@ -123,6 +127,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: { width: 26, height: 32 },
+  noTrip: { gap: spacing.sm },
+  noTripArt: { alignSelf: 'center' },
   skeletonHero: { height: 380, borderRadius: radius.card, backgroundColor: colors.surfaceSunken },
   skeletonCard: { height: 180, borderRadius: radius.card, backgroundColor: colors.surfaceSunken },
   saveWarning: {

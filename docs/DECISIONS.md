@@ -278,6 +278,19 @@ Team decision. Replaces brief §9.1 to §9.3 and the "essentials" notes above.
   Community photo scrolls slower than the page.
 - Saving or closing a screen now returns to the screen underneath instead of opening a fresh copy of it.
 
+## Lottie animations (16 Oct 2026)
+
+- **Saved tick**: after saving an expense, a scanned receipt, a menu order, edits or a new trip, a small message with
+  a tick that draws itself appears at the top for two seconds ("Receipt saved", "Trip ready"...). Screen readers
+  announce it.
+- **No trip yet**: Home shows a paper plane with drifting clouds.
+- Both animations were drawn for ITER (in `mobile/assets/lottie/`), so there is no licence to check. To use one from
+  LottieFiles instead, replace the JSON file (check its licence first, and record it here).
+- Phones use `lottie-react-native`. The web app uses Airbnb's small `lottie-web` light player instead, because
+  lottie-react-native's web player downloads a 1.9 MB engine from another site on first use (slow on roaming data,
+  fails offline). The player loads only when an animation first shows.
+- With reduced motion on, the finished picture shows without movement.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

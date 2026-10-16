@@ -20,6 +20,7 @@ import { formatMoney } from '@/domain/money';
 import { checkRefund } from '@/domain/taxRefund';
 import { categoryLabels, type Expense } from '@/domain/types';
 import { useAppData } from '@/state/AppDataProvider';
+import { useSavedToast } from '@/state/SavedToastProvider';
 import { colors, spacing } from '@/theme/tokens';
 
 type Mode = 'view' | 'edit' | 'confirm-delete';
@@ -28,6 +29,7 @@ export default function ExpenseDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, today, updateExpense, deleteExpense, updateRefund } = useAppData();
+  const { showSaved } = useSavedToast();
   const [mode, setMode] = useState<Mode>('view');
 
   const expense = data.expenses.find((e) => e.id === id);
@@ -55,7 +57,10 @@ export default function ExpenseDetailScreen() {
           submitLabel="Save changes"
           onSubmit={(draft, rate) => {
             const result = updateExpense(expense.id, draft, rate);
-            if (result.ok) setMode('view');
+            if (result.ok) {
+              showSaved('Changes saved');
+              setMode('view');
+            }
             return result;
           }}
         />
