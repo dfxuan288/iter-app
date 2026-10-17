@@ -9,12 +9,13 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Chip, type ChipTone } from '@/components/ui/Chip';
-import { ArrowsClockwiseIcon } from '@/components/ui/icons';
+import { ArrowsClockwiseIcon, PlayIcon } from '@/components/ui/icons';
 import { Screen } from '@/components/ui/Screen';
 import { env } from '@/config/env';
 import { formatDayMonth } from '@/domain/dates';
 import { useAppData } from '@/state/AppDataProvider';
 import { useCommunity } from '@/state/CommunityProvider';
+import { useLaunch } from '@/state/LaunchProvider';
 import { healthService, type ServerHealth } from '@/services/healthService';
 import type { RequestFailure, RequestResult } from '@/services/http';
 import { colors, spacing } from '@/theme/tokens';
@@ -75,6 +76,7 @@ export default function MeScreen() {
 
   const { data, trip, resetDemo } = useAppData();
   const community = useCommunity();
+  const launch = useLaunch();
   const [confirmingReset, setConfirmingReset] = useState(false);
   const pastTrips = data.trips.filter((t) => t.id !== trip?.id);
 
@@ -116,6 +118,7 @@ export default function MeScreen() {
         ) : (
           <Button label="Reset the demo" variant="quiet" onPress={() => setConfirmingReset(true)} />
         )}
+        <Button label="Replay the launch animation" icon={PlayIcon} variant="quiet" onPress={launch.replay} />
       </Card>
       <Card>
         <AppText variant="heading">Server connection</AppText>

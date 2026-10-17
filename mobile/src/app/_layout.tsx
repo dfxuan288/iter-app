@@ -8,6 +8,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppDataProvider } from '@/state/AppDataProvider';
 import { CommunityProvider } from '@/state/CommunityProvider';
 import { FxProvider } from '@/state/FxProvider';
+import { LaunchProvider } from '@/state/LaunchProvider';
 import { MenuProvider } from '@/state/MenuProvider';
 import { SavedToastProvider } from '@/state/SavedToastProvider';
 import { ScanQueueProvider } from '@/state/ScanQueueProvider';
@@ -59,7 +60,9 @@ export default function RootLayout() {
                 <View style={styles.backdrop}>
                   <View style={styles.app}>
                     <SavedToastProvider>
-                      <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right', contentStyle: { backgroundColor: colors.surface } }} />
+                      <LaunchProvider>
+                        <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right', contentStyle: { backgroundColor: colors.surface } }} />
+                      </LaunchProvider>
                     </SavedToastProvider>
                   </View>
                 </View>
