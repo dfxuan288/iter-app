@@ -1,16 +1,18 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 
-import { formatMoney } from '@/domain/money';
-import { colors, fonts } from '@/theme/tokens';
+import { colors, fonts, radius } from '@/theme/tokens';
 
-import { symbolUri, useLaunchContent } from './launchContent';
+import { LAUNCH_CARD_ID, symbolUri, useLaunchContent } from './launchContent';
 
 /**
  * The launch animation (web app), in the spirit of Netflix's intro: the ITER mark appears with the
  * traveller's city photo inside it, a light sweeps across, then the camera dives into the mark until
- * the photo fills the screen. Today's safe-to-spend amount counts up over it, and the whole scene
- * fades into Home, whose card shows the same photo. About 3.6 seconds; a tap skips it. Not played
- * when the phone is set to reduce motion.
+ * the photo fills the screen. The photo then shrinks into Home's safe-to-spend card, which shows the
+ * same photo, so the launch and the app read as one continuous shot. About 2.9 seconds; a tap skips
+ * it. Not played when the phone is set to reduce motion.
+ *
+ * When Home's photo card is not on screen (the app opened on another page, or safe to spend is
+ * locked), the scene fades into the app instead.
  *
  * Built with the browser's own animation engine (Web Animations) on plain elements, because it
  * needs CSS masks, which React Native's styles do not have. Phone apps use LaunchSplash.tsx.
@@ -20,10 +22,14 @@ import { symbolUri, useLaunchContent } from './launchContent';
 const SYMBOL = { width: 309, height: 384, diveX: 150, diveY: 186 };
 const DIVE_SCALE = 70;
 
-const ms = { reveal: 150, push: 700, dive: 1350, diveEnd: 2050, amount: 2150, exit: 3150, end: 3600 } as const;
+const ms = { reveal: 150, push: 700, dive: 1350, diveEnd: 2000, shrink: 650, settle: 220 } as const;
 
 const easeOut = 'cubic-bezier(0.22, 1, 0.36, 1)';
 const diveEase = 'cubic-bezier(0.7, 0, 0.84, 0)';
+const shrinkEase = 'cubic-bezier(0.65, 0, 0.35, 1)';
+
+/** The same shading as Home's photo card (PhotoCard, scrim "full"), so the photo lands looking identical. */
+const CARD_SCRIM = 'linear-gradient(180deg, rgba(5,59,80,0) 12%, rgba(5,59,80,0.42) 52%, rgba(5,59,80,0.9) 100%)';
 
 function loadImage(uri: string): Promise<boolean> {
   return new Promise((resolve) => {
@@ -40,11 +46,8 @@ export function LaunchSplash({ onDone }: { onDone: () => void }) {
   const masked = useRef<HTMLDivElement>(null);
   const shine = useRef<HTMLDivElement>(null);
   const word = useRef<HTMLDivElement>(null);
-  const full = useRef<HTMLDivElement>(null);
-  const scrim = useRef<HTMLDivElement>(null);
-  const finale = useRef<HTMLDivElement>(null);
-  const ring = useRef<SVGCircleElement>(null);
-  const [amountText, setAmountText] = useState(content.amountSen === null ? '' : formatMoney(0, 'MYR', { trimZeros: true }));
+  const fly = useRef<HTMLDivElement>(null);
+  const flyScrim = useRef<HTMLDivElement>(null);
   const done = useRef(onDone);
   useEffect(() => {
     done.current = onDone;
@@ -56,7 +59,6 @@ export function LaunchSplash({ onDone }: { onDone: () => void }) {
       return;
     }
     const animations: Animation[] = [];
-    let frame = 0;
     let finished = false;
     const finish = () => {
       if (finished) return;
@@ -65,23 +67,54 @@ export function LaunchSplash({ onDone }: { onDone: () => void }) {
     };
     // Safety net: whatever happens (a browser that does not run the animation, a page opened in the
     // background), the launch screen never stays over the app for more than a few seconds.
-    const safety = setTimeout(finish, ms.end + 2500);
-    const play = (element: Element | null, keyframes: Keyframe[], options: KeyframeAnimationOptions) => {
-      if (!element) return;
+    const safety = setTimeout(finish, 6000);
+    const play = (element: Element | null, keyframes: Keyframe[], options: KeyframeAnimationOptions): Animation | null => {
+      if (!element) return null;
       // 'forwards': each step holds its end state, and a later step takes over only once it starts.
-      animations.push(element.animate(keyframes, { fill: 'forwards', ...options }));
+      const animation = element.animate(keyframes, { fill: 'forwards', ...options });
+      animations.push(animation);
+      return animation;
     };
 
     // Tapping skips: a quick fade into the app.
+    const scene = root.current;
     const skip = () => {
-      if (finished) return;
+      if (finished || !scene) return;
       animations.forEach((a) => a.pause());
-      const fade = root.current?.animate([{ opacity: Number(getComputedStyle(root.current).opacity) }, { opacity: 0 }], { duration: 220, fill: 'forwards' });
-      if (fade) fade.onfinish = finish;
+      scene.animate([{ opacity: Number(getComputedStyle(scene).opacity) }, { opacity: 0 }], { duration: 220, fill: 'forwards' }).onfinish = finish;
       setTimeout(finish, 400);
     };
-    const scene = root.current;
     scene?.addEventListener('pointerdown', skip);
+
+    // The landing: the full-screen photo shrinks into Home's card, or the scene fades if there is none.
+    const land = () => {
+      if (finished || !scene) return;
+      const box = scene.getBoundingClientRect();
+      const card = document.getElementById(LAUNCH_CARD_ID)?.getBoundingClientRect();
+      const visible = card && card.width > 0 && card.height > 0 && card.top < box.bottom && card.bottom > box.top;
+      if (!card || !visible) {
+        const fade = play(scene, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(1.05)' }], { duration: 450, easing: 'cubic-bezier(0.4, 0, 1, 1)' });
+        if (fade) fade.onfinish = finish;
+        return;
+      }
+      const target = { left: card.left - box.left, top: card.top - box.top, width: card.width, height: card.height };
+      // The zoomed-in mark is fully covered by the photo now; hide it so it does not show behind the shrinking photo.
+      play(masked.current, [{ opacity: 0 }, { opacity: 0 }], { duration: 1 });
+      play(
+        fly.current,
+        [
+          { left: '0px', top: '0px', width: `${box.width}px`, height: `${box.height}px`, borderRadius: '0px' },
+          { left: `${target.left}px`, top: `${target.top}px`, width: `${target.width}px`, height: `${target.height}px`, borderRadius: `${radius.card}px` },
+        ],
+        { duration: ms.shrink, easing: shrinkEase },
+      );
+      play(flyScrim.current, [{ opacity: 0 }, { opacity: 1 }], { duration: ms.shrink, easing: shrinkEase });
+      // The navy behind clears as the photo shrinks, showing Home around the card.
+      play(scene, [{ backgroundColor: colors.navy }, { backgroundColor: 'rgba(5,59,80,0)' }], { duration: ms.shrink * 0.6, easing: 'ease-out' });
+      // Landed: hand over to the real card underneath.
+      const settle = play(fly.current, [{ opacity: 1 }, { opacity: 0 }], { duration: ms.settle, delay: ms.shrink });
+      if (settle) settle.onfinish = finish;
+    };
 
     let cancelled = false;
     // Wait (briefly) for the images, so the animation never starts on an empty mark.
@@ -89,11 +122,11 @@ export function LaunchSplash({ onDone }: { onDone: () => void }) {
     void Promise.race([Promise.all([loadImage(symbolUri()), content.photoUri ? loadImage(content.photoUri) : Promise.resolve(true)]), timeout]).then(
       ([symbolLoaded]) => {
         if (cancelled) return;
-        if (!symbolLoaded || !root.current) {
+        if (!symbolLoaded || !scene) {
           finish();
           return;
         }
-        const { width, height } = root.current.getBoundingClientRect();
+        const { width, height } = scene.getBoundingClientRect();
         // The mark: about a third of the screen's height, a little above the middle.
         const markHeight = Math.min(height * 0.3, 230);
         const markWidth = (markHeight * SYMBOL.width) / SYMBOL.height;
@@ -105,10 +138,8 @@ export function LaunchSplash({ onDone }: { onDone: () => void }) {
           const h = markHeight * scale;
           const pointX = left + (SYMBOL.diveX / SYMBOL.width) * markWidth;
           const pointY = top + (SYMBOL.diveY / SYMBOL.height) * markHeight;
-          const x = pointX - (SYMBOL.diveX / SYMBOL.width) * w;
-          const y = pointY - (SYMBOL.diveY / SYMBOL.height) * h;
           const size = `${w}px ${h}px`;
-          const position = `${x}px ${y}px`;
+          const position = `${pointX - (SYMBOL.diveX / SYMBOL.width) * w}px ${pointY - (SYMBOL.diveY / SYMBOL.height) * h}px`;
           return { maskSize: size, maskPosition: position, webkitMaskSize: size, webkitMaskPosition: position } as Keyframe;
         };
         if (word.current) word.current.style.top = `${top + markHeight + 20}px`;
@@ -121,51 +152,22 @@ export function LaunchSplash({ onDone }: { onDone: () => void }) {
           delay: 350,
           easing: easeOut,
         });
-        // 2. A light sweeps across the mark, while it slowly pushes in.
+        // 2. A light sweeps across the mark while it slowly pushes in.
         play(shine.current, [{ backgroundPosition: '120% 0' }, { backgroundPosition: '-20% 0' }], { duration: 750, delay: 600, easing: 'ease-in-out' });
         play(shine.current, [{ opacity: 1 }, { opacity: 0 }], { duration: 150, delay: ms.dive - 100 });
         play(word.current, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, delay: ms.dive - 200 });
-        // 3. The dive: the mark grows until the photo fills the screen.
         play(masked.current, [at(1), at(1.08)], { duration: ms.dive - ms.push, delay: ms.push, easing: 'linear' });
-        play(masked.current, [at(1.08), at(DIVE_SCALE)], { duration: ms.diveEnd - ms.dive, delay: ms.dive, easing: diveEase });
-        play(full.current, [{ opacity: 0, transform: 'scale(1.08)' }, { opacity: 1, transform: 'scale(1.06)', offset: 0.12 }, { opacity: 1, transform: 'scale(1)' }], {
-          duration: ms.end - ms.diveEnd + 150,
-          delay: ms.diveEnd - 150,
-          easing: 'ease-out',
-        });
-        // 4. Today's amount counts up over the photo.
-        play(scrim.current, [{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: ms.amount - 100 });
-        play(finale.current, [{ opacity: 0, transform: 'translateY(-50%) scale(0.92)' }, { opacity: 1, transform: 'translateY(-50%)' }], { duration: 450, delay: ms.amount, easing: easeOut });
-        play(ring.current, [{ strokeDashoffset: 314 }, { strokeDashoffset: 0 }], { duration: 850, delay: ms.amount + 50, easing: easeOut });
-        // The number follows the ring's own progress, so the two always move together.
-        const ringAnimation = animations[animations.length - 1];
-        if (content.amountSen !== null && ringAnimation) {
-          const target = content.amountSen;
-          const tick = () => {
-            const local = Number(ringAnimation.currentTime ?? 0) - (ms.amount + 50);
-            const t = Math.min(1, Math.max(0, local / 850));
-            // Whole ringgit while counting (no flickering sen), the exact amount at the end.
-            const shown = t < 1 ? Math.round((target * (1 - (1 - t) ** 3)) / 100) * 100 : target;
-            setAmountText(formatMoney(shown, 'MYR', { trimZeros: true }));
-            if (t < 1) frame = requestAnimationFrame(tick);
-          };
-          frame = requestAnimationFrame(tick);
-        }
-        // 5. Into the app: the scene lifts away, showing Home underneath.
-        play(root.current, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(1.06)' }], {
-          duration: ms.end - ms.exit,
-          delay: ms.exit,
-          easing: 'cubic-bezier(0.4, 0, 1, 1)',
-        });
-        const last = animations[animations.length - 1];
-        if (last) last.onfinish = finish;
+        // 3. The dive: the mark grows until the photo fills the screen; the full photo takes over at the end.
+        const dive = play(masked.current, [at(1.08), at(DIVE_SCALE)], { duration: ms.diveEnd - ms.dive, delay: ms.dive, easing: diveEase });
+        play(fly.current, [{ opacity: 0 }, { opacity: 1 }], { duration: 150, delay: ms.diveEnd - 150 });
+        // 4. Then it shrinks into Home's card, measured now, after Home has finished appearing underneath.
+        if (dive) dive.onfinish = land;
       },
     );
 
     return () => {
       cancelled = true;
       clearTimeout(safety);
-      cancelAnimationFrame(frame);
       scene?.removeEventListener('pointerdown', skip);
       animations.forEach((a) => a.cancel());
     };
@@ -175,7 +177,7 @@ export function LaunchSplash({ onDone }: { onDone: () => void }) {
 
   const photo: CSSProperties = content.photoUri
     ? { backgroundImage: `url("${content.photoUri}")`, backgroundSize: 'cover', backgroundPosition: 'center' }
-    : { backgroundImage: `linear-gradient(160deg, ${colors.navy}, ${colors.teal} 55%, ${colors.accent})` };
+    : { backgroundImage: `linear-gradient(135deg, ${colors.navy}, ${colors.teal} 55%, ${colors.accent})` };
   const mask: CSSProperties = {
     maskImage: `url("${symbolUri()}")`,
     WebkitMaskImage: `url("${symbolUri()}")`,
@@ -191,51 +193,16 @@ export function LaunchSplash({ onDone }: { onDone: () => void }) {
       <div ref={word} style={styles.word} aria-hidden>
         ITER
       </div>
-      <div ref={full} style={{ ...styles.layer, ...photo, opacity: 0 }} />
-      <div ref={scrim} style={{ ...styles.layer, ...styles.scrim, opacity: 0 }} />
-      <div ref={finale} style={{ ...styles.finale, opacity: 0 }} aria-hidden>
-        {content.amountSen !== null ? (
-          <div style={styles.ringBox}>
-            <svg width="200" height="200" viewBox="0 0 120 120" style={styles.ring}>
-              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="5" />
-              <circle
-                ref={ring}
-                cx="60"
-                cy="60"
-                r="50"
-                fill="none"
-                stroke={colors.accent}
-                strokeWidth="5"
-                strokeLinecap="round"
-                strokeDasharray="314"
-                strokeDashoffset="314"
-                transform="rotate(-90 60 60)"
-              />
-            </svg>
-            <div style={styles.amount}>{amountText}</div>
-          </div>
-        ) : (
-          <div style={{ ...styles.amount, letterSpacing: '0.28em' }}>ITER</div>
-        )}
-        <div style={styles.caption}>{content.caption}</div>
+      <div ref={fly} style={{ ...styles.fly, ...photo }}>
+        <div ref={flyScrim} style={{ ...styles.layer, background: CARD_SCRIM, opacity: 0 }} />
       </div>
     </div>
   );
 }
 
 const styles: Record<string, CSSProperties> = {
-  root: {
-    position: 'absolute',
-    inset: 0,
-    zIndex: 50,
-    overflow: 'hidden',
-    backgroundColor: colors.navy,
-    cursor: 'pointer',
-    transformOrigin: '50% 42%',
-    // The same system font as the app's body text (plain elements do not inherit React Native's).
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-  },
-  layer: { position: 'absolute', inset: 0, willChange: 'transform, opacity' },
+  root: { position: 'absolute', inset: 0, zIndex: 50, overflow: 'hidden', backgroundColor: colors.navy, cursor: 'pointer', transformOrigin: '50% 42%' },
+  layer: { position: 'absolute', inset: 0, willChange: 'opacity' },
   shine: {
     backgroundImage: 'linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.55) 50%, transparent 62%)',
     backgroundSize: '300% 100%',
@@ -255,20 +222,6 @@ const styles: Record<string, CSSProperties> = {
     paddingLeft: '0.28em',
     opacity: 0,
   },
-  scrim: { background: 'linear-gradient(180deg, rgba(5,59,80,0.15), rgba(5,59,80,0.55) 45%, rgba(5,59,80,0.75))' },
-  finale: {
-    position: 'absolute',
-    left: 24,
-    right: 24,
-    top: '42%',
-    transform: 'translateY(-50%)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 14,
-  },
-  ringBox: { position: 'relative', width: 200, height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  ring: { position: 'absolute', inset: 0 },
-  amount: { color: colors.white, fontFamily: fonts.displaySemiBold, fontSize: 40, letterSpacing: -1, textShadow: '0 2px 16px rgba(5,59,80,0.6)' },
-  caption: { color: 'rgba(255,255,255,0.9)', fontSize: 16, textAlign: 'center', textShadow: '0 1px 10px rgba(5,59,80,0.7)' },
+  // The photo that flies into Home's card. It is resized (not scaled), so it keeps the card's crop as it shrinks.
+  fly: { position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', overflow: 'hidden', opacity: 0 },
 };

@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
@@ -20,10 +21,7 @@ import { healthService, type ServerHealth } from '@/services/healthService';
 import type { RequestFailure, RequestResult } from '@/services/http';
 import { colors, spacing } from '@/theme/tokens';
 
-type ServerState =
-  | { kind: 'checking' }
-  | { kind: 'connected'; health: ServerHealth }
-  | { kind: 'failed'; reason: RequestFailure };
+type ServerState = { kind: 'checking' } | { kind: 'connected'; health: ServerHealth } | { kind: 'failed'; reason: RequestFailure };
 
 const failureMessages: Record<RequestFailure, string> = {
   offline: 'The server could not be reached. Check your internet connection, or that the server is running.',
@@ -77,6 +75,7 @@ export default function MeScreen() {
   const { data, trip, resetDemo } = useAppData();
   const community = useCommunity();
   const launch = useLaunch();
+  const router = useRouter();
   const [confirmingReset, setConfirmingReset] = useState(false);
   const pastTrips = data.trips.filter((t) => t.id !== trip?.id);
 
@@ -85,9 +84,7 @@ export default function MeScreen() {
       <Card>
         <AppText variant="heading">{data.user.displayName}</AppText>
         {trip ? <AppText color="muted">{`Current trip: ${trip.city}, ${formatDayMonth(trip.startDate)} to ${formatDayMonth(trip.endDate)}`}</AppText> : null}
-        {pastTrips.length > 0 ? (
-          <AppText color="muted">{`Earlier trips: ${pastTrips.map((t) => t.city).join(', ')}`}</AppText>
-        ) : null}
+        {pastTrips.length > 0 ? <AppText color="muted">{`Earlier trips: ${pastTrips.map((t) => t.city).join(', ')}`}</AppText> : null}
       </Card>
       <MyPlanCard />
       <InstallAppCard />
@@ -118,7 +115,16 @@ export default function MeScreen() {
         ) : (
           <Button label="Reset the demo" variant="quiet" onPress={() => setConfirmingReset(true)} />
         )}
-        <Button label="Replay the launch animation" icon={PlayIcon} variant="quiet" onPress={launch.replay} />
+        <Button
+          label="Replay the launch animation"
+          icon={PlayIcon}
+          variant="quiet"
+          onPress={() => {
+            // From Home, so the photo can land on Home's card.
+            router.navigate('/');
+            launch.replay();
+          }}
+        />
       </Card>
       <Card>
         <AppText variant="heading">Server connection</AppText>
@@ -135,13 +141,7 @@ export default function MeScreen() {
           accessibilityLabel="Check the server connection again"
         />
       </Card>
-      <ComingSoon
-        phase="Later"
-        features={[
-          'Trip history',
-          'Settings: notifications, scan quality, privacy, delete my data',
-        ]}
-      />
+      <ComingSoon phase="Later" features={['Trip history', 'Settings: notifications, scan quality, privacy, delete my data']} />
       <AppText variant="caption" color="muted" align="center">
         {`ITER prototype v${env.appVersion} · demo data, no real money`}
       </AppText>

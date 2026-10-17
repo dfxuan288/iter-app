@@ -6,6 +6,7 @@ import { Chip, type ChipTone } from '@/components/ui/Chip';
 import { CheckCircleIcon, LightningIcon, MapPinIcon, WarningIcon, type Icon } from '@/components/ui/icons';
 import { GlassPanel } from '@/components/ui/OceanCard';
 import { PhotoCard } from '@/components/ui/PhotoCard';
+import { LAUNCH_CARD_ID } from '@/components/launch/launchContent';
 import { findDestination } from '@/data/destinations';
 import type { BudgetStatus, TripSummary } from '@/domain/budget';
 import { formatDayMonth } from '@/domain/dates';
@@ -72,7 +73,7 @@ export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSu
   const status = statusChips[summary.status];
 
   return (
-    <PhotoCard photo={destination?.photo} photoAlt={destination?.photoAlt}>
+    <PhotoCard photo={destination?.photo} photoAlt={destination?.photoAlt} nativeID={LAUNCH_CARD_ID}>
       <View style={styles.chipRow}>
         <Chip tone="photo" icon={MapPinIcon} label={trip.city} />
         <Chip tone="photo" label={dayChip} />
