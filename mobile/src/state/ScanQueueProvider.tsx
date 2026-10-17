@@ -46,7 +46,7 @@ const RETRY_EVERY_MS = 30_000;
 const browserOnline = () => (Platform.OS === 'web' && typeof navigator !== 'undefined' ? navigator.onLine !== false : true);
 
 export function ScanQueueProvider({ children }: { children: ReactNode }) {
-  const { data, trip } = useAppData();
+  const { data, trip, scansLeft, recordScan } = useAppData();
   const [queue, setQueue] = useState<ScanQueue>([]);
   const [loaded, setLoaded] = useState(false);
   const [online, setOnline] = useState(browserOnline);
@@ -124,6 +124,7 @@ export function ScanQueueProvider({ children }: { children: ReactNode }) {
   const startScan = useCallback<ScanQueueContextValue['startScan']>(
     async ({ uri, sampleId }) => {
       if (!trip) return { ok: false, message: 'Plan a trip first, so the receipt has somewhere to go.' };
+      if (scansLeft === 0) return { ok: false, message: 'No scans left today. See Plans in the Me tab for a pass with unlimited scans.' };
       let prepared;
       try {
         prepared = await prepareReceiptPhoto(uri);
@@ -137,10 +138,11 @@ export function ScanQueueProvider({ children }: { children: ReactNode }) {
       }
       const keepImageId = (await imageStore.save(`${id}-keep`, prepared.keep.base64)) ? `${id}-keep` : null;
       setQueue((current) => addPending(current, { id, tripId: trip.id, createdAt: new Date().toISOString(), scanImageId, keepImageId, sampleId }));
+      recordScan();
       setWaitingForNetwork(false);
       return { ok: true, id };
     },
-    [trip],
+    [trip, scansLeft, recordScan],
   );
 
   const value = useMemo<ScanQueueContextValue>(() => {

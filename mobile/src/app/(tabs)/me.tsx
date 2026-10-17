@@ -4,6 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { ComingSoon } from '@/components/ComingSoon';
 import { InstallAppCard } from '@/components/InstallAppCard';
 import { DemoDateCard } from '@/components/me/DemoDateCard';
+import { MyPlanCard } from '@/components/plan/MyPlanCard';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -11,7 +12,6 @@ import { Chip, type ChipTone } from '@/components/ui/Chip';
 import { ArrowsClockwiseIcon } from '@/components/ui/icons';
 import { Screen } from '@/components/ui/Screen';
 import { env } from '@/config/env';
-import { planFor } from '@/config/plans';
 import { formatDayMonth } from '@/domain/dates';
 import { useAppData } from '@/state/AppDataProvider';
 import { useCommunity } from '@/state/CommunityProvider';
@@ -82,12 +82,12 @@ export default function MeScreen() {
     <Screen title="Me" subtitle="Profile, plan and settings.">
       <Card>
         <AppText variant="heading">{data.user.displayName}</AppText>
-        <Chip label={planFor(data.user.planTier).name} tone="success" />
         {trip ? <AppText color="muted">{`Current trip: ${trip.city}, ${formatDayMonth(trip.startDate)} to ${formatDayMonth(trip.endDate)}`}</AppText> : null}
         {pastTrips.length > 0 ? (
           <AppText color="muted">{`Earlier trips: ${pastTrips.map((t) => t.city).join(', ')}`}</AppText>
         ) : null}
       </Card>
+      <MyPlanCard />
       <InstallAppCard />
       <DemoDateCard />
       <Card>
@@ -133,9 +133,8 @@ export default function MeScreen() {
         />
       </Card>
       <ComingSoon
-        phase="Phase 8"
+        phase="Later"
         features={[
-          'Free, Trip Pass and Premium (purchases simulated)',
           'Trip history',
           'Settings: notifications, scan quality, privacy, delete my data',
         ]}

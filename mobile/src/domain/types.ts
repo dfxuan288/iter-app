@@ -1,6 +1,7 @@
 import type { IsoDate } from '@/domain/dates';
 import type { AppClock } from '@/domain/clock';
 import type { CurrencyCode } from '@/domain/money';
+import type { PlanState } from '@/domain/plan';
 
 /** Shapes of the data ITER stores (brief §8). Amounts are integers in minor units. */
 
@@ -20,14 +21,11 @@ export const categoryLabels: Record<Category, string> = {
   shopping: 'Shopping',
 };
 
-export type PlanTier = 'free' | 'trip_pass' | 'premium';
-
 export interface User {
   id: string;
   displayName: string;
   email: string;
   homeCurrency: 'MYR';
-  planTier: PlanTier;
   createdAt: string;
 }
 
@@ -129,4 +127,6 @@ export interface AppData {
   activeTripId: string | null;
   /** What "today" is inside the app (see domain/clock.ts). Missing means the demo's default date. */
   clock?: AppClock;
+  /** Free trial and passes (see domain/plan.ts). */
+  plan: PlanState;
 }

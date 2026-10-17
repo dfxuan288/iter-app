@@ -175,3 +175,19 @@ describe('old saved data with hotel ("stay") entries, from before 15 Oct 2026', 
     expect(summary.safePerDayMyr).toBe(RM(200));
   });
 });
+
+describe('saved data from before plans existed (before 17 Oct 2026)', () => {
+  it('gets the demo plan and keeps everything else', async () => {
+    const { plan: _plan, ...old } = createSeedData();
+    const { data, outcome } = await loadAppData(memoryStorage({ 'iter.appData.v1': JSON.stringify({ ...old, user: { ...old.user, planTier: 'trip_pass' } }) }));
+    expect(outcome).toBe('loaded');
+    expect(data.plan).toEqual(createSeedData().plan);
+    expect(data.expenses).toHaveLength(old.expenses.length);
+  });
+
+  it('keeps a plan that was saved', async () => {
+    const saved = { ...createSeedData(), plan: { trialStartedOn: '2026-12-01', passes: [] } };
+    const { data } = await loadAppData(memoryStorage({ 'iter.appData.v1': JSON.stringify(saved) }));
+    expect(data.plan).toEqual({ trialStartedOn: '2026-12-01', passes: [] });
+  });
+});

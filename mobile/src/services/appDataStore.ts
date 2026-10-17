@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { createSeedData } from '@/data/seed';
+import { createSeedData, createSeedPlan } from '@/data/seed';
+import { readPlan } from '@/domain/plan';
 import { isCategory, type AppData, type CategoryBudget, type Expense } from '@/domain/types';
 
 /**
@@ -53,6 +54,15 @@ export interface LoadResult {
   outcome: LoadOutcome;
 }
 
+/**
+ * Data saved before plans existed (before 17 Oct 2026) has no plan: it gets the demo's plan, since
+ * every saved copy so far started from the demo. A damaged plan is replaced the same way.
+ */
+export function withPlan(data: AppData): AppData {
+  const plan = readPlan((data as Partial<AppData>).plan);
+  return plan ? { ...data, plan } : { ...data, plan: createSeedPlan() };
+}
+
 function isAppData(value: unknown): value is AppData {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
@@ -79,7 +89,7 @@ export async function loadAppData(storage: KeyValueStorage = AsyncStorage): Prom
   try {
     const parsed: unknown = JSON.parse(raw);
     if (isAppData(parsed)) {
-      const { data, retired } = withoutRetiredCategories(parsed);
+      const { data, retired } = withoutRetiredCategories(withPlan(parsed));
       if (retired.expenses.length > 0 || retired.categoryBudgets.length > 0) {
         try {
           const earlier = JSON.parse((await storage.getItem(RETIRED_KEY)) ?? 'null') as Retired | null;

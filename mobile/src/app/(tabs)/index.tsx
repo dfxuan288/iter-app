@@ -10,6 +10,7 @@ import { InstallAppCard } from '@/components/InstallAppCard';
 import { PaceWarning } from '@/components/home/PaceWarning';
 import { RefundCard } from '@/components/home/RefundCard';
 import { SafeToSpendCard } from '@/components/home/SafeToSpendCard';
+import { LockedFeature } from '@/components/plan/LockedFeature';
 import { ScanQueueList } from '@/components/scan/ScanQueueList';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -20,6 +21,7 @@ import { PlusIcon, WarningIcon } from '@/components/ui/icons';
 import { Reveal } from '@/components/ui/Reveal';
 import { Screen } from '@/components/ui/Screen';
 import { formatDayMonth } from '@/domain/dates';
+import { formatMoney } from '@/domain/money';
 import { unloggedYesterday } from '@/domain/budget';
 import { summarizeRefunds } from '@/domain/taxRefund';
 import { useAppData } from '@/state/AppDataProvider';
@@ -29,7 +31,7 @@ const planeAnimation = require('@/assets/lottie/plane.json');
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { ready, trip, summary, expenses, saveFailed, data, today } = useAppData();
+  const { ready, trip, summary, expenses, saveFailed, data, today, access } = useAppData();
   const planTrip = () => router.push('/trip/new');
 
   const brand = (
@@ -77,6 +79,9 @@ export default function HomeScreen() {
   }
 
   const missedDay = unloggedYesterday(summary);
+  // Free version during a trip: the daily amount, warnings and tax refund need a pass; the
+  // person's own records (spent, remaining, the lists) stay.
+  const locked = access.level === 'free' && summary.phase === 'active';
 
   return (
     <Screen
@@ -92,12 +97,37 @@ export default function HomeScreen() {
         </View>
       ) : null}
       <Reveal index={0}>
-        <SafeToSpendCard trip={trip} summary={summary} />
+        {locked ? (
+          <LockedFeature
+            title="Safe to spend needs a pass"
+            body={`Day ${summary.dayNumber} of ${summary.totalDays}. Get a Day Pass or a 7-Day Pass to see what is safe to spend today, with warnings before you run short.`}>
+            <View style={styles.lockedFigures}>
+              <View style={styles.flex}>
+                <AppText variant="caption" color="muted">
+                  Spent so far
+                </AppText>
+                <AppText variant="number">{formatMoney(summary.spentMyr, 'MYR', { trimZeros: true })}</AppText>
+              </View>
+              <View style={styles.flex}>
+                <AppText variant="caption" color="muted">
+                  Remaining
+                </AppText>
+                <AppText variant="number">{formatMoney(summary.remainingMyr, 'MYR', { trimZeros: true })}</AppText>
+              </View>
+            </View>
+          </LockedFeature>
+        ) : (
+          <SafeToSpendCard trip={trip} summary={summary} />
+        )}
       </Reveal>
       <Button label="Add an expense" variant="accent" icon={PlusIcon} onPress={() => router.push('/expense/new')} />
       <InstallAppCard dismissible />
-      <RefundCard summary={summarizeRefunds(trip, data.expenses)} trip={trip} today={today} />
-      <PaceWarning summary={summary} />
+      {locked ? null : (
+        <>
+          <RefundCard summary={summarizeRefunds(trip, data.expenses)} trip={trip} today={today} />
+          <PaceWarning summary={summary} />
+        </>
+      )}
       {missedDay ? <MissedDayCard day={missedDay} /> : null}
       <ScanQueueList tripId={trip.id} title="Receipts not saved yet" />
       <Reveal index={1}>
@@ -128,6 +158,8 @@ const styles = StyleSheet.create({
   },
   logo: { width: 26, height: 32 },
   noTrip: { gap: spacing.sm },
+  lockedFigures: { flexDirection: 'row', gap: spacing.lg },
+  flex: { flex: 1 },
   noTripArt: { alignSelf: 'center' },
   skeletonHero: { height: 380, borderRadius: radius.card, backgroundColor: colors.surfaceSunken },
   skeletonCard: { height: 180, borderRadius: radius.card, backgroundColor: colors.surfaceSunken },

@@ -3,6 +3,7 @@ import { Linking, StyleSheet, View } from 'react-native';
 
 import { RefundBadge } from '@/components/tax/RefundBadge';
 import { RefundStatusPicker } from '@/components/tax/RefundStatusPicker';
+import { LockedFeature } from '@/components/plan/LockedFeature';
 import { AnimatedMoney } from '@/components/ui/AnimatedMoney';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -21,7 +22,7 @@ const rm = (sen: number) => formatMoney(sen, 'MYR');
 /** The tax refund tracker (brief §7.7): what to collect, from which purchases, and how to claim it. */
 export default function TaxRefundScreen() {
   const router = useRouter();
-  const { data, trip, today, updateRefund, toggleRefundChecklist } = useAppData();
+  const { data, trip, today, updateRefund, toggleRefundChecklist, access } = useAppData();
 
   if (!trip) {
     return (
@@ -30,6 +31,17 @@ export default function TaxRefundScreen() {
           <AppText variant="heading">Plan a trip first</AppText>
           <Button label="Plan a trip" onPress={() => router.push('/trip/new')} />
         </Card>
+      </StackScreen>
+    );
+  }
+
+  if (access.level === 'free') {
+    return (
+      <StackScreen title="Tax refund">
+        <LockedFeature
+          title="The tax refund tracker needs a pass"
+          body="See what you can claim back, what to bring and when to claim, with a Day Pass or a 7-Day Pass. Your receipts are kept."
+        />
       </StackScreen>
     );
   }

@@ -1,6 +1,7 @@
 import { SEED_RATE_DATE, seedRatesPerMyr } from '@/config/demo';
 import type { IsoDate } from '@/domain/dates';
 import { convertToMyr, toMinor } from '@/domain/money';
+import type { PlanState } from '@/domain/plan';
 import type { AppData, Category, CategoryBudget, Expense, ExpenseSource, ReceiptDetails, Trip, User } from '@/domain/types';
 
 /**
@@ -19,7 +20,6 @@ const user: User = {
   displayName: 'Amanda T.',
   email: 'amanda@example.com',
   homeCurrency: 'MYR',
-  planTier: 'trip_pass',
   createdAt: '2026-10-20T09:00:00.000Z',
 };
 
@@ -171,6 +171,17 @@ const expenses: Expense[] = rows.map(([purchaseDate, merchantName, note, categor
 });
 
 /** A fresh copy of the demo data, so resetting the demo never shares objects with live state. */
+/**
+ * Amanda's plan (see config/plans.ts): the free trial ran on days 1 to 3 (9 to 11 Nov). She bought
+ * a 7-Day Pass on day 2, which started by itself on day 4 and runs to the last day, 18 Nov.
+ */
+export function createSeedPlan(): PlanState {
+  return {
+    trialStartedOn: '2026-11-09',
+    passes: [{ id: 'pass-demo-week', kind: 'week', purchasedOn: '2026-11-10', startsOn: '2026-11-12' }],
+  };
+}
+
 export function createSeedData(): AppData {
   return {
     version: 1,
@@ -179,5 +190,6 @@ export function createSeedData(): AppData {
     categoryBudgets: categoryBudgets.map((budget) => ({ ...budget })),
     expenses: expenses.map((expense) => ({ ...expense })),
     activeTripId: DEMO_TRIP_ID,
+    plan: createSeedPlan(),
   };
 }

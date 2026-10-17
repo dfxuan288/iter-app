@@ -39,6 +39,14 @@ export function addDays(date: IsoDate, days: number): IsoDate {
   return fromUtcMs(toUtcMs(date) + days * MS_PER_DAY);
 }
 
+/** The same day `months` later. A day the month does not have becomes its last day (31 Jan + 1 month = 28 or 29 Feb). */
+export function addMonths(date: IsoDate, months: number): IsoDate {
+  const d = new Date(toUtcMs(date));
+  const target = d.getUTCMonth() + months;
+  const lastDay = new Date(Date.UTC(d.getUTCFullYear(), target + 1, 0)).getUTCDate();
+  return toIsoDate(d.getUTCFullYear(), target, Math.min(d.getUTCDate(), lastDay));
+}
+
 /** Whole days from `from` to `to`; negative when `to` is earlier. */
 export function diffDays(from: IsoDate, to: IsoDate): number {
   return Math.round((toUtcMs(to) - toUtcMs(from)) / MS_PER_DAY);
@@ -66,6 +74,13 @@ const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
 export function formatDayMonth(date: IsoDate): string {
   const d = new Date(toUtcMs(date));
   return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
+}
+
+/** "9–11 Nov", or "30 Nov–2 Dec" across two months. */
+export function formatDayRange(start: IsoDate, end: IsoDate): string {
+  if (start === end) return formatDayMonth(start);
+  const sameMonth = start.slice(0, 7) === end.slice(0, 7);
+  return sameMonth ? `${Number(start.slice(8, 10))}–${formatDayMonth(end)}` : `${formatDayMonth(start)}–${formatDayMonth(end)}`;
 }
 
 /** "14 Nov 2026" */

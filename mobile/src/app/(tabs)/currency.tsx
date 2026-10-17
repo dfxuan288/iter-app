@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { RateChart } from '@/components/currency/RateChart';
+import { LockedFeature } from '@/components/plan/LockedFeature';
 import { rateLabel } from '@/components/expense/rateLabel';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -45,7 +46,7 @@ function describeChange(percent: number | null): { text: string; tone: 'muted' |
 }
 
 export default function CurrencyScreen() {
-  const { trip } = useAppData();
+  const { trip, access } = useAppData();
   const { rates, refreshing, refresh } = useFx();
   const tripCurrency = trip && trip.localCurrency !== 'MYR' ? (trip.localCurrency as ForeignCurrency) : 'JPY';
 
@@ -80,6 +81,17 @@ export default function CurrencyScreen() {
     first && last
       ? `${unitLabel(currency)} in Ringgit over the last ${days} days: from ${formatExact(first.rate)} to ${formatExact(last.rate)}.`
       : 'Rate history is not available.';
+
+  if (access.level === 'free') {
+    return (
+      <Screen title="Currency" subtitle="Live rates against the Ringgit.">
+        <LockedFeature
+          title="Live rates need a pass"
+          body="The converter and rate history come with the free trial and every pass. Expenses you type in are still converted to Ringgit."
+        />
+      </Screen>
+    );
+  }
 
   return (
     <Screen title="Currency" subtitle="Live rates against the Ringgit.">
