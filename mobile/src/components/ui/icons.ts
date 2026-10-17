@@ -34,6 +34,7 @@ export { MinusIcon } from 'phosphor-react-native/src/icons/Minus';
 export { NotePencilIcon } from 'phosphor-react-native/src/icons/NotePencil';
 export { PaperPlaneTiltIcon } from 'phosphor-react-native/src/icons/PaperPlaneTilt';
 export { PencilSimpleIcon } from 'phosphor-react-native/src/icons/PencilSimple';
+export { PlayIcon } from 'phosphor-react-native/src/icons/Play';
 export { PlusIcon } from 'phosphor-react-native/src/icons/Plus';
 export { PlusSquareIcon } from 'phosphor-react-native/src/icons/PlusSquare';
 export { ProhibitIcon } from 'phosphor-react-native/src/icons/Prohibit';

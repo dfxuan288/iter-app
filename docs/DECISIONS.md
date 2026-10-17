@@ -316,6 +316,20 @@ Prices live in `mobile/src/config/plans.ts`; the rules are pure functions in `mo
   protect the AI bill. With real purchases (RevenueCat, brief §5), the plan would be checked on the server.
 - Trip history (Premium in the brief) has no plan now; it stays on the "Later" list.
 
+## Launch animation (18 Oct 2026)
+
+Chosen from four directions (inspired by Dribbble launch shots), "like the Netflix intro":
+the ITER mark appears on navy with the trip's city photo inside it (Tokyo for the demo) and the
+wordmark below; a light sweeps across; the camera dives into the mark until the photo fills the
+screen; a ring fills while today's safe-to-spend amount counts up ("RM 200, safe to spend today in
+Tokyo"); then the scene lifts away into Home, whose card shows the same photo. About 3.6 seconds.
+
+- Plays once each time the app opens; Me → "Replay the launch animation" plays it again (for presentations).
+- A tap skips it. Not played when the phone is set to reduce motion. It never stays more than about 6 seconds.
+- In the free version, or with no trip, it shows "ITER, Smarter journeys. Safer spends." instead of the amount.
+- Web: `mobile/src/components/launch/LaunchSplash.web.tsx` (browser animations and CSS masks). The phone
+  apps get a simple wordmark fade (`LaunchSplash.tsx`) until a masking library is added.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.
