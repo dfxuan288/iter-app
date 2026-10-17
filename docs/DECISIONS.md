@@ -321,12 +321,14 @@ Prices live in `mobile/src/config/plans.ts`; the rules are pure functions in `mo
 Chosen from four directions (inspired by Dribbble launch shots), "like the Netflix intro":
 the ITER mark appears on navy with the trip's city photo inside it (Tokyo for the demo) and the
 wordmark below; a light sweeps across; the camera dives into the mark until the photo fills the
-screen; a ring fills while today's safe-to-spend amount counts up ("RM 200, safe to spend today in
-Tokyo"); then the scene lifts away into Home, whose card shows the same photo. About 3.6 seconds.
+screen; then the photo shrinks into Home's safe-to-spend card, which shows the same photo, so launch
+and app read as one continuous shot. About 2.9 seconds. (A first version ended with a ring and the
+amount counting up; the team preferred landing on the card, so the amount is shown once, on Home.)
 
-- Plays once each time the app opens; Me → "Replay the launch animation" plays it again (for presentations).
-- A tap skips it. Not played when the phone is set to reduce motion. It never stays more than about 6 seconds.
-- In the free version, or with no trip, it shows "ITER, Smarter journeys. Safer spends." instead of the amount.
+- Plays once each time the app opens; Me → "Replay the launch animation" goes to Home and plays it again.
+- A tap skips it. Not played when the phone is set to reduce motion. It never stays more than 6 seconds.
+- When Home's photo card is not on screen (the app opened on another page, or safe to spend is locked),
+  the scene fades into the app instead of shrinking.
 - Web: `mobile/src/components/launch/LaunchSplash.web.tsx` (browser animations and CSS masks). The phone
   apps get a simple wordmark fade (`LaunchSplash.tsx`) until a masking library is added.
 

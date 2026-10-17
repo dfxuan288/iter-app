@@ -17,6 +17,8 @@ export interface PhotoCardProps {
   scrim?: 'full' | 'bottom';
   style?: StyleProp<ViewStyle>;
   contentStyle?: StyleProp<ViewStyle>;
+  /** An id other code can find the card by (the launch animation lands on Home's card). */
+  nativeID?: string;
 }
 
 const scrims = {
@@ -29,9 +31,9 @@ const scrims = {
  * photo, so the card still looks right while the photo loads or if it cannot be fetched (offline).
  * A navy scrim over the photo keeps white text readable whatever the picture is.
  */
-export function PhotoCard({ photo, photoAlt, children, scrim = 'full', style, contentStyle }: PhotoCardProps) {
+export function PhotoCard({ photo, photoAlt, children, scrim = 'full', style, contentStyle, nativeID }: PhotoCardProps) {
   return (
-    <View style={[styles.shadow, style]}>
+    <View style={[styles.shadow, style]} nativeID={nativeID}>
       <View style={styles.clip}>
         <LinearGradient colors={gradients.ocean} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
         {photo !== undefined ? (
