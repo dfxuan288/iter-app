@@ -23,7 +23,7 @@ export interface MenuContextValue {
 const MenuContext = createContext<MenuContextValue | null>(null);
 
 export function MenuProvider({ children }: { children: ReactNode }) {
-  const { data, trip } = useAppData();
+  const { data, trip, scansLeft, recordScan } = useAppData();
   const [menus, setMenus] = useState<MenuRecord[]>([]);
   const [loaded, setLoaded] = useState(false);
   const tripsRef = useRef(data.trips);
@@ -62,6 +62,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
   const startMenuScan = useCallback<MenuContextValue['startMenuScan']>(
     async ({ uri, sampleId, currencyHint }) => {
       if (!trip) return { ok: false, message: 'Plan a trip first.' };
+      if (scansLeft === 0) return { ok: false, message: 'No scans left today. See Plans in the Me tab for a pass with unlimited scans.' };
       let prepared;
       try {
         prepared = await prepareReceiptPhoto(uri);
@@ -84,9 +85,10 @@ export function MenuProvider({ children }: { children: ReactNode }) {
         return next;
       });
       void read(record);
+      recordScan();
       return { ok: true, id };
     },
-    [trip, read],
+    [trip, read, scansLeft, recordScan],
   );
 
   const value = useMemo<MenuContextValue>(

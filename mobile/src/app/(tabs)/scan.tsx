@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { ExpenseForm } from '@/components/expense/ExpenseForm';
+import { LockedFeature } from '@/components/plan/LockedFeature';
 import { MenuCapture } from '@/components/scan/MenuCapture';
 import { ReceiptCapture } from '@/components/scan/ReceiptCapture';
 import { ScanQueueList } from '@/components/scan/ScanQueueList';
@@ -10,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ChoiceChips } from '@/components/ui/ChoiceChips';
 import { Screen } from '@/components/ui/Screen';
+import { planConfig } from '@/config/plans';
 import { useAppData } from '@/state/AppDataProvider';
 import { useSavedToast } from '@/state/SavedToastProvider';
 
@@ -17,7 +19,7 @@ type Mode = 'receipt' | 'menu' | 'type';
 
 export default function ScanScreen() {
   const router = useRouter();
-  const { trip, today, addExpense } = useAppData();
+  const { trip, today, addExpense, access, scansLeft } = useAppData();
   const { showSaved } = useSavedToast();
   // Opening Scan with ?mode=type (e.g. "Type it in instead" after a failed scan) starts on the form.
   const params = useLocalSearchParams<{ mode?: string }>();
@@ -38,14 +40,29 @@ export default function ScanScreen() {
         ]}
       />
 
-      {mode === 'receipt' && trip ? (
-        <>
-          <ScanQueueList tripId={trip.id} />
-          <ReceiptCapture />
-        </>
+      {mode !== 'type' && trip && access.level === 'free' ? (
+        <LockedFeature
+          title="Scanning needs a pass"
+          body="AI receipt and menu scanning come with the free trial and every pass. You can still type expenses in: tap Type it."
+        />
       ) : null}
 
-      {mode === 'menu' && trip ? <MenuCapture tripId={trip.id} /> : null}
+      {mode !== 'type' && trip && access.level === 'full' && scansLeft === 0 ? (
+        <LockedFeature
+          title="No scans left today"
+          body={`The free trial includes ${planConfig.trial.scansPerDay} scans a day. A Day Pass or 7-Day Pass has no daily limit, or type this one in: tap Type it.`}
+        />
+      ) : null}
+
+      {mode !== 'type' && trip && access.level === 'full' && scansLeft !== null && scansLeft > 0 ? (
+        <AppText variant="caption" color="muted">{`Free trial: ${scansLeft} of ${planConfig.trial.scansPerDay} scans left today.`}</AppText>
+      ) : null}
+
+      {/* Receipts already sent stay here to review, even when no new scans can be made. */}
+      {mode === 'receipt' && trip ? <ScanQueueList tripId={trip.id} /> : null}
+      {mode === 'receipt' && trip && scansLeft !== 0 ? <ReceiptCapture /> : null}
+
+      {mode === 'menu' && trip && scansLeft !== 0 ? <MenuCapture tripId={trip.id} /> : null}
 
       {mode === 'type' && trip ? (
         <ExpenseForm

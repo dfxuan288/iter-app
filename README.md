@@ -27,8 +27,8 @@ database, as recommended for the course.
 | 5. Tax refund: Japan rules as config, eligibility on every receipt, tracker, checklist, reminder | Done |
 | 6. Menu translate: dishes in English, Ringgit prices with tax and service, pork and alcohol flags, log your order | Done |
 | 7. Community: typical trip per destination, feed, likes, comments, report and block, share your trip | Done |
-| 8. Plans and Me | Next |
-| 9. Polish | |
+| 8. Plans and Me: free trial, Day Pass, 7-Day Pass (purchases simulated), free version, My plan | Done |
+| 9. Polish | Next |
 | 10. Final deployment checks and demo rehearsal | |
 
 ## Run it on your computer
@@ -134,7 +134,7 @@ These are deliberately kept out of the screens, each in one config file:
 
 | What | Where | Arrives in |
 |---|---|---|
-| Plan prices and free scan limits (placeholders) | `mobile/src/config/plans.ts` | Now |
+| Plans: free trial length and its daily scans, pass prices and days, the "Every plan includes" list, how long unused passes last | `mobile/src/config/plans.ts` | Now |
 | Server-side daily scan limits that protect the AI bill | `backend/scan/limits.ts` | Now |
 | Safe-to-spend rules: the "spending fast" threshold and the suggested split | `mobile/src/config/budget.ts` | Now |
 | The demo date and the seeded exchange rates | `mobile/src/config/demo.ts` | Now |

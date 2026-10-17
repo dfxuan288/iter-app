@@ -1,10 +1,12 @@
-import { createContext, use, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, use, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import { defaultClock } from '@/config/demo';
+import type { PassKind } from '@/config/plans';
 import { createSeedData } from '@/data/seed';
 import { summarizeTrip, type TripSummary } from '@/domain/budget';
 import { readClock, shiftDay, todayFor, type AppClock } from '@/domain/clock';
 import type { IsoDate } from '@/domain/dates';
+import { accessOn, activatePlan, addPass, recordScan, scansLeftToday, type Access } from '@/domain/plan';
 import type { AppData, Expense, ExpenseSource, ReceiptDetails, RefundState, Trip } from '@/domain/types';
 import { loadAppData, saveAppData, type LoadOutcome } from '@/services/appDataStore';
 import { imageStore } from '@/services/imageStore';
@@ -42,6 +44,14 @@ export interface AppDataContextValue {
   /** Moves the demo date a day forward (1) or back (-1). */
   shiftDay: (days: number) => void;
   setClock: (clock: AppClock) => void;
+  /** What today's plan allows: everything, or the free version (see domain/plan.ts). */
+  access: Access;
+  /** Scans left today: `null` means no limit. */
+  scansLeft: number | null;
+  /** Simulated purchase: no money moves. The pass starts by itself when a trip day needs it. */
+  buyPass: (kind: PassKind) => void;
+  /** Counts a scan sent today, for the free trial's daily limit. */
+  recordScan: () => void;
 }
 
 export type ExpenseActionResult = { ok: true } | { ok: false; problems: ExpenseProblem[] };
@@ -65,7 +75,24 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // The trial or a saved pass starts by itself on a trip day that is not covered (domain/plan.ts).
+  // This is worked out from the data each time; it is written to the phone with the next change.
+  const current = useMemo(() => {
+    const today = todayFor(readClock(data.clock, defaultClock), new Date());
+    const plan = activatePlan(data.plan, activeTrip(data), today);
+    return plan === data.plan ? data : { ...data, plan };
+  }, [data]);
+
+  // Scans finish after a wait; this lets them count against the latest data, not the data from when they started.
+  const latest = useRef(current);
+  useEffect(() => {
+    latest.current = current;
+    // Save a plan that just started (for example the trial on day 1), so it is not started again elsewhere.
+    if (current !== data && loadOutcome !== null) void saveAppData(current).then((saved) => setSaveFailed(!saved));
+  }, [current, data, loadOutcome]);
+
   const value = useMemo<AppDataContextValue>(() => {
+    const data = current;
     const clock = readClock(data.clock, defaultClock);
     const today = todayFor(clock, new Date());
     const trip = activeTrip(data);
@@ -81,6 +108,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
     // Every change goes through here: update the screen at once, then write it to the phone.
     const commit = (next: AppData) => {
+      latest.current = next;
       setData(next);
       void saveAppData(next).then((saved) => setSaveFailed(!saved));
     };
@@ -126,14 +154,23 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       clock,
       shiftDay: (days) => commit({ ...data, clock: shiftDay(clock, days, new Date()) }),
       setClock: (next) => commit({ ...data, clock: next }),
+      access: accessOn(data.plan, trip, today),
+      scansLeft: scansLeftToday(data.plan, trip, today),
+      buyPass: (kind) => commit({ ...data, plan: activatePlan(addPass(data.plan, kind, newPassId(), today), trip, today) }),
+      recordScan: () => {
+        const now = latest.current;
+        commit({ ...now, plan: recordScan(now.plan, todayFor(readClock(now.clock, defaultClock), new Date())) });
+      },
     };
-  }, [data, loadOutcome, saveFailed]);
+  }, [current, loadOutcome, saveFailed]);
 
   // Nothing is shown until the phone's saved data has been read (it takes a moment). Otherwise a
   // screen could briefly show the demo data, and a tap in that moment would save over the real data.
   if (loadOutcome === null) return null;
   return <AppDataContext value={value}>{children}</AppDataContext>;
 }
+
+const newPassId = () => `pass-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
 export function useAppData(): AppDataContextValue {
   const value = use(AppDataContext);

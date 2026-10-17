@@ -291,6 +291,31 @@ Team decision. Replaces brief §9.1 to §9.3 and the "essentials" notes above.
   fails offline). The player loads only when an animation first shows.
 - With reduced motion on, the finished picture shows without movement.
 
+## Plans: pay only for the days you travel (17 Oct 2026)
+
+Replaces the brief's Free / Trip Pass (RM 9.90 per trip) / Premium (RM 12.90 a month), §9.9.
+Prices live in `mobile/src/config/plans.ts`; the rules are pure functions in `mobile/src/domain/plan.ts`, with tests.
+
+- **Free trial**, RM 0, 3 days: everything, up to 10 scans a day. It starts by itself on the first trip day ITER is
+  used (day 1 if opened that day) and is used once.
+- **Day Pass**, RM 2.90, 1 day. **7-Day Pass**, RM 12.90, 7 days in a row ("Best value", about RM 1.84 a day).
+  Everything, no daily scan limit. Every button is active; buying asks "Buy 7-Day Pass for RM 12.90?", then shows the
+  saved tick "7-Day Pass added". Purchases are simulated: no money moves.
+- **A pass starts by itself** on the next trip day not already covered (the trial first, then the oldest pass). Extra
+  passes wait as "Saved for later" and expire 12 months after purchase if never started.
+- **Free version** (a trip day with no trial or pass): Community, planning trips and the person's own records (typing
+  expenses in, the lists, spent and remaining). Locked, each with a "See plans" button: safe to spend and warnings,
+  receipt and menu scanning, the tax refund tracker, the Currency tab. Nothing saved is ever lost or hidden for good.
+- **Before a trip starts** (and with no trip), everything is open, so people can plan.
+- **Me tab "My plan" card**: what covers today ("7-Day Pass: Active until 18 Nov"), "Free trial used 9–11 Nov", one
+  line per kind of saved pass ("Saved for later: 1 × 7-Day Pass · Expires 15 Nov 2027") and "See plans". Plans is a
+  screen opened from there and from every lock, not a sixth tab.
+- **Demo**: Amanda's trial ran 9–11 Nov; she bought a 7-Day Pass on 10 Nov, which started on 12 Nov and runs to 18 Nov.
+  Data saved on a phone before this change gets the same plan.
+- The 10-a-day trial limit is counted on the phone. The server's own daily limits (`backend/scan/limits.ts`) still
+  protect the AI bill. With real purchases (RevenueCat, brief §5), the plan would be checked on the server.
+- Trip history (Premium in the brief) has no plan now; it stays on the "Later" list.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.
