@@ -6,6 +6,7 @@ import { ComingSoon } from '@/components/ComingSoon';
 import { InstallAppCard } from '@/components/InstallAppCard';
 import { DemoDateCard } from '@/components/me/DemoDateCard';
 import { MyPlanCard } from '@/components/plan/MyPlanCard';
+import { WrappedCard } from '@/components/home/WrappedCard';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -72,7 +73,7 @@ export default function MeScreen() {
 
   const status = describe(server);
 
-  const { data, trip, resetDemo } = useAppData();
+  const { data, trip, summary, resetDemo } = useAppData();
   const community = useCommunity();
   const launch = useLaunch();
   const router = useRouter();
@@ -86,6 +87,7 @@ export default function MeScreen() {
         {trip ? <AppText color="muted">{`Current trip: ${trip.city}, ${formatDayMonth(trip.startDate)} to ${formatDayMonth(trip.endDate)}`}</AppText> : null}
         {pastTrips.length > 0 ? <AppText color="muted">{`Earlier trips: ${pastTrips.map((t) => t.city).join(', ')}`}</AppText> : null}
       </Card>
+      {trip && summary && summary.phase !== 'upcoming' ? <WrappedCard city={trip.city} final={summary.phase === 'ended'} /> : null}
       <MyPlanCard />
       <InstallAppCard />
       <DemoDateCard />

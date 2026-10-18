@@ -11,6 +11,7 @@ import { PaceWarning } from '@/components/home/PaceWarning';
 import { RefundCard } from '@/components/home/RefundCard';
 import { SafeToSpendCard } from '@/components/home/SafeToSpendCard';
 import { LockedFeature } from '@/components/plan/LockedFeature';
+import { WrappedCard } from '@/components/home/WrappedCard';
 import { ScanQueueList } from '@/components/scan/ScanQueueList';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -120,6 +121,7 @@ export default function HomeScreen() {
           <SafeToSpendCard trip={trip} summary={summary} />
         )}
       </Reveal>
+      {summary.phase === 'ended' ? <WrappedCard city={trip.city} final /> : null}
       <Button label="Add an expense" variant="accent" icon={PlusIcon} onPress={() => router.push('/expense/new')} />
       <InstallAppCard dismissible />
       {locked ? null : (
