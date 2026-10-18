@@ -24,6 +24,7 @@ export { ExportIcon } from 'phosphor-react-native/src/icons/Export';
 export { FlagIcon } from 'phosphor-react-native/src/icons/Flag';
 export { ForkKnifeIcon } from 'phosphor-react-native/src/icons/ForkKnife';
 export { GlobeHemisphereEastIcon } from 'phosphor-react-native/src/icons/GlobeHemisphereEast';
+export { HandWavingIcon } from 'phosphor-react-native/src/icons/HandWaving';
 export { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
 export { HourglassIcon } from 'phosphor-react-native/src/icons/Hourglass';
 export { HouseIcon } from 'phosphor-react-native/src/icons/House';

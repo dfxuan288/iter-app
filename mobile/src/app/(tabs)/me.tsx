@@ -5,16 +5,16 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { ComingSoon } from '@/components/ComingSoon';
 import { InstallAppCard } from '@/components/InstallAppCard';
 import { DemoDateCard } from '@/components/me/DemoDateCard';
+import { TripsCard } from '@/components/me/TripsCard';
 import { MyPlanCard } from '@/components/plan/MyPlanCard';
 import { WrappedCard } from '@/components/home/WrappedCard';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Chip, type ChipTone } from '@/components/ui/Chip';
-import { ArrowsClockwiseIcon, PlayIcon } from '@/components/ui/icons';
+import { ArrowsClockwiseIcon, HandWavingIcon, PlayIcon } from '@/components/ui/icons';
 import { Screen } from '@/components/ui/Screen';
 import { env } from '@/config/env';
-import { formatDayMonth } from '@/domain/dates';
 import { useAppData } from '@/state/AppDataProvider';
 import { useCommunity } from '@/state/CommunityProvider';
 import { useLaunch } from '@/state/LaunchProvider';
@@ -78,16 +78,15 @@ export default function MeScreen() {
   const launch = useLaunch();
   const router = useRouter();
   const [confirmingReset, setConfirmingReset] = useState(false);
-  const pastTrips = data.trips.filter((t) => t.id !== trip?.id);
 
   return (
     <Screen title="Me" subtitle="Profile, plan and settings.">
       <Card>
         <AppText variant="heading">{data.user.displayName}</AppText>
-        {trip ? <AppText color="muted">{`Current trip: ${trip.city}, ${formatDayMonth(trip.startDate)} to ${formatDayMonth(trip.endDate)}`}</AppText> : null}
-        {pastTrips.length > 0 ? <AppText color="muted">{`Earlier trips: ${pastTrips.map((t) => t.city).join(', ')}`}</AppText> : null}
+        <AppText color="muted">{data.user.email}</AppText>
       </Card>
       {trip && summary && summary.phase !== 'upcoming' ? <WrappedCard city={trip.city} final={summary.phase === 'ended'} /> : null}
+      <TripsCard />
       <MyPlanCard />
       <InstallAppCard />
       <DemoDateCard />
@@ -117,6 +116,7 @@ export default function MeScreen() {
         ) : (
           <Button label="Reset the demo" variant="quiet" onPress={() => setConfirmingReset(true)} />
         )}
+        <Button label="Show the welcome screens" icon={HandWavingIcon} variant="quiet" onPress={launch.showWelcome} />
         <Button
           label="Replay the launch animation"
           icon={PlayIcon}

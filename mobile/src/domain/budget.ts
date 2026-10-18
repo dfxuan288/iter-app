@@ -65,6 +65,15 @@ export interface TripSummary {
   forecast: Forecast;
 }
 
+/**
+ * The expenses that have happened by `today`. With the demo's date control set to an earlier day,
+ * expenses dated later have not happened yet, so they are left out of every figure until the date
+ * reaches them (nothing is deleted).
+ */
+export function expensesAsOf<T extends { purchaseDate: IsoDate }>(expenses: readonly T[], today: IsoDate): T[] {
+  return expenses.filter((expense) => expense.purchaseDate <= today);
+}
+
 export interface TripSummaryInput {
   trip: Trip;
   categoryBudgets: readonly CategoryBudget[];

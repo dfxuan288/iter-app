@@ -361,6 +361,20 @@ amount counting up; the team preferred landing on the card, so the amount is sho
 - The lists are generated: `npx tsx scripts/make-currencies.ts` writes `mobile/src/domain/currencyList.ts`,
   `mobile/src/data/countries.ts` and `backend/currencyList.ts`. Add a country there, then run it.
 
+## Onboarding, trip history, demo date fix (18 Oct 2026)
+
+- **Bug (found by the team)**: with the app date moved back to day 1, Home showed RM 102.78 spent that day but
+  RM 1,450 "spent so far", because expenses dated later still counted. The app now shows a trip as of the app
+  date: later-dated expenses are left out of every figure (totals, lists, tax refund, Trip Wrapped) until the date
+  reaches them, and Home says how many are waiting. Nothing is deleted. (`expensesAsOf` in domain/budget.ts, tested.)
+- **Welcome screens** (after the team's onboarding reference): on first open, three pages over a dotted map with
+  floating ITER cards: safe to spend, scanning, and what trips cost (with the free-trial line). Skip, swipe or Next;
+  "Get started" ends it and it is remembered on the phone. Me → "Show the welcome screens" shows them again. The launch
+  animation fades (instead of landing on Home's card) when the welcome screens come next.
+- **Your trips** (Me): every trip, newest first, with what was spent; tap one to make it the current trip. **Remove this
+  trip** asks first, then deletes the trip, its expenses and receipt photos; the newest other trip becomes current, or
+  Home shows "No trip yet" (with the paper plane).
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

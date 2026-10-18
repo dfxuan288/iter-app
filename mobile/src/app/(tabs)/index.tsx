@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Lottie } from '@/components/ui/Lottie';
 import { IconButton } from '@/components/ui/IconButton';
-import { PlusIcon, WarningIcon } from '@/components/ui/icons';
+import { CalendarBlankIcon, PlusIcon, WarningIcon } from '@/components/ui/icons';
 import { Reveal } from '@/components/ui/Reveal';
 import { Screen } from '@/components/ui/Screen';
 import { formatDayMonth } from '@/domain/dates';
@@ -32,7 +32,7 @@ const planeAnimation = require('@/assets/lottie/plane.json');
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { ready, trip, summary, expenses, saveFailed, data, today, access } = useAppData();
+  const { ready, trip, summary, expenses, saveFailed, today, access, expensesToDate, laterExpenseCount } = useAppData();
   const planTrip = () => router.push('/trip/new');
 
   const brand = (
@@ -97,6 +97,14 @@ export default function HomeScreen() {
           </AppText>
         </View>
       ) : null}
+      {laterExpenseCount > 0 ? (
+        <View style={styles.dateNote} role="note">
+          <CalendarBlankIcon size={20} color={colors.teal} />
+          <AppText variant="caption" style={styles.saveWarningText}>
+            {`Showing the trip as of ${formatDayMonth(today)}. ${laterExpenseCount} ${laterExpenseCount === 1 ? 'expense is' : 'expenses are'} dated later and will appear as the app date moves on (Me → App date).`}
+          </AppText>
+        </View>
+      ) : null}
       <Reveal index={0}>
         {locked ? (
           <LockedFeature
@@ -126,7 +134,7 @@ export default function HomeScreen() {
       <InstallAppCard dismissible />
       {locked ? null : (
         <>
-          <RefundCard summary={summarizeRefunds(trip, data.expenses)} trip={trip} today={today} />
+          <RefundCard summary={summarizeRefunds(trip, expensesToDate)} trip={trip} today={today} />
           <PaceWarning summary={summary} />
         </>
       )}
@@ -160,6 +168,7 @@ const styles = StyleSheet.create({
   },
   logo: { width: 26, height: 32 },
   noTrip: { gap: spacing.sm },
+  dateNote: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, padding: spacing.md, borderRadius: radius.tile - 8, backgroundColor: colors.accentSoft },
   lockedFigures: { flexDirection: 'row', gap: spacing.lg },
   flex: { flex: 1 },
   noTripArt: { alignSelf: 'center' },

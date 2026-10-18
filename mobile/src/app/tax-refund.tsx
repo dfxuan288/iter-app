@@ -22,7 +22,7 @@ const rm = (sen: number) => formatMoney(sen, 'MYR');
 /** The tax refund tracker (brief §7.7): what to collect, from which purchases, and how to claim it. */
 export default function TaxRefundScreen() {
   const router = useRouter();
-  const { data, trip, today, updateRefund, toggleRefundChecklist, access } = useAppData();
+  const { trip, today, updateRefund, toggleRefundChecklist, access, expensesToDate } = useAppData();
 
   if (!trip) {
     return (
@@ -46,7 +46,7 @@ export default function TaxRefundScreen() {
     );
   }
 
-  const summary = summarizeRefunds(trip, data.expenses);
+  const summary = summarizeRefunds(trip, expensesToDate);
   const { rule } = summary;
   if (!rule) {
     return (

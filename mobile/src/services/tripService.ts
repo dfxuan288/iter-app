@@ -129,3 +129,33 @@ export function newTripId(): string {
 export function activeTrip(data: AppData): Trip | undefined {
   return data.trips.find((trip) => trip.id === data.activeTripId);
 }
+
+/** Every trip, newest first (by first day). */
+export function tripsNewestFirst(data: AppData): Trip[] {
+  return [...data.trips].sort((a, b) => b.startDate.localeCompare(a.startDate) || b.createdAt.localeCompare(a.createdAt));
+}
+
+/** Makes another trip the one Home, Scan and the rest work with. Returns the data unchanged if there is no such trip. */
+export function switchTrip(data: AppData, tripId: string): AppData {
+  return data.trips.some((trip) => trip.id === tripId) ? { ...data, activeTripId: tripId } : data;
+}
+
+/**
+ * Removes a trip with its expenses and category plans. If it was the current trip, the newest
+ * remaining one becomes current (or none). Also returns the receipt photos to delete from the phone.
+ */
+export function removeTrip(data: AppData, tripId: string): { data: AppData; imageIds: string[] } {
+  if (!data.trips.some((trip) => trip.id === tripId)) return { data, imageIds: [] };
+  const imageIds = data.expenses
+    .filter((e) => e.tripId === tripId)
+    .map((e) => e.receipt?.imageId)
+    .filter((id): id is string => typeof id === 'string');
+  const rest: AppData = {
+    ...data,
+    trips: data.trips.filter((trip) => trip.id !== tripId),
+    categoryBudgets: data.categoryBudgets.filter((budget) => budget.tripId !== tripId),
+    expenses: data.expenses.filter((expense) => expense.tripId !== tripId),
+  };
+  const activeTripId = data.activeTripId === tripId ? (tripsNewestFirst(rest)[0]?.id ?? null) : data.activeTripId;
+  return { data: { ...rest, activeTripId }, imageIds };
+}
