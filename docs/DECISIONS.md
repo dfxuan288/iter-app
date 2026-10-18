@@ -332,6 +332,19 @@ amount counting up; the team preferred landing on the card, so the amount is sho
 - Web: `mobile/src/components/launch/LaunchSplash.web.tsx` (browser animations and CSS masks). The phone
   apps get a simple wordmark fade (`LaunchSplash.tsx`) until a masking library is added.
 
+## Trip Wrapped, raised scan button (18 Oct 2026)
+
+- **Trip Wrapped** (`/wrapped`): the trip's highlights as full-screen cards, like Spotify Wrapped: intro on the
+  city photo, total spent (and budget left), biggest day, where the money went, biggest buy, expenses logged and how
+  many were scanned, tax refund to collect, then "Share to Community". Tap the right of the screen or Next to go on,
+  the left or Back to go back. Figures come from `mobile/src/domain/wrapped.ts` (tested).
+- Where to find it: on Home once the trip is over ("Your Tokyo trip, wrapped"), and on Me during the trip ("Your
+  Tokyo trip so far"), so it can be shown in a demo on any day.
+- **Scan button**: larger and raised above the tab bar, with a new icon: a receipt inside scanning corners.
+- **Any country (not built yet, suggested)**: the rate source covers 165 currencies, so "Somewhere else?" with a
+  searchable country list is mostly data; such trips would show the ocean gradient, "tax refund not available yet",
+  and an empty Community with "be the first to share". Waiting for the team's go-ahead.
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.
