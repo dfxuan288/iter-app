@@ -70,6 +70,24 @@ describe('fetchFrankfurter', () => {
   });
 });
 
+describe('a currency outside the featured list ("Somewhere else?" trips)', () => {
+  const gbp = [
+    { date: '2026-10-12', base: 'MYR', quote: 'GBP', rate: 0.1801 },
+    { date: '2026-10-13', base: 'MYR', quote: 'GBP', rate: 0.1806 },
+  ];
+
+  it('is fetched and stored on its own, and read back by itself', async () => {
+    const fetchImpl = vi.fn(async (_url: string) => okJson(gbp));
+    const store = fakeStore();
+    const read = vi.spyOn(store, 'read');
+    const series = await loadSeries({ quotes: ['GBP'], store, fetchImpl, now: NOW });
+    expect(fetchImpl.mock.calls[0]?.[0]).toContain('quotes=GBP&');
+    expect(read).toHaveBeenCalledWith(expect.any(String), ['GBP']);
+    expect(store.saved).toHaveLength(2);
+    expect(latestFromSeries(series, ['GBP']).rates.GBP).toBe(0.1806);
+  });
+});
+
 describe('loadSeries', () => {
   it('without a database, fetches from Frankfurter', async () => {
     const series = await loadSeries({ fetchImpl: frankfurterUp, now: NOW });
@@ -164,11 +182,12 @@ describe('supabaseRateStore', () => {
         { rate_date: '2026-10-12', quote: 'JPY', rate: 38.7, fetched_at: '2026-10-13T00:05:00+00:00' },
       ]),
     );
-    const result = await supabaseRateStore(config, fetchImpl).read('2026-09-14');
+    const result = await supabaseRateStore(config, fetchImpl).read('2026-09-14', ['JPY', 'GBP']);
     expect(result.rows[0]).toEqual({ date: '2026-10-13', quote: 'JPY', rate: 38.775 });
     expect(result.lastFetchedAt).toBe('2026-10-14T00:05:00+00:00');
     const [url, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).not.toContain('test-secret');
+    expect(url).toContain('quote=in.(JPY,GBP)');
     expect((init.headers as Record<string, string>).apikey).toBe('test-secret');
   });
 

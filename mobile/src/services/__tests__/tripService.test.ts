@@ -191,3 +191,18 @@ describe('saved data from before plans existed (before 17 Oct 2026)', () => {
     expect(data.plan).toEqual({ trialStartedOn: '2026-12-01', passes: [] });
   });
 });
+
+describe('"Somewhere else?" trips', () => {
+  it('plans a trip to a country from the list, with its currency and the city typed', () => {
+    const result = createTrip(createSeedData(), { ...draft, destinationId: 'country:GB', city: '  Edinburgh   Old Town ' }, 'trip-uk', '2026-10-18T00:00:00Z');
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.trip).toMatchObject({ destinationId: 'country:GB', city: 'Edinburgh Old Town', country: 'United Kingdom', localCurrency: 'GBP' });
+  });
+
+  it('uses the country name when no city is typed, and rejects unknown countries', () => {
+    const result = createTrip(createSeedData(), { ...draft, destinationId: 'country:KW' }, 'trip-kw', '2026-10-18T00:00:00Z');
+    expect(result.ok && result.trip.city).toBe('Kuwait');
+    expect(validateTripDraft({ ...draft, destinationId: 'country:XX' })).toContain('unknown_destination');
+  });
+});

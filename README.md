@@ -141,6 +141,7 @@ These are deliberately kept out of the screens, each in one config file:
 | The demo trip and its expenses | `mobile/src/data/seed.ts` | Now |
 | The sample community: travellers, trip summaries, posts and comments | `mobile/src/data/communitySeed.ts` | Now |
 | Destinations, their currencies and photos | `mobile/src/data/destinations.ts` | Now |
+| "Somewhere else?" countries and every currency's name, symbol and decimals (generated: edit the list in the script, then run `npx tsx scripts/make-currencies.ts`) | `scripts/make-currencies.ts` | Now |
 | Tax refund rules per country, each with a source link and "last verified" date (including the handling fee placeholder) | `mobile/src/config/taxRules.ts` | Now |
 | Colours, spacing and type sizes | `mobile/src/theme/tokens.ts` | Now |
 

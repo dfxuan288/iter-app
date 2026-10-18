@@ -55,7 +55,7 @@ describe('parseReceiptReply', () => {
 
   it('rejects replies the app cannot use', () => {
     expect(parseReceiptReply(null)).toBeNull();
-    expect(parseReceiptReply({ result: { ...reply.result, currency: 'GBP' } })).toBeNull();
+    expect(parseReceiptReply({ result: { ...reply.result, currency: 'KPW' } })).toBeNull();
     expect(parseReceiptReply({ result: { ...reply.result, totalMinor: 73.28 } })).toBeNull();
     expect(parseReceiptReply({ result: { ...reply.result, totalMinor: 0 } })).toBeNull();
   });

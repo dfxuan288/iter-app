@@ -1,3 +1,4 @@
+import { COUNTRIES } from '@/data/countries';
 import type { CurrencyCode } from '@/domain/money';
 
 /**
@@ -90,8 +91,26 @@ export const destinations: Destination[] = [
   },
 ];
 
+/** "Somewhere else?" destinations are whole countries, with ids like "country:GB". */
+const COUNTRY_PREFIX = 'country:';
+export const countryDestinationId = (countryCode: string) => `${COUNTRY_PREFIX}${countryCode}`;
+export const isCountryDestination = (id: string) => id.startsWith(COUNTRY_PREFIX);
+
+/**
+ * A featured destination, or a country from the "Somewhere else?" list. A country has no photo (it
+ * shows the ocean gradient); its "city" is the country's name unless the traveller typed a city.
+ */
 export function findDestination(id: string): Destination | undefined {
-  return destinations.find((destination) => destination.id === id);
+  const featured = destinations.find((destination) => destination.id === id);
+  if (featured || !isCountryDestination(id)) return featured;
+  const country = COUNTRIES.find((c) => c.code === id.slice(COUNTRY_PREFIX.length));
+  return country ? { id, city: country.name, country: country.name, currency: country.currency } : undefined;
+}
+
+/** The featured destinations, with the trip's own country first when it is a "Somewhere else?" trip (for pickers). */
+export function destinationsWith(tripDestinationId: string | undefined): Destination[] {
+  const own = tripDestinationId && isCountryDestination(tripDestinationId) ? findDestination(tripDestinationId) : undefined;
+  return own ? [own, ...destinations] : destinations;
 }
 
 /** Destinations that have a photo, for photo-led layouts. */

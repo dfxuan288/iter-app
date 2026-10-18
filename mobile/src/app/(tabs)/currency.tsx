@@ -21,20 +21,28 @@ import { useFx } from '@/state/FxProvider';
 import { colors, MIN_TOUCH_TARGET, radius, spacing } from '@/theme/tokens';
 
 /** What one "round" amount of a currency costs in Ringgit, e.g. ¥100 or US$1. Easier to read than tiny decimals. */
-const displayUnit: Record<ForeignCurrency, number> = { JPY: 100, THB: 10, SGD: 1, IDR: 10000, VND: 10000, USD: 1, EUR: 1, KRW: 1000 };
+const displayUnits: Partial<Record<ForeignCurrency, number>> = { JPY: 100, THB: 10, SGD: 1, IDR: 10000, VND: 10000, USD: 1, EUR: 1, KRW: 1000 };
+
+/** Other currencies: a power of ten that costs roughly RM 1 or more, so the price never rounds to RM 0.00. */
+function displayUnit(currency: ForeignCurrency, ratePerMyr: number | undefined): number {
+  const fixed = displayUnits[currency];
+  if (fixed !== undefined) return fixed;
+  return ratePerMyr && ratePerMyr > 5 ? 10 ** Math.round(Math.log10(ratePerMyr)) : 1;
+}
 
 function unitPriceMyr(currency: ForeignCurrency, ratePerMyr: number): number {
-  return convertToMyr(toMinor(displayUnit[currency], currency), currency, ratePerMyr);
+  return convertToMyr(toMinor(displayUnit(currency, ratePerMyr), currency), currency, ratePerMyr);
 }
 
 /**
  * The same price without rounding to the sen, for the history chart only: daily moves are often
  * smaller than one sen, and rounding would flatten the line. Never used for money that is saved.
  */
-const unitPriceExact = (currency: ForeignCurrency, ratePerMyr: number) => displayUnit[currency] / ratePerMyr;
+const unitPriceExact = (currency: ForeignCurrency, ratePerMyr: number, unitRate: number | undefined) => displayUnit(currency, unitRate) / ratePerMyr;
 const formatExact = (ringgit: number) => `RM ${ringgit.toFixed(4)}`;
 
-const unitLabel = (currency: ForeignCurrency) => formatMoney(toMinor(displayUnit[currency], currency), currency, { trimZeros: true });
+const unitLabel = (currency: ForeignCurrency, ratePerMyr: number | undefined) =>
+  formatMoney(toMinor(displayUnit(currency, ratePerMyr), currency), currency, { trimZeros: true });
 
 function describeChange(percent: number | null): { text: string; tone: 'muted' | 'accent' | 'danger' } {
   if (percent === null) return { text: 'No change data', tone: 'muted' };
@@ -51,6 +59,8 @@ export default function CurrencyScreen() {
   const tripCurrency = trip && trip.localCurrency !== 'MYR' ? (trip.localCurrency as ForeignCurrency) : 'JPY';
 
   const [currency, setCurrency] = useState<ForeignCurrency>(tripCurrency);
+  // A trip to a country outside the featured list puts its own currency first.
+  const shownCurrencies: ForeignCurrency[] = FOREIGN_CURRENCIES.includes(tripCurrency) ? FOREIGN_CURRENCIES : [tripCurrency, ...FOREIGN_CURRENCIES];
   const [fromForeign, setFromForeign] = useState(true);
   const [amountText, setAmountText] = useState('1000');
   const [days, setDays] = useState<'7' | '30'>('30');
@@ -74,12 +84,12 @@ export default function CurrencyScreen() {
 
   const historyReady = history !== null && history.currency === currency && history.days === days;
   // Plotted as a price in Ringgit, so the line rises when the currency gets dearer for the traveller.
-  const chartPoints = historyReady ? history.points.map((point) => ({ date: point.date, rate: unitPriceExact(currency, point.rate) })) : [];
+  const chartPoints = historyReady ? history.points.map((point) => ({ date: point.date, rate: unitPriceExact(currency, point.rate, rates.rates[currency]) })) : [];
   const first = chartPoints[0];
   const last = chartPoints[chartPoints.length - 1];
   const chartSummary =
     first && last
-      ? `${unitLabel(currency)} in Ringgit over the last ${days} days: from ${formatExact(first.rate)} to ${formatExact(last.rate)}.`
+      ? `${unitLabel(currency, rates.rates[currency])} in Ringgit over the last ${days} days: from ${formatExact(first.rate)} to ${formatExact(last.rate)}.`
       : 'Rate history is not available.';
 
   if (access.level === 'free') {
@@ -102,7 +112,7 @@ export default function CurrencyScreen() {
             layout="scroll"
             value={currency}
             onChange={setCurrency}
-            choices={FOREIGN_CURRENCIES.map((code) => ({ value: code, label: code, accessibilityLabel: currencies[code].name }))}
+            choices={shownCurrencies.map((code) => ({ value: code, label: code, accessibilityLabel: currencies[code].name }))}
           />
           <MoneyField label={`Amount in ${currencies[inputCurrency].name}`} value={amountText} onChangeText={setAmountText} currency={inputCurrency} />
           <View style={styles.result} aria-live="polite">
@@ -131,7 +141,7 @@ export default function CurrencyScreen() {
       <Reveal index={1}>
         <Card style={styles.card}>
           <View style={styles.cardHeader}>
-            <AppText variant="heading" style={styles.flex}>{`${unitLabel(currency)} in Ringgit`}</AppText>
+            <AppText variant="heading" style={styles.flex}>{`${unitLabel(currency, rates.rates[currency])} in Ringgit`}</AppText>
             <ChoiceChips
               label="History length"
               value={days}
@@ -163,7 +173,7 @@ export default function CurrencyScreen() {
             </AppText>
             <Button variant="quiet" icon={ArrowsClockwiseIcon} label={refreshing ? 'Updating' : 'Update'} disabled={refreshing} onPress={() => void refresh()} />
           </View>
-          {FOREIGN_CURRENCIES.map((code) => {
+          {shownCurrencies.map((code) => {
             const value = rates.rates[code];
             const change = describeChange(dailyChangePercent(rates, code));
             const price = value ? formatMoney(unitPriceMyr(code, value), 'MYR') : 'No rate';
@@ -172,7 +182,7 @@ export default function CurrencyScreen() {
                 key={code}
                 onPress={() => setCurrency(code)}
                 role="button"
-                aria-label={`${currencies[code].name}: ${unitLabel(code)} is ${price}. ${change.text} since the previous day. Show in the converter.`}
+                aria-label={`${currencies[code].name}: ${unitLabel(code, value)} is ${price}. ${change.text} since the previous day. Show in the converter.`}
                 style={[styles.rateItem, code === currency && styles.rateItemSelected]}>
                 <View style={styles.flex}>
                   <AppText variant="bodyStrong">{currencies[code].name}</AppText>
@@ -182,7 +192,7 @@ export default function CurrencyScreen() {
                 </View>
                 <View style={styles.ratePrice}>
                   <AppText variant="bodyStrong">{price}</AppText>
-                  <AppText variant="caption" color="muted">{`for ${unitLabel(code)}`}</AppText>
+                  <AppText variant="caption" color="muted">{`for ${unitLabel(code, value)}`}</AppText>
                 </View>
               </PressableScale>
             );

@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SEED_RATE_DATE, seedRatesPerMyr } from '@/config/demo';
 import { env } from '@/config/env';
 import type { IsoDate } from '@/domain/dates';
-import type { CurrencyCode } from '@/domain/money';
+import { currencies, type CurrencyCode } from '@/domain/money';
 import type { KeyValueStorage } from '@/services/appDataStore';
 import type { RateQuote } from '@/services/expenseService';
 import { requestJson, type RequestOptions } from '@/services/http';
@@ -15,7 +15,11 @@ import { requestJson, type RequestOptions } from '@/services/http';
  */
 
 export type ForeignCurrency = Exclude<CurrencyCode, 'MYR'>;
+/** The featured currencies, always fetched and shown first. */
 export const FOREIGN_CURRENCIES: ForeignCurrency[] = ['JPY', 'THB', 'SGD', 'IDR', 'VND', 'USD', 'EUR', 'KRW'];
+/** Every other currency ITER handles (trips to "Somewhere else?" countries); fetched one at a time, when a trip needs it. */
+const ALL_FOREIGN = (Object.keys(currencies) as CurrencyCode[]).filter((code): code is ForeignCurrency => code !== 'MYR');
+export const isFeaturedCurrency = (currency: CurrencyCode): boolean => (FOREIGN_CURRENCIES as CurrencyCode[]).includes(currency);
 
 export type RateTable = Partial<Record<ForeignCurrency, number>>;
 
@@ -49,7 +53,7 @@ type Deps = Pick<RequestOptions, 'fetchImpl'> & { storage?: KeyValueStorage };
 function cleanTable(input: unknown): RateTable {
   const table: RateTable = {};
   if (typeof input !== 'object' || input === null) return table;
-  for (const currency of FOREIGN_CURRENCIES) {
+  for (const currency of ALL_FOREIGN) {
     const rate = (input as Record<string, unknown>)[currency];
     if (typeof rate === 'number' && Number.isFinite(rate) && rate > 0) table[currency] = rate;
   }
@@ -68,7 +72,7 @@ function toSnapshot(input: unknown, origin: RatesOrigin): RatesSnapshot | null {
   const previous = prev && isDate(prev.date) ? { date: prev.date, rates: cleanTable(prev.rates) } : null;
   const dates: RatesSnapshot['dates'] = {};
   const rawDates = (typeof value.dates === 'object' && value.dates !== null ? value.dates : {}) as Record<string, unknown>;
-  for (const currency of FOREIGN_CURRENCIES) {
+  for (const currency of ALL_FOREIGN) {
     const date = rawDates[currency];
     if (rates[currency] !== undefined && isDate(date)) dates[currency] = date;
   }
@@ -106,11 +110,24 @@ export const fxService = {
     return toSnapshot(await readSaved(storage, LATEST_KEY), 'saved') ?? builtinRates;
   },
 
-  /** Fetches today's rates. Never fails: without a connection it returns the saved or built-in rates. */
-  async refreshRates({ storage = AsyncStorage, fetchImpl }: Deps = {}): Promise<RatesSnapshot> {
-    const result = await requestJson<unknown>(`${env.apiBaseUrl}/api/rates`, { fetchImpl, timeoutMs: 8_000 });
+  /**
+   * Fetches today's rates, plus `extra` when the trip's currency is not a featured one. Never fails:
+   * without a connection it returns the saved or built-in rates.
+   */
+  async refreshRates({ storage = AsyncStorage, fetchImpl, extra }: Deps & { extra?: CurrencyCode } = {}): Promise<RatesSnapshot> {
+    const query = extra && extra !== 'MYR' && !isFeaturedCurrency(extra) ? `?extra=${extra}` : '';
+    const result = await requestJson<unknown>(`${env.apiBaseUrl}/api/rates${query}`, { fetchImpl, timeoutMs: 8_000 });
     const live = result.ok ? toSnapshot(result.data, 'live') : null;
     if (live) {
+      // If the trip's own currency could not be fetched this time, keep the last rate the phone had for it.
+      if (query && extra && extra !== 'MYR' && live.rates[extra] === undefined) {
+        const saved = toSnapshot(await readSaved(storage, LATEST_KEY), 'saved');
+        const kept = saved?.rates[extra];
+        if (saved && kept !== undefined) {
+          live.rates[extra] = kept;
+          live.dates[extra] = rateDateFor(saved, extra);
+        }
+      }
       await save(storage, LATEST_KEY, live);
       return live;
     }

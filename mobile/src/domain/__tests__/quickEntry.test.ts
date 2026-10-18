@@ -48,7 +48,14 @@ describe('parseQuickEntry', () => {
   it('does not mistake part of a word for a currency', () => {
     // "wonton" contains "won", "dollarama" contains "dollar".
     expect(parseQuickEntry('900 wonton soup', 'JPY')).toMatchObject({ currency: 'JPY', currencyStated: false });
-    expect(parseQuickEntry('30 rmb exchange', 'JPY')).toMatchObject({ currency: 'JPY', currencyStated: false });
+    // "rmb" contains "rm" but is the Chinese yuan, not the Ringgit.
+    expect(parseQuickEntry('30 rmb exchange', 'JPY')).toMatchObject({ currency: 'CNY', currencyStated: true });
+  });
+
+  it('understands the currencies of "Somewhere else?" trips', () => {
+    expect(parseQuickEntry('12.50 pounds fish and chips', 'GBP')).toMatchObject({ currency: 'GBP', amountMinor: 1250, currencyStated: true });
+    expect(parseQuickEntry('£8 coffee', 'JPY')).toMatchObject({ currency: 'GBP', amountMinor: 800 });
+    expect(parseQuickEntry('3.250 dinner', 'KWD')).toMatchObject({ currency: 'KWD', amountMinor: 3250 });
   });
 });
 

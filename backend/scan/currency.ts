@@ -1,18 +1,10 @@
+import { MINOR_DIGITS } from '../currencyList.js';
+
 /**
- * The currencies ITER supports and how many decimal places each one's smallest unit has.
- * Must match `mobile/src/domain/money.ts`; a test checks that it does.
+ * The currencies ITER supports and how many decimal places each one's smallest unit has, from
+ * backend/currencyList.ts (generated with the app's list, scripts/make-currencies.ts; a test checks they match).
  */
-export const MINOR_DIGITS = {
-  MYR: 2,
-  JPY: 0,
-  THB: 2,
-  SGD: 2,
-  IDR: 0,
-  VND: 0,
-  USD: 2,
-  EUR: 2,
-  KRW: 0,
-} as const;
+export { MINOR_DIGITS };
 
 export type CurrencyCode = keyof typeof MINOR_DIGITS;
 
@@ -51,6 +43,20 @@ export function normalizeCurrency(raw: string | null | undefined): CurrencyCode 
     '₩': 'KRW',
     '원': 'KRW',
     WON: 'KRW',
+    // Currencies of "Somewhere else?" trips, by their usual symbols.
+    '£': 'GBP',
+    'A$': 'AUD',
+    'NZ$': 'NZD',
+    'HK$': 'HKD',
+    'NT$': 'TWD',
+    'C$': 'CAD',
+    'CA$': 'CAD',
+    'CN¥': 'CNY',
+    RMB: 'CNY',
+    '₹': 'INR',
+    '₱': 'PHP',
+    '₺': 'TRY',
+    'د.إ': 'AED',
   };
   return aliases[text] ?? null;
 }

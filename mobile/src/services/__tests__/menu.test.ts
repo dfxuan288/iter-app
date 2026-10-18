@@ -42,7 +42,7 @@ describe('parseMenuReply', () => {
 
   it('rejects a reply with no usable dishes or an unsupported currency', () => {
     expect(parseMenuReply({ result: { ...reply.result, dishes: [] } })).toBeNull();
-    expect(parseMenuReply({ result: { ...reply.result, currency: 'GBP' } })).toBeNull();
+    expect(parseMenuReply({ result: { ...reply.result, currency: 'KPW' } })).toBeNull();
     expect(parseMenuReply('nonsense')).toBeNull();
   });
 

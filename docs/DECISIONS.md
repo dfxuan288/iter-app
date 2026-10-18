@@ -341,9 +341,25 @@ amount counting up; the team preferred landing on the card, so the amount is sho
 - Where to find it: on Home once the trip is over ("Your Tokyo trip, wrapped"), and on Me during the trip ("Your
   Tokyo trip so far"), so it can be shown in a demo on any day.
 - **Scan button**: larger and raised above the tab bar, with a new icon: a receipt inside scanning corners.
-- **Any country (not built yet, suggested)**: the rate source covers 165 currencies, so "Somewhere else?" with a
-  searchable country list is mostly data; such trips would show the ocean gradient, "tax refund not available yet",
-  and an empty Community with "be the first to share". Waiting for the team's go-ahead.
+- **Scan button icon** (later the same day): replaced with the team's own design (scan_icon.svg): four rounded
+  scanner corners and a scan line, drawn as a vector in ITER's colours: mint corners and a green line on a navy
+  button; green button with navy corners and a white line when Scan is open.
+
+## "Somewhere else?": any country (18 Oct 2026)
+
+- The trip planner keeps the 8 featured cities (with photos) and adds **Somewhere else?**: search 110 countries
+  ("uk" finds the United Kingdom, "kor" South Korea), pick one, and optionally type the city or place ("Edinburgh").
+  The country sets the currency. Such a trip shows the ocean gradient instead of a photo.
+- **Rates**: Frankfurter publishes all 87 currencies on the list. The app asks the server for the featured eight
+  plus the trip's own currency (`/api/rates?extra=GBP`); the server fetches and stores that currency on its own, so
+  the featured rates are unaffected. If it cannot be fetched, the phone keeps the last rate it had for it.
+- **Money**: every currency has its correct decimal places (yen and won 0, dinars 3), from the ISO standard, with
+  ITER's earlier choice kept that rupiah and dong are whole units. Typing "12.50 pounds" or "£8" works.
+- **Receipt scanning** accepts all these currencies (the AI instruction now gives examples instead of a fixed list).
+- **Tax refund**: Japan only for now (a trip to Japan picked from the list also gets it). Other countries say
+  "not available yet". **Community**: the trip's country appears first in the picker, with "be the first" messages.
+- The lists are generated: `npx tsx scripts/make-currencies.ts` writes `mobile/src/domain/currencyList.ts`,
+  `mobile/src/data/countries.ts` and `backend/currencyList.ts`. Add a country there, then run it.
 
 ## Still open
 

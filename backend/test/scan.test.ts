@@ -25,7 +25,8 @@ describe('currencies', () => {
     expect(normalizeCurrency('¥')).toBe('JPY');
     expect(normalizeCurrency(' thb ')).toBe('THB');
     expect(normalizeCurrency('円')).toBe('JPY');
-    expect(normalizeCurrency('GBP')).toBeNull();
+    expect(normalizeCurrency('KPW')).toBeNull();
+    expect(normalizeCurrency('£')).toBe('GBP');
     expect(normalizeCurrency(null)).toBeNull();
   });
 });
@@ -88,7 +89,7 @@ describe('checkReceipt', () => {
   });
 
   it('refuses a currency ITER does not support rather than guessing', () => {
-    const { result, checks } = checkReceipt({ ...konbini, currency: 'GBP' }, trip);
+    const { result, checks } = checkReceipt({ ...konbini, currency: 'KPW' }, trip);
     expect(result).toBeNull();
     expect(codes(checks)).toEqual(['currency_unsupported']);
   });

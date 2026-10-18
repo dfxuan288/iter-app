@@ -3,7 +3,8 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/ui/AppText';
-import { ArrowsLeftRightIcon, FrameCornersIcon, HouseIcon, ReceiptIcon, UserIcon, UsersThreeIcon, type Icon } from '@/components/ui/icons';
+import { ArrowsLeftRightIcon, HouseIcon, UserIcon, UsersThreeIcon, type Icon } from '@/components/ui/icons';
+import { ScanMarkIcon } from '@/components/ui/ScanMarkIcon';
 import { colors, MIN_TOUCH_TARGET, radius, shadow, spacing } from '@/theme/tokens';
 
 interface TabButtonProps extends TabTriggerSlotProps {
@@ -28,7 +29,7 @@ function TabButton({ label, icon: IconGlyph, isFocused, style: _style, ...props 
   );
 }
 
-/** The Scan tab is the large accent button in the centre of the bar, rising above it. Its icon is a receipt inside scanning corners. */
+/** The Scan tab is the large navy button in the centre of the bar, rising above it, with ITER's scan mark. Green when open. */
 function ScanButton({ isFocused, style: _style, ...props }: TabTriggerSlotProps) {
   return (
     <Pressable
@@ -38,10 +39,7 @@ function ScanButton({ isFocused, style: _style, ...props }: TabTriggerSlotProps)
       aria-selected={Boolean(isFocused)}
       style={({ pressed }) => [styles.tab, pressed && styles.pressed]}>
       <View style={[styles.scanCircle, isFocused && styles.scanCircleActive]}>
-        <FrameCornersIcon size={42} color={isFocused ? colors.white : colors.navy} weight="regular" />
-        <View style={styles.scanReceipt}>
-          <ReceiptIcon size={18} color={isFocused ? colors.white : colors.navy} weight="fill" />
-        </View>
+        <ScanMarkIcon size={30} frameColor={isFocused ? colors.navy : colors.accentSoft} lineColor={isFocused ? colors.white : colors.accent} />
       </View>
     </Pressable>
   );
@@ -116,7 +114,7 @@ const styles = StyleSheet.create({
     width: SCAN_SIZE,
     height: SCAN_SIZE,
     borderRadius: SCAN_SIZE / 2,
-    backgroundColor: colors.accent,
+    backgroundColor: colors.navy,
     alignItems: 'center',
     justifyContent: 'center',
     // Rises out of the top of the bar; the white ring separates it from the page behind.
@@ -126,6 +124,5 @@ const styles = StyleSheet.create({
     borderColor: colors.card,
     ...shadow.raised,
   },
-  scanReceipt: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
-  scanCircleActive: { backgroundColor: colors.navy },
+  scanCircleActive: { backgroundColor: colors.accent },
 });

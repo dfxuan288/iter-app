@@ -1,4 +1,5 @@
 import type { SupabaseConfig } from '../config.js';
+import { MINOR_DIGITS } from '../currencyList.js';
 
 /**
  * Exchange rates for the app. Rates come from Frankfurter (no key needed) and are stored as
@@ -8,8 +9,13 @@ import type { SupabaseConfig } from '../config.js';
  */
 
 export const BASE = 'MYR';
+/** The featured currencies, fetched together on every refresh. */
 export const QUOTES = ['JPY', 'THB', 'SGD', 'IDR', 'VND', 'USD', 'EUR', 'KRW'] as const;
-export type Quote = (typeof QUOTES)[number];
+/**
+ * Any currency ITER handles (backend/currencyList.ts). Trips to other countries ("Somewhere else?")
+ * ask for their currency separately, and it is stored and refreshed on its own.
+ */
+export type Quote = Exclude<keyof typeof MINOR_DIGITS, typeof BASE>;
 
 /** How far back rates are kept for the history chart. */
 export const HISTORY_DAYS = 30;
@@ -31,14 +37,16 @@ export interface RateRow {
 }
 
 export interface RateStore {
-  /** Rows on or after `from`, plus when the store was last refreshed (ISO time), if ever. */
-  read(from: string): Promise<{ rows: RateRow[]; lastFetchedAt: string | null }>;
+  /** Rows for these currencies on or after `from`, plus when they were last refreshed (ISO time), if ever. */
+  read(from: string, quotes: readonly Quote[]): Promise<{ rows: RateRow[]; lastFetchedAt: string | null }>;
   save(rows: RateRow[], fetchedAt: string): Promise<void>;
 }
 
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
-const isQuote = (value: unknown): value is Quote => QUOTES.includes(value as Quote);
+const isQuote = (value: unknown): value is Quote => typeof value === 'string' && value !== BASE && value in MINOR_DIGITS;
+/** True for the featured currencies, which are fetched together. */
+export const isFeatured = (quote: Quote): boolean => (QUOTES as readonly string[]).includes(quote);
 const isDate = (value: unknown): value is string => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
 
 /** Keeps only well-formed rows, so a surprise in someone else's data cannot reach the app. */
@@ -62,8 +70,8 @@ async function fetchWithTimeout(fetchImpl: FetchLike, url: string, init: Request
   return fetchImpl(url, { ...init, signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
 }
 
-export async function fetchFrankfurter(from: string, to: string, fetchImpl: FetchLike = fetch): Promise<RateRow[]> {
-  const url = `${FRANKFURTER_URL}?base=${BASE}&quotes=${QUOTES.join(',')}&from=${from}&to=${to}`;
+export async function fetchFrankfurter(from: string, to: string, fetchImpl: FetchLike = fetch, quotes: readonly Quote[] = QUOTES): Promise<RateRow[]> {
+  const url = `${FRANKFURTER_URL}?base=${BASE}&quotes=${quotes.join(',')}&from=${from}&to=${to}`;
   const response = await fetchWithTimeout(fetchImpl, url);
   if (!response.ok) throw new Error(`Frankfurter replied ${response.status}`);
   const rows = cleanRows(await response.json(), (item) => [item.date, item.quote, item.rate]);
@@ -76,8 +84,8 @@ export function supabaseRateStore(config: SupabaseConfig, fetchImpl: FetchLike =
   const endpoint = `${config.url}/rest/v1/fx_rates`;
   const headers = { apikey: config.secretKey, Authorization: `Bearer ${config.secretKey}`, 'Content-Type': 'application/json' };
   return {
-    async read(from) {
-      const query = `select=rate_date,quote,rate,fetched_at&base=eq.${BASE}&rate_date=gte.${from}&order=rate_date.asc`;
+    async read(from, quotes) {
+      const query = `select=rate_date,quote,rate,fetched_at&base=eq.${BASE}&quote=in.(${quotes.join(',')})&rate_date=gte.${from}&order=rate_date.asc`;
       const response = await fetchWithTimeout(fetchImpl, `${endpoint}?${query}`, { headers });
       if (!response.ok) throw new Error(`Supabase read replied ${response.status}`);
       const body: unknown = await response.json();
@@ -109,6 +117,8 @@ export interface RateSeries {
 }
 
 export interface LoadSeriesOptions {
+  /** Which currencies: the featured ones by default, or one other currency on its own. */
+  quotes?: readonly Quote[];
   store?: RateStore;
   fetchImpl?: FetchLike;
   now?: Date;
@@ -119,7 +129,7 @@ export interface LoadSeriesOptions {
  * Frankfurter when it is older than REFRESH_AFTER_MS. Without one (Supabase not set up yet):
  * fetch from Frankfurter. Throws only when no source at all can supply rates.
  */
-export async function loadSeries({ store, fetchImpl = fetch, now = new Date() }: LoadSeriesOptions = {}): Promise<RateSeries> {
+export async function loadSeries({ quotes = QUOTES, store, fetchImpl = fetch, now = new Date() }: LoadSeriesOptions = {}): Promise<RateSeries> {
   const today = now.toISOString().slice(0, 10);
   const from = daysBefore(today, HISTORY_DAYS);
   const nowIso = now.toISOString();
@@ -127,7 +137,7 @@ export async function loadSeries({ store, fetchImpl = fetch, now = new Date() }:
   let stored: { rows: RateRow[]; lastFetchedAt: string | null } | undefined;
   if (store) {
     try {
-      stored = await store.read(from);
+      stored = await store.read(from, quotes);
       const age = stored.lastFetchedAt ? now.getTime() - Date.parse(stored.lastFetchedAt) : Infinity;
       if (stored.rows.length > 0 && stored.lastFetchedAt && age >= 0 && age < REFRESH_AFTER_MS) {
         return { rows: stored.rows, fetchedAt: stored.lastFetchedAt, stale: false, servedFrom: 'database' };
@@ -138,7 +148,7 @@ export async function loadSeries({ store, fetchImpl = fetch, now = new Date() }:
   }
 
   try {
-    const rows = await fetchFrankfurter(from, today, fetchImpl);
+    const rows = await fetchFrankfurter(from, today, fetchImpl, quotes);
     if (store) {
       // A failed save must not stop the app getting its rates.
       await store.save(rows, nowIso).catch((error: unknown) => console.error('[rates] could not save rates', error));
@@ -171,13 +181,13 @@ export interface LatestRates {
  * Gives every currency its own latest rate. Taking only the newest date would drop any currency
  * whose source has not published that day yet.
  */
-export function latestFromSeries(series: RateSeries): LatestRates {
+export function latestFromSeries(series: RateSeries, quotes: readonly Quote[] = QUOTES): LatestRates {
   const rates: Partial<Record<Quote, number>> = {};
   const dates: Partial<Record<Quote, string>> = {};
   const previousRates: Partial<Record<Quote, number>> = {};
   let newest = '';
   let previousNewest = '';
-  for (const quote of QUOTES) {
+  for (const quote of quotes) {
     const own = series.rows.filter((row) => row.quote === quote).sort((a, b) => a.date.localeCompare(b.date));
     const last = own.at(-1);
     if (!last) continue;

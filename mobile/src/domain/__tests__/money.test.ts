@@ -99,3 +99,12 @@ describe('sumMinor', () => {
     expect(sumMinor([])).toBe(0);
   });
 });
+
+describe('currencies of "Somewhere else?" trips', () => {
+  it('formats and reads three-decimal and zero-decimal currencies', () => {
+    expect(formatMoney(3250, 'KWD')).toBe('KWD 3.250');
+    expect(parseMoneyInput('3.25', 'KWD')).toBe(3250);
+    expect(formatMoney(1250, 'GBP')).toBe('£12.50');
+    expect(formatMoney(15000, 'HUF')).toBe('HUF 15,000');
+  });
+});

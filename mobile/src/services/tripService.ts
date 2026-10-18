@@ -6,6 +6,8 @@ import { CATEGORIES, type AppData, type Category, type Trip } from '@/domain/typ
 /** What the plan-a-trip flow collects. Amounts are sen. */
 export interface TripDraft {
   destinationId: string;
+  /** For a "Somewhere else?" country: the city or place the traveller typed, if any. */
+  city?: string;
   startDate: IsoDate;
   endDate: IsoDate;
   totalBudgetMyr: number;
@@ -59,6 +61,13 @@ export function validateTripDraft(draft: TripDraft): TripDraftProblem[] {
   return problems;
 }
 
+/** The longest place name kept, so a long paste cannot break layouts. */
+export const MAX_CITY_LENGTH = 40;
+const cleanCity = (city: string | undefined) => {
+  const trimmed = city?.trim().replace(/\s+/g, ' ').slice(0, MAX_CITY_LENGTH);
+  return trimmed ? trimmed : undefined;
+};
+
 export type CreateTripResult = { ok: true; data: AppData; trip: Trip } | { ok: false; problems: TripDraftProblem[] };
 
 /**
@@ -74,7 +83,7 @@ export function createTrip(data: AppData, draft: TripDraft, id: string, now: str
     id,
     userId: data.user.id,
     destinationId: destination.id,
-    city: destination.city,
+    city: cleanCity(draft.city) ?? destination.city,
     country: destination.country,
     localCurrency: destination.currency,
     startDate: draft.startDate,

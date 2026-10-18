@@ -13,7 +13,7 @@ import { PressableScale } from '@/components/ui/PressableScale';
 import { StackScreen } from '@/components/ui/StackScreen';
 import { StoredImage } from '@/components/ui/StoredImage';
 import { TextField } from '@/components/ui/TextField';
-import { destinations } from '@/data/destinations';
+import { destinationsWith } from '@/data/destinations';
 import { cleanText, MAX_POST_LENGTH, MAX_TIP_LENGTH, splitFromAmounts, type FeedPost, type SharedTripSummary } from '@/domain/community';
 import { formatShortMonthYear } from '@/domain/dates';
 import type { Category } from '@/domain/types';
@@ -129,7 +129,7 @@ export default function ShareScreen() {
       {mode === 'post' ? (
         <Card style={styles.card}>
           <AppText variant="label">Destination</AppText>
-          <ChoiceChips label="Destination" layout="scroll" value={destinationId} onChange={setDestinationId} choices={destinations.map((d) => ({ value: d.id, label: d.city }))} />
+          <ChoiceChips label="Destination" layout="scroll" value={destinationId} onChange={setDestinationId} choices={destinationsWith(trip?.destinationId).map((d) => ({ value: d.id, label: d.city }))} />
           <TextField label="Your tip or question" value={body} onChangeText={setBody} placeholder="Anything other Malaysian travellers should know?" maxLength={MAX_POST_LENGTH} multiline />
           {photoId ? (
             <View style={styles.photoRow}>
