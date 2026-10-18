@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DateRangeCalendar, type DateRange } from '@/components/trip/DateRangeCalendar';
+import { CountryPicker } from '@/components/trip/CountryPicker';
 import { DestinationPicker } from '@/components/trip/DestinationPicker';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -12,7 +13,7 @@ import { IconButton } from '@/components/ui/IconButton';
 import { ArrowLeftIcon } from '@/components/ui/icons';
 import { MoneyField } from '@/components/ui/MoneyField';
 import { budgetRules } from '@/config/budget';
-import { findDestination } from '@/data/destinations';
+import { findDestination, isCountryDestination } from '@/data/destinations';
 import { safeToSpendPerDay, splitByPercent } from '@/domain/budget';
 import { daysInclusive, formatFullDate } from '@/domain/dates';
 import { currencies, formatMoney, parseMoneyInput, sumMinor } from '@/domain/money';
@@ -39,6 +40,7 @@ export default function PlanTripScreen() {
 
   const [step, setStep] = useState(0);
   const [destinationId, setDestinationId] = useState<string | null>(null);
+  const [city, setCity] = useState('');
   const [dates, setDates] = useState<DateRange>({ start: null, end: null });
   const [budgetText, setBudgetText] = useState('');
   const [reserveText, setReserveText] = useState('');
@@ -48,6 +50,9 @@ export default function PlanTripScreen() {
   const [saveProblems, setSaveProblems] = useState<string[]>([]);
 
   const destination = destinationId ? findDestination(destinationId) : undefined;
+  // A typed city or place only applies to a "Somewhere else?" country.
+  const typedCity = destination && isCountryDestination(destination.id) && city.trim() ? city.trim() : undefined;
+  const placeName = destination ? (typedCity && typedCity !== destination.country ? `${typedCity}, ${destination.country}` : destination.city === destination.country ? destination.country : `${destination.city}, ${destination.country}`) : '';
   const totalDays = dates.start && dates.end ? daysInclusive(dates.start, dates.end) : null;
   const budget = parseMoneyInput(budgetText, 'MYR');
   const reserve = reserveText.trim() === '' ? 0 : parseMoneyInput(reserveText, 'MYR');
@@ -105,6 +110,7 @@ export default function PlanTripScreen() {
     if (!destination || !dates.start || !dates.end || budget === null || reserve === null) return;
     const result = addTrip({
       destinationId: destination.id,
+      city: typedCity,
       startDate: dates.start,
       endDate: dates.end,
       totalBudgetMyr: budget,
@@ -136,6 +142,7 @@ export default function PlanTripScreen() {
             <AppText variant="title">Where are you going?</AppText>
             <AppText color="muted">This sets the currency for your trip.</AppText>
             <DestinationPicker value={destinationId} onChange={setDestinationId} />
+            <CountryPicker value={destinationId} onChange={setDestinationId} city={city} onCityChange={setCity} />
           </>
         ) : null}
 
@@ -212,7 +219,7 @@ export default function PlanTripScreen() {
           <>
             <AppText variant="title">Ready to go?</AppText>
             <Card style={styles.review}>
-              <ReviewRow label="Destination" value={`${destination.city}, ${destination.country}`} />
+              <ReviewRow label="Destination" value={placeName} />
               <ReviewRow label="Currency" value={`${currencies[destination.currency].name} (${destination.currency})`} />
               <ReviewRow label="Dates" value={`${formatFullDate(dates.start)} to ${formatFullDate(dates.end)}`} />
               <ReviewRow label="Length" value={totalDays === 1 ? '1 day' : `${totalDays} days`} />

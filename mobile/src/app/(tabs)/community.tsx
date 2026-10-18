@@ -16,7 +16,7 @@ import { ChoiceChips } from '@/components/ui/ChoiceChips';
 import { MapPinIcon, PlusIcon } from '@/components/ui/icons';
 import { PressableScale } from '@/components/ui/PressableScale';
 import { Reveal } from '@/components/ui/Reveal';
-import { destinations } from '@/data/destinations';
+import { destinations, destinationsWith, findDestination } from '@/data/destinations';
 import { destinationStats, feedFor, sortFeed, type FeedOrder } from '@/domain/community';
 import { formatMoney } from '@/domain/money';
 import { useAppData } from '@/state/AppDataProvider';
@@ -39,7 +39,8 @@ export default function CommunityScreen() {
   const [destinationId, setDestinationId] = useState(trip?.destinationId ?? 'tokyo');
   const [order, setOrder] = useState<FeedOrder>('latest');
 
-  const destination = destinations.find((d) => d.id === destinationId) ?? destinations[0];
+  const destination = findDestination(destinationId) ?? destinations[0];
+  const pickerDestinations = destinationsWith(trip?.destinationId);
   const feed = feedFor(destinationId, samples, activity);
   const stats = destinationStats(feed);
   const posts = sortFeed(feed, order);
@@ -74,7 +75,7 @@ export default function CommunityScreen() {
           contentContainerStyle={styles.picker}
           role="radiogroup"
           aria-label="Destination">
-          {destinations.map((d) => {
+          {pickerDestinations.map((d) => {
             const selected = d.id === destinationId;
             return (
               <PressableScale

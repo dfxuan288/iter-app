@@ -18,7 +18,8 @@ export interface QuickEntry {
   category: Category | null;
 }
 
-const currencyWords: Record<CurrencyCode, string[]> = {
+/** Words and symbols that name a currency. Currencies not listed are still found by their code (e.g. "20 gbp"). */
+const currencyWords: Partial<Record<CurrencyCode, string[]>> = {
   MYR: ['myr', 'rm', 'ringgit'],
   JPY: ['jpy', 'yen', '¥', '円'],
   THB: ['thb', 'baht', '฿'],
@@ -28,6 +29,19 @@ const currencyWords: Record<CurrencyCode, string[]> = {
   USD: ['usd', 'us$', 'dollars', 'dollar', '$'],
   EUR: ['eur', 'euros', 'euro', '€'],
   KRW: ['krw', 'won', '₩'],
+  GBP: ['gbp', 'pounds', 'pound', '£'],
+  AUD: ['aud', 'a$'],
+  NZD: ['nzd', 'nz$'],
+  HKD: ['hkd', 'hk$'],
+  TWD: ['twd', 'nt$'],
+  CNY: ['cny', 'rmb', 'yuan', 'cn¥'],
+  CAD: ['cad', 'c$', 'ca$'],
+  CHF: ['chf', 'francs', 'franc'],
+  INR: ['inr', 'rupees', 'rupee', '₹'],
+  PHP: ['php', 'pesos', 'peso', '₱'],
+  AED: ['aed', 'dirhams', 'dirham'],
+  SAR: ['sar', 'riyals', 'riyal'],
+  TRY: ['lira', '₺'],
 };
 
 const categoryWords: Record<Category, string[]> = {
@@ -57,7 +71,7 @@ const wholeWord = (word: string) => new RegExp(`(^|[^a-z])${escapeRegExp(word)}(
 /** Finds a currency word or symbol, preferring longer matches so "s$" wins over "$". */
 function findCurrency(text: string): { currency: CurrencyCode; match: string } | null {
   const candidates = (Object.keys(currencyWords) as CurrencyCode[])
-    .flatMap((currency) => currencyWords[currency].map((word) => ({ currency, word })))
+    .flatMap((currency) => (currencyWords[currency] ?? []).map((word) => ({ currency, word })))
     .sort((a, b) => b.word.length - a.word.length);
   for (const { currency, word } of candidates) {
     const isSymbol = !/[a-z]/i.test(word.replace(/\$/g, '')) || word.endsWith('$');
