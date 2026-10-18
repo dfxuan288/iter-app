@@ -3,7 +3,7 @@ import { createContext, use, useEffect, useMemo, useRef, useState, type ReactNod
 import { defaultClock } from '@/config/demo';
 import type { PassKind } from '@/config/plans';
 import { createSeedData } from '@/data/seed';
-import { summarizeTrip, type TripSummary } from '@/domain/budget';
+import { expensesAsOf, summarizeTrip, type TripSummary } from '@/domain/budget';
 import { readClock, shiftDay, todayFor, type AppClock } from '@/domain/clock';
 import type { IsoDate } from '@/domain/dates';
 import { accessOn, activatePlan, addPass, recordScan, scansLeftToday, type Access } from '@/domain/plan';
@@ -11,7 +11,7 @@ import type { AppData, Expense, ExpenseSource, ReceiptDetails, RefundState, Trip
 import { loadAppData, saveAppData, type LoadOutcome } from '@/services/appDataStore';
 import { imageStore } from '@/services/imageStore';
 import { addExpense, deleteExpense, newExpenseId, setRefundState, updateExpense, type ExpenseDraft, type ExpenseProblem, type RateQuote } from '@/services/expenseService';
-import { activeTrip, createTrip, newTripId, toggleRefundChecklist, type TripDraft, type TripDraftProblem } from '@/services/tripService';
+import { activeTrip, createTrip, newTripId, removeTrip, switchTrip, toggleRefundChecklist, type TripDraft, type TripDraftProblem } from '@/services/tripService';
 
 export interface AppDataContextValue {
   /** False until saved data has been read from the phone. */
@@ -21,8 +21,12 @@ export interface AppDataContextValue {
   trip: Trip | undefined;
   /** Calculated figures for the active trip. */
   summary: TripSummary | undefined;
-  /** The active trip's expenses, most recent first. */
+  /** The active trip's expenses up to today, most recent first. */
   expenses: Expense[];
+  /** Every trip's expenses up to today (later-dated ones are hidden while the app date is earlier). */
+  expensesToDate: Expense[];
+  /** How many of the active trip's expenses are dated after today (only with the demo date moved back). */
+  laterExpenseCount: number;
   loadOutcome: LoadOutcome | null;
   /** True when the last change could not be written to the phone's storage. */
   saveFailed: boolean;
@@ -38,6 +42,10 @@ export interface AppDataContextValue {
   /** Saves the user's answers about a purchase's tax refund. */
   updateRefund: (expenseId: string, change: RefundState) => void;
   toggleRefundChecklist: (tripId: string, itemId: string) => void;
+  /** Makes another saved trip the current one. */
+  switchTrip: (tripId: string) => void;
+  /** Deletes a trip with its expenses and receipt photos. */
+  removeTrip: (tripId: string) => void;
   resetDemo: () => void;
   /** What "today" is inside the app: the demo date, or the phone's real date. */
   clock: AppClock;
@@ -98,8 +106,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     const trip = activeTrip(data);
     // Newest day first; within a day, the one added last comes first. (Order of adding is used rather
     // than the saved time, because the demo runs on a fixed date that real clock times do not match.)
+    const expensesToDate = expensesAsOf(data.expenses, today);
     const tripExpenses = trip
-      ? data.expenses
+      ? expensesToDate
           .map((expense, index) => ({ expense, index }))
           .filter(({ expense }) => expense.tripId === trip.id)
           .sort((a, b) => b.expense.purchaseDate.localeCompare(a.expense.purchaseDate) || b.index - a.index)
@@ -119,9 +128,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       today,
       trip,
       summary: trip
-        ? summarizeTrip({ trip, categoryBudgets: data.categoryBudgets, expenses: data.expenses, today })
+        ? summarizeTrip({ trip, categoryBudgets: data.categoryBudgets, expenses: expensesToDate, today })
         : undefined,
       expenses: tripExpenses,
+      expensesToDate,
+      laterExpenseCount: trip ? data.expenses.filter((e) => e.tripId === trip.id && e.purchaseDate > today).length : 0,
       loadOutcome,
       saveFailed,
       addTrip: (draft) => {
@@ -150,6 +161,12 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       },
       updateRefund: (expenseId, change) => commit(setRefundState(data, expenseId, change)),
       toggleRefundChecklist: (tripId, itemId) => commit(toggleRefundChecklist(data, tripId, itemId)),
+      switchTrip: (tripId) => commit(switchTrip(data, tripId)),
+      removeTrip: (tripId) => {
+        const result = removeTrip(data, tripId);
+        commit(result.data);
+        result.imageIds.forEach((id) => void imageStore.remove(id));
+      },
       resetDemo: () => commit(createSeedData()),
       clock,
       shiftDay: (days) => commit({ ...data, clock: shiftDay(clock, days, new Date()) }),

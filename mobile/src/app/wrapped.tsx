@@ -50,7 +50,7 @@ const backgrounds = {
 export default function WrappedScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { trip, summary, expenses, data } = useAppData();
+  const { trip, summary, expenses, expensesToDate } = useAppData();
   const [index, setIndex] = useState(0);
   const close = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
@@ -63,7 +63,7 @@ export default function WrappedScreen() {
           phase: summary.phase,
           dayNumber: summary.dayNumber,
           totalDays: summary.totalDays,
-          refundMyr: summarizeRefunds(trip, data.expenses).toCollectMyr,
+          refundMyr: summarizeRefunds(trip, expensesToDate).toCollectMyr,
         })
       : null;
 

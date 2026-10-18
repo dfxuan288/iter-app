@@ -10,7 +10,7 @@ import { colors } from '@/theme/tokens';
  * animation (the city photo inside the ITER mark, the dive and the count) is in LaunchSplash.web.tsx,
  * the version ITER ships today; it needs CSS masks, which phone apps would get from a masking library.
  */
-export function LaunchSplash({ onDone }: { onDone: () => void }) {
+export function LaunchSplash({ onDone }: { onDone: () => void; canLand?: () => boolean }) {
   const reduceMotion = useReducedMotion();
   useEffect(() => {
     const timer = setTimeout(onDone, reduceMotion ? 0 : 900);

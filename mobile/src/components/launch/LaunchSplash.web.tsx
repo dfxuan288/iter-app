@@ -40,7 +40,7 @@ function loadImage(uri: string): Promise<boolean> {
   });
 }
 
-export function LaunchSplash({ onDone }: { onDone: () => void }) {
+export function LaunchSplash({ onDone, canLand = () => true }: { onDone: () => void; canLand?: () => boolean }) {
   const content = useLaunchContent();
   const root = useRef<HTMLDivElement>(null);
   const masked = useRef<HTMLDivElement>(null);
@@ -92,7 +92,7 @@ export function LaunchSplash({ onDone }: { onDone: () => void }) {
       const box = scene.getBoundingClientRect();
       const card = document.getElementById(LAUNCH_CARD_ID)?.getBoundingClientRect();
       const visible = card && card.width > 0 && card.height > 0 && card.top < box.bottom && card.bottom > box.top;
-      if (!card || !visible) {
+      if (!card || !visible || !canLand()) {
         const fade = play(scene, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(1.05)' }], { duration: 450, easing: 'cubic-bezier(0.4, 0, 1, 1)' });
         if (fade) fade.onfinish = finish;
         return;

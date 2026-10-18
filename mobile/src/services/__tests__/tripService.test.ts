@@ -2,7 +2,7 @@ import { createSeedData, DEMO_TRIP_ID } from '@/data/seed';
 import { summarizeTrip } from '@/domain/budget';
 
 import { loadAppData, saveAppData, type KeyValueStorage } from '../appDataStore';
-import { activeTrip, createTrip, validateTripDraft, type TripDraft } from '../tripService';
+import { activeTrip, createTrip, removeTrip, switchTrip, tripsNewestFirst, validateTripDraft, type TripDraft } from '../tripService';
 
 const RM = (ringgit: number) => ringgit * 100;
 
@@ -204,5 +204,41 @@ describe('"Somewhere else?" trips', () => {
     const result = createTrip(createSeedData(), { ...draft, destinationId: 'country:KW' }, 'trip-kw', '2026-10-18T00:00:00Z');
     expect(result.ok && result.trip.city).toBe('Kuwait');
     expect(validateTripDraft({ ...draft, destinationId: 'country:XX' })).toContain('unknown_destination');
+  });
+});
+
+describe('trip history: switching and removing trips', () => {
+  const withSecondTrip = () => {
+    const result = createTrip(createSeedData(), draft, 'trip-bkk', '2026-10-18T00:00:00Z');
+    if (!result.ok) throw new Error('could not create');
+    return result.data;
+  };
+
+  it('switches the current trip, and ignores an unknown one', () => {
+    const data = withSecondTrip();
+    expect(activeTrip(data)?.id).toBe('trip-bkk');
+    expect(switchTrip(data, DEMO_TRIP_ID).activeTripId).toBe(DEMO_TRIP_ID);
+    expect(switchTrip(data, 'nope')).toBe(data);
+  });
+
+  it('removes a trip with its expenses, plans and receipt photos, keeping other trips', () => {
+    const data = switchTrip(withSecondTrip(), DEMO_TRIP_ID);
+    const photos = data.expenses.filter((e) => e.tripId === DEMO_TRIP_ID && e.receipt?.imageId).length;
+    const { data: after, imageIds } = removeTrip(data, DEMO_TRIP_ID);
+    expect(after.trips.map((t) => t.id)).toEqual(['trip-bkk']);
+    expect(after.expenses.some((e) => e.tripId === DEMO_TRIP_ID)).toBe(false);
+    expect(after.categoryBudgets.some((b) => b.tripId === DEMO_TRIP_ID)).toBe(false);
+    expect(after.activeTripId).toBe('trip-bkk');
+    expect(imageIds).toHaveLength(photos);
+  });
+
+  it('leaves no current trip when the last one is removed', () => {
+    const { data } = removeTrip(createSeedData(), DEMO_TRIP_ID);
+    expect(data.trips).toEqual([]);
+    expect(data.activeTripId).toBeNull();
+  });
+
+  it('lists trips newest first', () => {
+    expect(tripsNewestFirst(withSecondTrip()).map((t) => t.id)).toEqual(['trip-bkk', DEMO_TRIP_ID]);
   });
 });

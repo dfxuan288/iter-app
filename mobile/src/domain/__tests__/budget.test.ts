@@ -1,7 +1,7 @@
 import { budgetRules } from '@/config/budget';
 import { createSeedData, DEMO_TRIP_ID } from '@/data/seed';
 
-import { budgetStatus, forecastRunOut, safeToSpendPerDay, splitByPercent, summarizeTrip } from '../budget';
+import { budgetStatus, expensesAsOf, forecastRunOut, safeToSpendPerDay, splitByPercent, summarizeTrip } from '../budget';
 import { CATEGORIES, type CategoryBudget, type Expense, type Trip } from '../types';
 
 const RM = (ringgit: number) => Math.round(ringgit * 100);
@@ -268,5 +268,24 @@ describe('splitByPercent', () => {
   it('has suggested percentages for every category that add up to 100', () => {
     expect(Object.keys(budgetRules.suggestedSplitPercent).sort()).toEqual([...CATEGORIES].sort());
     expect(Object.values(budgetRules.suggestedSplitPercent).reduce((a, b) => a + b, 0)).toBe(100);
+  });
+});
+
+describe('the demo with the app date moved back to day 1 (bug found 18 Oct 2026)', () => {
+  it('counts only what was spent by that day, so "spent so far" matches the daily bars', () => {
+    const data = createSeedData();
+    const trip = data.trips[0]!;
+    const today = trip.startDate;
+    const summary = summarizeTrip({ trip, categoryBudgets: data.categoryBudgets, expenses: expensesAsOf(data.expenses, today), today });
+    const barsTotal = summary.dailySpend.filter((d) => !d.isFuture).reduce((sum, d) => sum + d.spentMyr, 0);
+    const bookedBefore = data.expenses.filter((e) => e.purchaseDate < trip.startDate).reduce((sum, e) => sum + e.amountMyr, 0);
+    expect(summary.spentMyr).toBe(barsTotal + bookedBefore);
+    expect(summary.spentMyr).toBeLessThan(145_000);
+  });
+
+  it('leaves later expenses out without changing them', () => {
+    const data = createSeedData();
+    expect(expensesAsOf(data.expenses, '2026-11-15')).toHaveLength(data.expenses.length);
+    expect(expensesAsOf(data.expenses, '2026-11-09').every((e) => e.purchaseDate <= '2026-11-09')).toBe(true);
   });
 });
