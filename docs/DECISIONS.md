@@ -390,6 +390,22 @@ Scope agreed with the team: finish what exists, no new features (the under-budge
   remaining flags are white text on the Community photo header, which the script measures against the page instead of
   the photo (on screen it is white on dark navy).
 
+## Phase 10: final checks (18 Oct 2026)
+
+- **Checks**: 284 app tests and 59 server tests pass; typecheck, lint and the production build are clean.
+- **Live smoke test** on https://iter-app-alpha.vercel.app: welcome screens, every tab, live rates, plans.
+- **Real AI scan on the live server** of a receipt it had never seen (the UNIQLO demo receipt): read in 3.6 s by Haiku,
+  every field correct (shop in English and Japanese, date, both items, ¥9,570 tax-included, 10% tax ¥869, tax-free shop).
+- **Security**: no secret keys anywhere in the live app's code (2.6 MB checked) and no key files in the repository.
+  Supabase's security advisor reports only that the three tables have row-level security with no access rules: that is
+  deliberate (only ITER's server, with its secret key, can read or write them). Performance advisor: no issues.
+- **Offline**: with the connection cut while ITER is open, the converter uses the last saved rate and says so, and new
+  expenses are saved on the phone; scans wait and send themselves later. **Opening** ITER with no connection at all is
+  not possible yet: that needs a service worker (an offline copy of the app itself). Decision pending with the team.
+- **Demo script**: `docs/DEMO.md`.
+
 ## Still open
+
+- Offline start (service worker): build it, or leave it for after the prototype? See Phase 10 above.
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.
