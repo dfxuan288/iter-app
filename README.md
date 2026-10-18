@@ -10,7 +10,7 @@ This is a **prototype**. It uses demo data and moves no real money.
 | `mobile/` | The app (Expo + React Native + TypeScript), shipped as a web app you open in a browser |
 | `api/` | The backend's endpoints. Vercel turns each file here into a web address under `/api/` |
 | `backend/` | The backend's actual logic and tests. Holds the AI key and fetches exchange rates |
-| `docs/` | The project brief, the decisions made since, and the design direction |
+| `docs/` | The project brief, the decisions made since, the design direction, and the demo script (`docs/DEMO.md`) |
 
 It is hosted on **Vercel** (the app and the backend) with **Supabase** for the backend's small
 database, as recommended for the course.
@@ -29,7 +29,7 @@ database, as recommended for the course.
 | 7. Community: typical trip per destination, feed, likes, comments, report and block, share your trip | Done |
 | 8. Plans and Me: free trial, Day Pass, 7-Day Pass (purchases simulated), free version, My plan | Done |
 | 9. Polish: launch animation, welcome screens, motion, Trip Wrapped, demo receipt photos, accessibility pass | Done |
-| 10. Final deployment checks and demo rehearsal | Next |
+| 10. Final deployment checks and demo rehearsal: live smoke test, real AI scan, security check, offline check, demo script (`docs/DEMO.md`) | Done |
 
 ## Run it on your computer
 
