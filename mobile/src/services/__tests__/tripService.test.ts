@@ -242,3 +242,19 @@ describe('trip history: switching and removing trips', () => {
     expect(tripsNewestFirst(withSecondTrip()).map((t) => t.id)).toEqual(['trip-bkk', DEMO_TRIP_ID]);
   });
 });
+
+describe('demo receipt photos', () => {
+  it('every scanned demo receipt has its bundled photo', () => {
+    const scanned = createSeedData().expenses.filter((e) => e.receipt);
+    expect(scanned).toHaveLength(4);
+    expect(scanned.every((e) => e.receipt?.imageId?.startsWith('demo:'))).toBe(true);
+  });
+
+  it('demo data saved before the photos existed gets them, and nothing else changes', async () => {
+    const old = createSeedData();
+    old.expenses = old.expenses.map((e) => (e.receipt ? { ...e, receipt: { ...e.receipt, imageId: null } } : e));
+    const { data } = await loadAppData(memoryStorage({ 'iter.appData.v1': JSON.stringify(old) }));
+    expect(data.expenses.filter((e) => e.receipt).every((e) => e.receipt?.imageId?.startsWith('demo:'))).toBe(true);
+    expect(data.expenses).toHaveLength(old.expenses.length);
+  });
+});

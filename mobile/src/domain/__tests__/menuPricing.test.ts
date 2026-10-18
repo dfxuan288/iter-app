@@ -1,4 +1,4 @@
-import { applyCharges, chargesSummary, orderBill, taxUnknown, type MenuCharges } from '../menuPricing';
+import { applyCharges, chargesSummary, orderBill, taxUnknown, type MenuCharges, extraMenuNotes } from '../menuPricing';
 
 const japan: MenuCharges = { pricesExcludeTax: true, addedTaxPercent: 10, serviceChargePercent: null };
 const thaiPlusPlus: MenuCharges = { pricesExcludeTax: true, addedTaxPercent: 7, serviceChargePercent: 10 };
@@ -55,5 +55,17 @@ describe('describing the charges', () => {
     expect(taxUnknown(unknown)).toBe(true);
     expect(applyCharges(1000, unknown).total).toBe(1000);
     expect(chargesSummary(unknown)).toMatch(/not how much/);
+  });
+});
+
+describe('extraMenuNotes', () => {
+  const plusPlus = { pricesExcludeTax: true, addedTaxPercent: 7, serviceChargePercent: 10 };
+  it('drops notes that repeat the tax and service line, keeps the rest', () => {
+    const notes = ['Prices are "++".', 'Prices exclude 10% service charge and 7% VAT.', 'A cover charge of 100 baht per person applies.', 'Minimum order of two dishes.'];
+    expect(extraMenuNotes(notes, plusPlus)).toEqual(['A cover charge of 100 baht per person applies.', 'Minimum order of two dishes.']);
+  });
+  it('keeps every note when there is no charges line to repeat', () => {
+    const none = { pricesExcludeTax: false, addedTaxPercent: null, serviceChargePercent: null };
+    expect(extraMenuNotes(['Prices include tax.'], none)).toEqual(['Prices include tax.']);
   });
 });

@@ -4,6 +4,7 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { cancelAnimation, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 import { ReceiptIcon } from '@/components/ui/icons';
+import { demoPhotoUri, isDemoPhotoId } from '@/data/demoReceiptPhotos';
 import { imageStore } from '@/services/imageStore';
 import { colors } from '@/theme/tokens';
 
@@ -11,7 +12,7 @@ import { colors } from '@/theme/tokens';
 export function useStoredImage(id: string | null | undefined): string | null | undefined {
   const [loaded, setLoaded] = useState<{ id: string; uri: string | null } | null>(null);
   useEffect(() => {
-    if (!id) return;
+    if (!id || isDemoPhotoId(id)) return;
     let active = true;
     void imageStore.load(id).then((uri) => {
       if (active) setLoaded({ id, uri });
@@ -21,6 +22,8 @@ export function useStoredImage(id: string | null | undefined): string | null | u
     };
   }, [id]);
   if (!id) return null;
+  // The demo trip's receipt photos come with the app.
+  if (isDemoPhotoId(id)) return demoPhotoUri(id);
   return loaded?.id === id ? loaded.uri : undefined;
 }
 

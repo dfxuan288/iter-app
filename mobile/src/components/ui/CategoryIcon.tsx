@@ -26,8 +26,9 @@ export function CategoryIcon({ category, size = 48 }: CategoryIconProps) {
       source={sources[category]}
       style={{ width: size, height: size, borderRadius: Math.min(radius.tile, size * 0.32) }}
       contentFit="cover"
+      // An empty label marks it decorative on the web too (expo-image passes it on as alt="").
+      accessibilityLabel=""
       accessible={false}
-      alt=""
     />
   );
 }

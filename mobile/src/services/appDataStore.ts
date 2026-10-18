@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { createSeedData, createSeedPlan } from '@/data/seed';
+import { demoReceiptPhotoId } from '@/data/demoReceiptPhotos';
 import { readPlan } from '@/domain/plan';
 import { isCategory, type AppData, type CategoryBudget, type Expense } from '@/domain/types';
 
@@ -63,6 +64,19 @@ export function withPlan(data: AppData): AppData {
   return plan ? { ...data, plan } : { ...data, plan: createSeedPlan() };
 }
 
+/** Demo data saved before the demo receipts had photos (before 18 Oct 2026) gets them. */
+export function withDemoReceiptPhotos(data: AppData): AppData {
+  let changed = false;
+  const expenses = data.expenses.map((expense) => {
+    if (!expense.id.startsWith('expense-seed-') || !expense.receipt || expense.receipt.imageId !== null) return expense;
+    const imageId = demoReceiptPhotoId(expense.merchantName);
+    if (!imageId) return expense;
+    changed = true;
+    return { ...expense, receipt: { ...expense.receipt, imageId } };
+  });
+  return changed ? { ...data, expenses } : data;
+}
+
 function isAppData(value: unknown): value is AppData {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
@@ -89,7 +103,7 @@ export async function loadAppData(storage: KeyValueStorage = AsyncStorage): Prom
   try {
     const parsed: unknown = JSON.parse(raw);
     if (isAppData(parsed)) {
-      const { data, retired } = withoutRetiredCategories(withPlan(parsed));
+      const { data, retired } = withoutRetiredCategories(withDemoReceiptPhotos(withPlan(parsed)));
       if (retired.expenses.length > 0 || retired.categoryBudgets.length > 0) {
         try {
           const earlier = JSON.parse((await storage.getItem(RETIRED_KEY)) ?? 'null') as Retired | null;
