@@ -375,6 +375,21 @@ amount counting up; the team preferred landing on the card, so the amount is sho
   trip** asks first, then deletes the trip, its expenses and receipt photos; the newest other trip becomes current, or
   Home shows "No trip yet" (with the paper plane).
 
+## Phase 9: polish (18 Oct 2026)
+
+Scope agreed with the team: finish what exists, no new features (the under-budget celebration is on hold).
+- **Demo receipt photos**: the four scanned demo receipts (UNIQLO, Bic Camera, Ichiran, Don Quijote) now have photos,
+  drawn by `scripts/make-samples.ts` from the exact items, tax lines and totals in the demo data and bundled with the
+  app (`mobile/assets/demo-receipts`, ids starting "demo:"), so they show offline. Saved demo data gets them too.
+- **Menu notes**: when ITER's own line explains the tax and service charge, the AI's notes that repeat it are hidden;
+  others (cover charge, minimum order) still show.
+- **Leftovers**: the "Coming later" card is gone (trip history is built; settings are not planned).
+- **Accessibility pass**: a scripted check of every screen for tap targets under 44 × 44, controls without a
+  screen-reader name, images without a description and text below WCAG AA contrast. Fixed: like and comment buttons
+  were 40–42 px wide; category pictures were not marked decorative on the web; "1 comments" / "1 likes". The only
+  remaining flags are white text on the Community photo header, which the script measures against the page instead of
+  the photo (on screen it is white on dark navy).
+
 ## Still open
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.

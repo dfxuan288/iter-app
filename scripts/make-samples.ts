@@ -1,6 +1,8 @@
 /**
  * Draws the demo sample receipts and menus (mobile/assets/samples/*.jpg) used to show scanning
  * without a real receipt. Their printed contents must match backend/scan/samples.ts.
+ * Also draws the photos of the demo trip's four scanned receipts (mobile/assets/demo-receipts/*.jpg),
+ * which must match the receipt details in mobile/src/data/seed.ts.
  * Run with: npx tsx scripts/make-samples.ts   (needs Japanese and Thai fonts, as on Windows)
  */
 import { mkdirSync } from 'node:fs';
@@ -9,6 +11,7 @@ import { join } from 'node:path';
 import sharp from 'sharp';
 
 const OUT = join('mobile', 'assets', 'samples');
+const DEMO_OUT = join('mobile', 'assets', 'demo-receipts');
 const JP = "'Yu Gothic', 'Meiryo', 'MS Gothic', sans-serif";
 const TH = "'Leelawadee UI', 'Tahoma', sans-serif";
 
@@ -20,7 +23,11 @@ type Line =
 const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /** A receipt or menu drawn as SVG text on a sheet, placed slightly askew on a table like a photo. */
-async function draw(name: string, lines: Line[], options: { width: number; font: string; paper: string; ink: string; table: string; tilt: number; size: number }) {
+async function draw(
+  name: string,
+  lines: Line[],
+  options: { width: number; font: string; paper: string; ink: string; table: string; tilt: number; size: number; out?: string; maxWidth?: number },
+) {
   const pad = 48;
   let y = pad;
   const parts: string[] = [];
@@ -57,9 +64,9 @@ async function draw(name: string, lines: Line[], options: { width: number; font:
   const margin = 70;
   await sharp({ create: { width: (meta.width ?? 0) + margin * 2, height: (meta.height ?? 0) + margin * 2, channels: 3, background: options.table } })
     .composite([{ input: paper, left: margin, top: margin }])
-    .resize({ width: 1100, height: 1500, fit: 'inside' })
-    .jpeg({ quality: 82 })
-    .toFile(join(OUT, `${name}.jpg`));
+    .resize({ width: options.maxWidth ?? 1100, height: 1500, fit: 'inside' })
+    .jpeg({ quality: options.out ? 72 : 82 })
+    .toFile(join(options.out ?? OUT, `${name}.jpg`));
   console.log(`wrote ${name}.jpg`);
 }
 
@@ -68,6 +75,8 @@ const yen = (n: number) => `¥${n.toLocaleString('en-US')}`;
 
 async function main() {
   mkdirSync(OUT, { recursive: true });
+  mkdirSync(DEMO_OUT, { recursive: true });
+  await drawDemoReceipts();
 
   await draw(
     'receipt-drugstore-ginza',
@@ -182,3 +191,88 @@ async function main() {
 }
 
 void main();
+
+/** The demo trip's four scanned receipts, as kept with their expenses (see mobile/src/data/seed.ts). */
+async function drawDemoReceipts() {
+  const demo = { ...receipt, out: DEMO_OUT, maxWidth: 820 };
+  const footer: Line[] = [{ gap: 14 }, { left: 'DEMO RECEIPT · ITER', size: 20, center: true }];
+  await draw(
+    'uniqlo-ginza',
+    [
+      { left: 'UNIQLO', size: 50, bold: true, center: true },
+      { left: 'ユニクロ 銀座店', size: 30, center: true },
+      { left: '★ 免税 TAX-FREE ★', size: 24, bold: true, center: true },
+      { gap: 8 },
+      { left: '2026年11月14日(土) 16:05', right: 'No.0412' },
+      { rule: 'dash' },
+      { left: 'ヒートテッククルーネックT' },
+      { left: '2点 × @1,290', right: yen(2580), indent: 28 },
+      { left: 'ウルトラライトダウンジャケット', right: yen(6990) },
+      { rule: 'dash' },
+      { left: '小計', right: yen(9570) },
+      { rule: 'double' },
+      { left: '合計', right: yen(9570), size: 36, bold: true },
+      { left: '(内消費税10%', right: `${yen(869)})`, size: 23 },
+      ...footer,
+    ],
+    { ...demo, tilt: -0.9 },
+  );
+  await draw(
+    'bic-camera-shinjuku',
+    [
+      { left: 'BIC CAMERA', size: 46, bold: true, center: true },
+      { left: 'ビックカメラ 新宿西口店', size: 28, center: true },
+      { left: '★ 免税 TAX-FREE ★', size: 24, bold: true, center: true },
+      { gap: 8 },
+      { left: '2026年11月12日(木) 18:41', right: 'No.7730' },
+      { rule: 'dash' },
+      { left: 'ワイヤレスイヤホン', right: yen(14800) },
+      { rule: 'dash' },
+      { left: '小計 (税抜)', right: yen(14800) },
+      { left: '消費税 10%', right: yen(1480) },
+      { rule: 'double' },
+      { left: '合計', right: yen(16280), size: 36, bold: true },
+      ...footer,
+    ],
+    { ...demo, tilt: 0.7 },
+  );
+  await draw(
+    'ichiran-shibuya',
+    [
+      { left: '一蘭', size: 54, bold: true, center: true },
+      { left: '渋谷店', size: 30, center: true },
+      { gap: 8 },
+      { left: '2026年11月14日(土) 12:26', right: '席 07' },
+      { rule: 'dash' },
+      { left: '天然とんこつラーメン', right: yen(1480) },
+      { left: '替玉', right: yen(210) },
+      { rule: 'dash' },
+      { left: '合計', right: yen(1690), size: 36, bold: true },
+      { left: '(内消費税10%', right: `${yen(153)})`, size: 23 },
+      ...footer,
+    ],
+    { ...demo, tilt: -0.6 },
+  );
+  await draw(
+    'don-quijote-shibuya',
+    [
+      { left: 'ドン・キホーテ', size: 46, bold: true, center: true },
+      { left: '渋谷本店', size: 30, center: true },
+      { left: '★ 免税 TAX-FREE ★', size: 24, bold: true, center: true },
+      { gap: 8 },
+      { left: '2026年11月14日(土) 21:58', right: 'No.5521' },
+      { rule: 'dash' },
+      { left: '※うまい棒 詰め合わせ', right: yen(450) },
+      { left: 'ルルルン フェイスマスク 7枚', right: yen(660) },
+      { rule: 'dash' },
+      { left: '小計 (税抜)', right: yen(1110) },
+      { left: '消費税 8%', right: yen(36) },
+      { left: '消費税 10%', right: yen(66) },
+      { rule: 'double' },
+      { left: '合計', right: yen(1212), size: 36, bold: true },
+      { left: '※印は軽減税率(8%)対象商品です', size: 21 },
+      ...footer,
+    ],
+    { ...demo, tilt: 1 },
+  );
+}

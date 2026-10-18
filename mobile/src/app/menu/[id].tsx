@@ -10,7 +10,7 @@ import { Chip } from '@/components/ui/Chip';
 import { IconButton } from '@/components/ui/IconButton';
 import { ArrowCounterClockwiseIcon, HourglassIcon, MinusIcon, PlusIcon, ReceiptIcon, SparkleIcon, TrashIcon, WarningIcon } from '@/components/ui/icons';
 import { StackScreen } from '@/components/ui/StackScreen';
-import { applyCharges, chargesSummary, orderBill, type MenuCharges } from '@/domain/menuPricing';
+import { applyCharges, chargesSummary, extraMenuNotes, orderBill, type MenuCharges } from '@/domain/menuPricing';
 import { convertToMyr, formatMoney, type CurrencyCode } from '@/domain/money';
 import { MAX_TEXT_LENGTH } from '@/services/expenseService';
 import { rateQuoteFor } from '@/services/fxService';
@@ -107,7 +107,7 @@ function TranslatedMenu({ menu, readBy, imageId }: { menu: ScannedMenu; readBy: 
           <Chip tone="success" icon={SparkleIcon} label={readBy === 'demo' ? 'Sample answer (AI unavailable)' : 'Translated by AI'} />
         </View>
         {summary ? <AppText variant="bodyStrong">{summary}</AppText> : null}
-        {menu.notes.map((note) => (
+        {extraMenuNotes(menu.notes, charges).map((note) => (
           <AppText key={note} color="muted">
             {note}
           </AppText>

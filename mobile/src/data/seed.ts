@@ -1,4 +1,5 @@
 import { SEED_RATE_DATE, seedRatesPerMyr } from '@/config/demo';
+import { demoReceiptPhotoId } from '@/data/demoReceiptPhotos';
 import type { IsoDate } from '@/domain/dates';
 import { convertToMyr, toMinor } from '@/domain/money';
 import type { PlanState } from '@/domain/plan';
@@ -166,7 +167,7 @@ const expenses: Expense[] = rows.map(([purchaseDate, merchantName, note, categor
     source,
     merchantName,
     purchaseDate,
-    ...(scannedReceipts[merchantName] ? { receipt: scannedReceipts[merchantName] } : {}),
+    ...(scannedReceipts[merchantName] ? { receipt: { ...scannedReceipts[merchantName], imageId: demoReceiptPhotoId(merchantName) } } : {}),
   };
 });
 

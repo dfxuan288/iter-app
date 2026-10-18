@@ -61,3 +61,15 @@ export function orderBill(lines: readonly OrderLine[], charges: MenuCharges): Bi
   const printed = sumMinor(lines.filter((line) => line.quantity > 0).map((line) => line.printed * line.quantity));
   return applyCharges(printed, charges);
 }
+
+/** Words that mark a note as being about tax or service, which chargesSummary already explains. */
+const CHARGE_WORDS = /\b(tax|vat|gst|sst|service|charge|charged|exclud\w*|includ\w*|plus)\b|\+\+|税|ค่าบริการ/i;
+
+/**
+ * The AI's notes worth showing next to ITER's own charges line: when that line is shown, notes
+ * that repeat the tax or service charge are left out; others (a cover charge, a minimum order) stay.
+ */
+export function extraMenuNotes(notes: readonly string[], charges: MenuCharges): string[] {
+  if (!chargesSummary(charges)) return [...notes];
+  return notes.filter((note) => !CHARGE_WORDS.test(note) || /cover|minimum|per person|seat/i.test(note));
+}

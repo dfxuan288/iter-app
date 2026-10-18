@@ -28,8 +28,8 @@ database, as recommended for the course.
 | 6. Menu translate: dishes in English, Ringgit prices with tax and service, pork and alcohol flags, log your order | Done |
 | 7. Community: typical trip per destination, feed, likes, comments, report and block, share your trip | Done |
 | 8. Plans and Me: free trial, Day Pass, 7-Day Pass (purchases simulated), free version, My plan | Done |
-| 9. Polish | Next |
-| 10. Final deployment checks and demo rehearsal | |
+| 9. Polish: launch animation, welcome screens, motion, Trip Wrapped, demo receipt photos, accessibility pass | Done |
+| 10. Final deployment checks and demo rehearsal | Next |
 
 ## Run it on your computer
 

@@ -2,7 +2,6 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { ComingSoon } from '@/components/ComingSoon';
 import { InstallAppCard } from '@/components/InstallAppCard';
 import { DemoDateCard } from '@/components/me/DemoDateCard';
 import { TripsCard } from '@/components/me/TripsCard';
@@ -143,7 +142,6 @@ export default function MeScreen() {
           accessibilityLabel="Check the server connection again"
         />
       </Card>
-      <ComingSoon phase="Later" features={['Trip history', 'Settings: notifications, scan quality, privacy, delete my data']} />
       <AppText variant="caption" color="muted" align="center">
         {`ITER prototype v${env.appVersion} · demo data, no real money`}
       </AppText>

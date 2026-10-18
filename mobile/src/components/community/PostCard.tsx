@@ -85,7 +85,7 @@ export function PostCard({ post, open = false, preview = false }: { post: FeedPo
             onPress={() => toggleLike(post.id)}
             role="button"
             aria-pressed={post.likedByMe}
-            aria-label={`${post.likedByMe ? 'Unlike' : 'Like'}. ${post.likeCount} likes`}
+            aria-label={`${post.likedByMe ? 'Unlike' : 'Like'}. ${post.likeCount} ${post.likeCount === 1 ? 'like' : 'likes'}`}
             style={styles.action}>
             <Pop on={post.likedByMe}>
               <HeartIcon size={22} color={post.likedByMe ? colors.danger : colors.textMuted} weight={post.likedByMe ? 'fill' : 'regular'} />
@@ -94,7 +94,7 @@ export function PostCard({ post, open = false, preview = false }: { post: FeedPo
               {String(post.likeCount)}
             </AppText>
           </PressableScale>
-          <PressableScale onPress={openPost} disabled={open} role="button" aria-label={`${post.commentCount} comments. Open the post`} style={styles.action}>
+          <PressableScale onPress={openPost} disabled={open} role="button" aria-label={`${post.commentCount} ${post.commentCount === 1 ? 'comment' : 'comments'}. Open the post`} style={styles.action}>
             <ChatCircleIcon size={22} color={colors.textMuted} />
             <AppText variant="label" color="muted">
               {String(post.commentCount)}
@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.xs,
     minHeight: MIN_TOUCH_TARGET,
+    minWidth: MIN_TOUCH_TARGET + spacing.md,
     paddingRight: spacing.sm,
   },
   panel: {
