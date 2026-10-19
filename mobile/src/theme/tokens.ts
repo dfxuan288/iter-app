@@ -116,4 +116,6 @@ export const motion = {
   enterMs: 420,
   staggerMs: 70,
   pressSpring: { damping: 22, stiffness: 320 },
+  /** The spring back after a tap: quick, with a small bounce so the release is felt. */
+  releaseSpring: { damping: 11, stiffness: 420, mass: 0.7 },
 } as const;

@@ -1,9 +1,10 @@
 import { TabList, Tabs, TabSlot, TabTrigger, type TabListProps, type TabTriggerSlotProps } from 'expo-router/ui';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/ui/AppText';
 import { ArrowsLeftRightIcon, HouseIcon, UserIcon, UsersThreeIcon, type Icon } from '@/components/ui/icons';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { ScanMarkIcon } from '@/components/ui/ScanMarkIcon';
 import { colors, MIN_TOUCH_TARGET, radius, shadow, spacing } from '@/theme/tokens';
 
@@ -15,33 +16,33 @@ interface TabButtonProps extends TabTriggerSlotProps {
 function TabButton({ label, icon: IconGlyph, isFocused, style: _style, ...props }: TabButtonProps) {
   const tint = isFocused ? colors.navy : colors.textMuted;
   return (
-    <Pressable
+    <PressableScale
       {...props}
       role="tab"
       aria-label={label}
       aria-selected={Boolean(isFocused)}
-      style={({ pressed }) => [styles.tab, pressed && styles.pressed]}>
+      style={styles.tab}>
       <IconGlyph size={24} color={tint} weight={isFocused ? 'fill' : 'regular'} />
       <AppText variant="caption" style={[styles.tabLabel, { color: tint }, isFocused && styles.tabLabelActive]}>
         {label}
       </AppText>
-    </Pressable>
+    </PressableScale>
   );
 }
 
 /** The Scan tab is the large navy button in the centre of the bar, rising above it, with ITER's scan mark. Green when open. */
 function ScanButton({ isFocused, style: _style, ...props }: TabTriggerSlotProps) {
   return (
-    <Pressable
+    <PressableScale
       {...props}
       role="tab"
       aria-label="Scan a receipt or menu"
       aria-selected={Boolean(isFocused)}
-      style={({ pressed }) => [styles.tab, pressed && styles.pressed]}>
+      style={styles.tab}>
       <View style={[styles.scanCircle, isFocused && styles.scanCircleActive]}>
         <ScanMarkIcon size={30} frameColor={isFocused ? colors.navy : colors.accentSoft} lineColor={isFocused ? colors.white : colors.accent} />
       </View>
-    </Pressable>
+    </PressableScale>
   );
 }
 
@@ -109,7 +110,6 @@ const styles = StyleSheet.create({
   },
   tabLabel: { fontSize: 12, lineHeight: 16 },
   tabLabelActive: { fontWeight: '700' },
-  pressed: { opacity: 0.6 },
   scanCircle: {
     width: SCAN_SIZE,
     height: SCAN_SIZE,
