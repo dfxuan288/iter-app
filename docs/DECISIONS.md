@@ -404,8 +404,16 @@ Scope agreed with the team: finish what exists, no new features (the under-budge
   not possible yet: that needs a service worker (an offline copy of the app itself). Decision pending with the team.
 - **Demo script**: `docs/DEMO.md`.
 
+## Offline start not built; clearer button presses (19 Oct 2026)
+
+- **Offline start**: the team decided not to add a service worker for the prototype (it risks phones keeping an old
+  version after updates). ITER needs a connection to open; once open, it copes with losing signal.
+- **Button feedback**: taps felt "stagnant": the old press (97%, only while the finger was down) barely showed on a
+  quick tap. Every button and tab now dips to 95% and dims, always for at least 70 ms even on the quickest tap, then
+  springs back with a small bounce; on a laptop, buttons lift slightly under the pointer. With reduced motion on they
+  only dim. One shared component (`PressableScale`), so every button behaves the same.
+
 ## Still open
 
-- Offline start (service worker): build it, or leave it for after the prototype? See Phase 10 above.
 
 - Six destination photos were supplied by the team (Tokyo, Seoul, Bali, Ho Chi Minh City, New York, Paris). Record where each came from and its licence.
