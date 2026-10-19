@@ -836,6 +836,7 @@ a.pill{text-decoration:none;}
 .foot-l a{display:inline-block;padding:12px 4px;}
 
 @media (pointer:coarse){#dashNav button,.po-like,.lnk,#rcPick button,#cmDest button{min-height:44px;}}
+.bars i.fut{background:transparent;border:1.5px dashed #b9c9cf;border-bottom:0;}
 </style>
 <script>
 /* ════════════════════════════════════════════════════════════════════
@@ -1091,10 +1092,10 @@ window.ITER_SITE = {
 
               <div class="bars" id="bars" aria-hidden="true">
                 <i style="height:29px"></i><i style="height:40px"></i><i style="height:26px"></i><i style="height:50px"></i>
-                <i style="height:35px"></i><i style="height:55px"></i><i class="hi" style="height:44px"></i>
-                <i style="height:20px"></i><i style="height:23px"></i><i style="height:17px"></i>
+                <i style="height:35px"></i><i class="hi" style="height:44px"></i>
+                <i class="fut" style="height:24px"></i><i class="fut" style="height:24px"></i><i class="fut" style="height:24px"></i><i class="fut" style="height:24px"></i>
               </div>
-              <div class="bars-cap"><span>Daily spend · day 1</span><span>Today</span><span>Day 10</span></div>
+              <div class="bars-cap" style="position:relative"><span>Daily spend · day 1</span><span style="position:absolute;left:55%;transform:translateX(-50%)">Today</span><span>Day 10</span></div>
 
               <div class="ctl-h"><span>No receipt? Type it in</span><button type="button" class="lnk" onclick="showTab('scan')">or scan a receipt →</button></div>
               <div class="ctl">
