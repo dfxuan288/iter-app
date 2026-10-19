@@ -1,0 +1,2493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ITER — Know what's safe to spend</title>
+<meta name="description" content="ITER is a travel money app for Malaysian travellers. Snap any receipt and AI logs it in Ringgit, shows what's safe to spend each day, and finds the tourist tax you can claim back.">
+<meta property="og:title" content="ITER — Know what's safe to spend">
+<meta property="og:description" content="Snap receipts, see what's safe to spend each day, and claim your tourist tax back.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ITER">
+<meta property="og:url" content="https://itertravel.vercel.app/">
+<meta property="og:image" content="https://itertravel.vercel.app/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ITER: know what's safe to spend today. A phone card shows RM 200 safe to spend per day.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://itertravel.vercel.app/">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#053B50">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20104.5%20131'%3E%3Cg%20transform='translate(-90.5,-524)'%3E%20%20%3Cpath%20d='M0%200%20C4.53%200.53%207.39%202.27%2011%205%20C13.5%208.75%2013.45%2010.55%2013%2015%20C7.96%2026.53%20-8.33%2030.97%20-19.19%2035.44%20C-28.14%2039.15%20-37.04%2042.9%20-45.72%2047.21%20C-46.36%2047.53%20-47.01%2047.85%20-47.67%2048.18%20C-55.26%2052.02%20-64.52%2056.89%20-68%2065%20C-68.65%2069.87%20-68.6%2074.71%20-66%2079%20C-64.05%2080.23%20-64.05%2080.23%20-62%2081%20C-61.34%2081.66%20-60.68%2082.32%20-60%2083%20C-69.9%2081.4%20-77.64%2077.44%20-83.94%2069.52%20C-87.03%2065.09%20-86.69%2060.2%20-86%2055%20C-80.87%2041.83%20-65.13%2035.33%20-53%2030%20C-43.02%2025.8%20-32.88%2022.03%20-22.7%2018.35%20C-21.48%2017.9%20-20.26%2017.46%20-19.01%2017%20C-16.63%2016.14%20-14.25%2015.29%20-11.87%2014.45%20C-10.79%2014.06%20-9.7%2013.67%20-8.59%2013.26%20C-7.63%2012.92%20-6.67%2012.58%20-5.68%2012.23%20C-2.7%2010.86%20-0.47%209.14%202%207%20C1.34%203.39%201.34%203.39%200%200%20Z%20'%20fill='%23053b50'%20transform='translate(177,554)'/%3E%20%20%3Cpath%20d='M0%200%20C0.1%204.27%200.17%208.54%200.22%2012.81%20C0.24%2014.25%200.27%2015.7%200.3%2017.15%20C0.7%2034.04%200.7%2034.04%20-5.54%2040.63%20C-9.63%2044.35%20-14.28%2047.23%20-19%2050.06%20C-23.06%2052.52%20-27.05%2054.99%20-30.88%2057.81%20C-34%2060%20-34%2060%20-36%2060%20C-36.07%2055.29%20-36.13%2050.57%20-36.16%2045.86%20C-36.18%2044.26%20-36.2%2042.66%20-36.23%2041.05%20C-36.26%2038.74%20-36.28%2036.43%20-36.29%2034.12%20C-36.31%2033.41%20-36.32%2032.71%20-36.34%2031.98%20C-36.34%2026.2%20-35.08%2021.66%20-31.48%2017.07%20C-24.77%2011.25%20-9.18%200%200%200%20Z%20'%20fill='%23053b50'%20transform='translate(165,595)'/%3E%20%20%3Cpath%20d='M0%200%20C2.84%202.84%202.41%205.64%202.44%209.44%20C2.47%2010.12%202.5%2010.8%202.54%2011.5%20C2.56%2013.5%202.56%2013.5%202%2017%20C-1.36%2019.44%20-5%2020.9%20-8.86%2022.38%20C-9.98%2022.8%20-11.09%2023.23%20-12.24%2023.67%20C-13.98%2024.33%20-13.98%2024.33%20-15.75%2025%20C-17.46%2025.66%20-17.46%2025.66%20-19.21%2026.33%20C-25.43%2028.7%20-31.67%2030.95%20-38%2033%20C-38.52%2025.33%20-37.44%2020.34%20-32.62%2014.26%20C-28.01%209.61%20-22.26%206.9%20-16.44%204.06%20C-15.62%203.66%20-14.81%203.26%20-13.97%202.84%20C-9.16%200.61%20-5.41%20-0.68%200%200%20Z%20'%20fill='%23053b50'%20transform='translate(163,544)'/%3E%20%20%3Cpath%20d='M0%200%20C0.66%200%201.32%200%202%200%20C2.24%200.54%202.48%201.09%202.73%201.64%20C5.32%207.19%205.32%207.19%2010%2011%20C10.99%2011.66%2011.98%2012.32%2013%2013%20C12.46%2013.28%2011.91%2013.56%2011.36%2013.85%20C5.96%2016.87%203.86%2019.09%202%2025%20C1.34%2025%200.68%2025%200%2025%20C-0.31%2024.19%20-0.31%2024.19%20-0.63%2023.36%20C-2.36%2019.33%20-3.57%2016.74%20-7.75%2015%20C-8.82%2014.67%20-9.9%2014.34%20-11%2014%20C-11%2013.34%20-11%2012.68%20-11%2012%20C-5.25%209%20-5.25%209%20-3%209%20C-2.01%206.03%20-1.02%203.06%200%200%20Z%20'%20fill='%23053b50'%20transform='translate(182,524)'/%3E%20%20%3Cpath%20d='M0%200%20C1.5%201.38%201.5%201.38%203%203%20C3%203.66%203%204.32%203%205%20C3.62%205.29%204.24%205.58%204.88%205.88%20C7%207%207%207%209%209%20C7.54%208.72%206.08%208.42%204.62%208.12%20C3.81%207.96%203%207.8%202.16%207.63%20C0%207%200%207%20-2%205%20C-1.34%203.35%20-0.68%201.7%200%200%20Z%20'%20fill='%23053b50'%20transform='translate(108,628)'/%3E%3C/g%3E%3C/svg%3E">
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+<style>
+:root{
+  --paper:#ffffff;
+  --paper-2:#eeeeee;
+  --ink:#053b50;
+  --ink-soft:#4e6b78;    /* 5.68:1 on white, 4.89:1 on the grey tint */
+  --hair:rgba(5,59,80,.12);
+
+  --night:#eeeeee;        /* was the dark slab colour — now the light tint */
+  --night-2:#053b50;      /* the one deliberate dark surface: featured pricing card */
+  --night-soft:#4e6b78;
+  --night-hair:rgba(5,59,80,.12);
+
+  --accent:#176b87;       /* interactive teal */
+  --accent-dk:#0e5265;    /* deeper teal — strokes, small marks on light */
+  --aqua:#64ccc5;         /* bright aqua — reserved for glows / dark surfaces */
+  --accent-wash:#e6f5f4;  /* pale aqua fill */
+  --surface:#ffffff;
+  --sys:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+
+  --e:cubic-bezier(.22,.9,.26,1);
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;}
+html{scroll-behavior:smooth;}
+html.smooth-on{scroll-behavior:auto;}
+html.loading,html.loading body{overflow:hidden;}
+body{
+  font-family:var(--sys),system-ui,sans-serif;
+  background:var(--paper); color:var(--ink);
+  overflow-x:hidden; width:100%;
+  -webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums;
+}
+h1,h2,h3{font-family:var(--sys);letter-spacing:-.025em;line-height:1.05;text-wrap:balance;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+
+/* smooth scroll shell */
+html.smooth-on #shell{position:fixed;inset:0;overflow:hidden;z-index:1;}
+html.smooth-on #track{will-change:transform;}
+
+/* grain */
+.grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+.skip{position:absolute;left:-9999px;top:0;z-index:400;background:var(--ink);color:#fff;
+  padding:12px 18px;border-radius:0 0 10px 0;font-size:13px;font-weight:600;}
+.skip:focus{left:0;}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:3px;}
+.on-dark :focus-visible{outline-color:#f0c75a;}
+/* keep the visual size, grow the hit area (WCAG 2.5.5 / 2.5.8) */
+.nav-l a,.foot-l a{padding:14px 4px;margin:-14px -4px;}
+
+/* ── loading screen ── */
+.loader{position:fixed;inset:0;z-index:300;background:var(--paper);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:30px;}
+.loader-stage{position:relative;display:flex;align-items:center;justify-content:center;
+  perspective:900px;}
+.loader-glow{position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;
+  border-radius:50%;pointer-events:none;opacity:0;
+  background:radial-gradient(circle,rgba(201,162,39,.30) 0%,rgba(201,162,39,.10) 38%,transparent 68%);}
+.loader-mark{font-family:var(--sys);font-weight:700;font-size:15px;letter-spacing:.32em;
+  text-transform:uppercase;color:var(--ink);opacity:0;}
+.loader-mark-svg{height:clamp(150px,23vh,240px);width:auto;color:var(--ink);display:block;overflow:visible;
+  position:relative;will-change:transform;}
+@media(max-width:760px){.loader-glow{width:300px;height:300px;margin:-150px 0 0 -150px;}}
+
+/* ── brand mark ── */
+.brand{display:inline-flex;align-items:center;gap:9px;}
+.brand-mark{display:block;color:var(--ink);flex:none;}
+
+/* ── custom cursor ── */
+.cur{position:fixed;top:0;left:0;width:28px;height:28px;border:1px solid rgba(17,17,17,.4);border-radius:50%;
+  pointer-events:none;z-index:250;mix-blend-mode:difference;
+  transition:width .35s var(--e),height .35s var(--e),background .35s var(--e);will-change:transform;}
+html.on-dark .cur{border-color:rgba(255,255,255,.55);}
+.cur.hov{width:56px;height:56px;background:rgba(17,17,17,.08);}
+.cur-dot{position:fixed;top:0;left:0;width:5px;height:5px;border-radius:50%;background:var(--accent);
+  pointer-events:none;z-index:251;will-change:transform;}
+html.cursor-on a,html.cursor-on button,html.cursor-on [data-mag],html.cursor-on [data-tilt]{cursor:none;}
+
+/* ── ambient glow (dark sections) ── */
+.ambient{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.amb-blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.3;
+  background:radial-gradient(circle,var(--accent) 0%,transparent 72%);animation:drift 22s ease-in-out infinite;}
+
+/* ── nav ── */
+.nav{position:fixed;top:18px;left:0;right:0;z-index:40;display:flex;justify-content:center;padding:0 20px;padding-top:env(safe-area-inset-top,0px);}
+.nav-in{display:flex;align-items:center;gap:40px;padding:9px 9px 9px 24px;border-radius:999px;
+  background:rgba(255,255,255,.62);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);
+  border:1px solid rgba(255,255,255,.8);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 10px 34px rgba(17,17,17,.1);
+  transition:background .6s var(--e),border-color .6s var(--e),box-shadow .6s var(--e);}
+.nav-in.dark{background:rgba(16,16,16,.8);border-color:rgba(255,255,255,.12);box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 10px 34px rgba(0,0,0,.5);}
+.nav-in.dark .mark,.nav-in.dark .nav-l a{color:#fff;}
+.nav-in.dark .nav-l a{color:rgba(255,255,255,.62);}
+.mark{font-family:var(--sys);font-weight:700;font-size:17px;letter-spacing:.02em;transition:color .6s var(--e);}
+.nav-l{display:none;gap:28px;font-size:13px;font-weight:500;color:var(--ink-soft);}
+.nav-l a{position:relative;transition:color .3s var(--e);}
+.nav-l a::after{content:'';position:absolute;left:4px;right:calc(100% - 4px);bottom:9px;height:1px;background:currentColor;transition:right .4s var(--e);}
+.nav-l a:hover{color:var(--ink);}
+.nav-l a:hover::after{right:4px;}
+.nav-in.dark .nav-l a:hover{color:#fff;}
+@media(min-width:880px){.nav-l{display:flex;}}
+.pill{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border:none;cursor:pointer;
+  font-family:var(--sys);font-weight:600;font-size:13.5px;padding:10px 9px 10px 20px;border-radius:999px;}
+.pill .dot{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:12px;transition:transform .5s var(--e);}
+.pill:hover .dot{transform:translate(2px,-2px) rotate(8deg);}
+.pill.lg{font-size:14.5px;padding:13px 11px 13px 24px;}
+.pill.lg .dot{width:30px;height:30px;}
+.pill.gold{background:var(--accent);color:#fff;}
+.pill.ghost{background:transparent;color:var(--ink);border:1px solid var(--hair);padding:13px 24px;}
+
+/* ── hero ── */
+.hero{padding:170px 0 0;text-align:center;position:relative;}
+.eyebrow{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:26px;}
+.hero h1{font-size:clamp(2.7rem,6.6vw,5.1rem);font-weight:500;max-width:15ch;margin:0 auto;}
+.hero h1 .l1{display:block;color:#6f92a2;}
+.hero h1 .l2{display:block;color:var(--ink);font-weight:600;}
+.hero h1 .w{display:inline-block;will-change:transform,opacity;}
+.hero .sub{margin:28px auto 0;max-width:46ch;font-size:16.5px;line-height:1.65;color:var(--ink-soft);}
+.hero .acts{margin-top:34px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+
+/* ── scenery + dashboard ── */
+.scene{position:relative;margin-top:56px;}
+.cliffs{display:block;width:100%;height:auto;}
+.deck-hold{position:relative;z-index:3;margin-top:-30vw;padding:0 24px 0;}
+@media(max-width:900px){.deck-hold{margin-top:-46vw;}}
+.deck{max-width:1000px;margin:0 auto;border-radius:26px;padding:7px;
+  background:rgba(255,255,255,.5);backdrop-filter:blur(26px) saturate(1.5);-webkit-backdrop-filter:blur(26px) saturate(1.5);
+  border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 40px 90px rgba(17,17,17,.26);}
+.deck-core{background:#fbfaf8;border-radius:20px;display:grid;grid-template-columns:210px 1fr;overflow:hidden;}
+@media(max-width:820px){.deck-core{grid-template-columns:1fr;}}
+.aside{background:#f2f1ee;border-right:1px solid var(--hair);padding:20px 16px;}
+@media(max-width:820px){.aside{display:block;border-right:none;border-bottom:1px solid var(--hair);padding:14px 16px;}
+  .aside .who{display:none;}
+  .aside nav{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .aside nav::-webkit-scrollbar{display:none;}
+  .aside nav button{white-space:nowrap;}}
+.aside .who{display:flex;align-items:center;gap:10px;padding-bottom:16px;border-bottom:1px solid var(--hair);margin-bottom:16px;}
+.aside .av{width:30px;height:30px;border-radius:9px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;font-family:var(--sys);}
+.aside .who b{font-size:12.5px;display:block;}
+.aside .who span{font-size:10.5px;color:var(--ink-soft);}
+.aside nav{display:flex;flex-direction:column;}
+.aside nav button{display:block;width:100%;text-align:left;font:inherit;font-size:12.5px;color:var(--ink-soft);
+  background:none;border:none;padding:8px 10px;border-radius:9px;cursor:pointer;transition:background .3s var(--e),color .3s var(--e);}
+.aside nav button:hover{color:var(--ink);}
+.aside nav button:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+.aside nav button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(17,17,17,.06);}
+.panel{padding:26px 28px 28px;text-align:left;}
+.tabpanel[hidden]{display:none;}
+.cats{margin-top:4px;}
+.catrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--hair);}
+.catrow:first-child{border-top:none;}
+.catrow .cn{font-size:12.5px;width:84px;flex:0 0 auto;color:var(--ink-soft);}
+.catrow .cbar{flex:1;height:7px;border-radius:99px;background:var(--hair);overflow:hidden;}
+.catrow .cbar i{display:block;height:100%;background:var(--accent);border-radius:99px;}
+.catrow .cv{font-family:var(--sys);font-size:13px;font-weight:600;width:68px;text-align:right;flex:0 0 auto;}
+.hist{margin-top:4px;}
+.hrow{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid var(--hair);}
+.hrow:first-child{border-top:none;}
+.hrow b{font-size:13px;display:block;}
+.hrow span{font-size:11px;color:var(--ink-soft);}
+.hrow .hv{font-family:var(--sys);font-weight:600;font-size:13.5px;color:var(--ink);text-align:right;}
+.hrow .hv.live{color:var(--accent);}
+.emerg p.ed{font-size:13px;color:var(--ink-soft);line-height:1.7;margin-top:16px;}
+.p-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.lbl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);}
+.big{font-family:var(--sys);font-size:clamp(2.1rem,5vw,3rem);font-weight:600;margin-top:8px;letter-spacing:-.03em;}
+.chip{font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;background:rgba(156,115,56,.12);color:var(--accent);}
+.chip.warn{background:rgba(17,17,17,.07);color:var(--ink);}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:14px;overflow:hidden;margin-top:22px;}
+.tile{background:#fbfaf8;padding:14px 16px;}
+.tile .k{font-size:10.5px;color:var(--ink-soft);}
+.tile .v{font-family:var(--sys);font-size:17px;font-weight:600;margin-top:3px;}
+.bars{display:flex;align-items:flex-end;gap:6px;height:76px;margin-top:24px;border-bottom:1px solid var(--hair);}
+.bars-cap{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-soft);margin-top:8px;letter-spacing:.06em;}
+.bars i{flex:1 1 0;min-width:0;align-self:flex-end;background:#dedbd6;border-radius:3px 3px 0 0;display:block;}
+.bars i.hi{background:var(--accent);}
+.ctl{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px;padding-top:20px;border-top:1px solid var(--hair);}
+.ctl input{font-family:var(--sys);font-size:13.5px;padding:11px 14px;border-radius:11px;border:1px solid var(--hair);background:#fff;width:128px;color:var(--ink);}
+.ctl input:focus{outline:2px solid var(--accent);outline-offset:1px;}
+.ctl .sel{font-family:var(--sys);font-size:13.5px;padding:11px 12px;border-radius:11px;min-width:120px;
+  border:1px solid var(--hair);background:#fff;color:var(--ink);cursor:pointer;max-width:150px;}
+.conv{margin-top:12px;min-height:20px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  font-size:13px;color:var(--ink-soft);}
+.conv b{font-family:var(--sys);font-size:15.5px;font-weight:600;color:var(--ink);}
+.conv .rate{font-size:11.5px;color:#8a8681;}
+.conv .tag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:5px;
+  background:rgba(17,17,17,.06);color:#6e6b66;}
+.conv .tag.on{background:rgba(156,115,56,.16);color:#7d5c2b;}
+.sbtn{background:var(--ink);color:#fff;border:none;padding:11px 18px;border-radius:11px;font-weight:600;font-size:13.5px;cursor:pointer;font-family:var(--sys);transition:transform .4s var(--e);}
+.sbtn:hover{transform:translateY(-1px);} .sbtn:active{transform:scale(.97);}
+.sbtn.q{background:transparent;color:var(--ink-soft);border:1px solid var(--hair);}
+.flag{display:none;margin-top:14px;padding:13px 16px;border-radius:12px;font-size:13px;line-height:1.5;}
+.flag.on{display:block;}
+.flag.a{background:rgba(17,17,17,.05);border:1px solid var(--hair);color:#3d3a36;}
+.flag.b{background:rgba(156,115,56,.09);border:1px solid rgba(156,115,56,.25);color:#6f5226;}
+.scene-cap{text-align:center;font-size:11.5px;color:var(--ink-soft);padding:26px 0 0;letter-spacing:.04em;}
+
+/* ── dark slab ── */
+.slab{background:var(--night);color:#fff;margin-top:90px;padding:110px 0 120px;position:relative;overflow:hidden;}
+.slab h2{font-size:clamp(1.9rem,4vw,3rem);font-weight:500;max-width:17ch;}
+.slab .eyebrow{color:var(--night-soft);}
+.slab-head{display:grid;grid-template-columns:1.25fr .75fr;gap:60px;align-items:end;margin-bottom:64px;position:relative;z-index:2;}
+.slab-head p{color:var(--night-soft);font-size:15.5px;line-height:1.7;}
+@media(max-width:900px){.slab-head{grid-template-columns:1fr;gap:24px;}}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;position:relative;z-index:2;}
+@media(max-width:900px){.trio{grid-template-columns:1fr;}}
+.col .idx{font-size:11px;color:var(--night-soft);letter-spacing:.14em;margin-bottom:14px;}
+.col h3{font-size:17px;font-weight:600;margin-bottom:10px;}
+.col p{font-size:13.5px;color:var(--night-soft);line-height:1.65;margin-bottom:24px;}
+.frame{position:relative;border-radius:20px;overflow:hidden;min-height:300px;display:flex;flex-direction:column;gap:14px;padding:20px;}
+.frame.one{background:linear-gradient(165deg,#f4f9fa,#e8f1f3 55%,#dceaee);}
+.frame.two{background:linear-gradient(165deg,#f3faf9,#e4f3f1 55%,#d6ebe8);}
+.frame.three{background:linear-gradient(165deg,#f6f9fb,#eaf0f4 55%,#dde7ee);}
+.frame .ill{flex:1;min-height:128px;display:flex;align-items:center;justify-content:center;position:relative;}
+.frame .ill svg{width:100%;height:100%;max-height:160px;overflow:visible;}
+.frame .ill .arc{stroke-dasharray:1px;} /* placeholder so drawSVG has a baseline before JS runs */
+.frame .ill canvas{width:100%!important;height:150px!important;display:block;opacity:0;touch-action:none;}
+.glass{position:relative;z-index:2;width:100%;border-radius:16px;padding:18px;
+  background:rgba(255,255,255,.1);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.18);box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 18px 40px rgba(0,0,0,.3);}
+.glass .gh{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:rgba(255,255,255,.75);margin-bottom:16px;}
+.dots-ic{display:inline-flex;gap:3px;align-items:center;}
+.dots-ic i{width:3.5px;height:3.5px;border-radius:50%;background:rgba(255,255,255,.65);display:block;}
+.idx{display:flex;align-items:center;gap:8px;}
+.idx-ic{width:10px;height:10px;flex:none;}
+.idx-ic path{fill:none;stroke:var(--accent-dk);stroke-width:1.4;}
+.glass .gv{font-family:var(--sys);font-size:28px;font-weight:600;letter-spacing:-.02em;}
+.glass .gs{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px;}
+.glass .rows{margin-top:16px;border-top:1px solid rgba(255,255,255,.14);}
+.glass .rows div{display:flex;justify-content:space-between;font-size:11.5px;color:rgba(255,255,255,.72);padding:7px 0;}
+.spark{display:flex;align-items:flex-end;gap:3px;height:38px;margin-top:14px;}
+.spark i{flex:1;background:rgba(255,255,255,.3);border-radius:2px;}
+.spark i.hi{background:var(--accent-dk);animation:glow 2.6s ease-in-out infinite;}
+
+/* shared motion-illustration bits */
+.pulse{animation:pulse 2.2s ease-in-out infinite;}
+.merid-group{animation:spin 60s linear infinite;transform-origin:center;transform-box:fill-box;}
+.sweep{animation:spin 4.2s linear infinite;transform-origin:center;transform-box:fill-box;}
+.ring2{animation:spinrev 14s linear infinite;transform-origin:center;transform-box:fill-box;}
+.coin{animation:bob 3.4s ease-in-out infinite;}
+.coin-wrap{animation:shimmer 3.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
+@keyframes spinrev{to{transform:rotate(-360deg);}}
+@keyframes shimmer{0%,100%{transform:scaleX(1);}50%{transform:scaleX(.22);}}
+
+/* ── stacking cards (full-screen + depth) ── */
+.stackwrap{background:var(--night);color:#fff;padding:0;position:relative;overflow:hidden;}
+.stage{position:relative;height:100vh;}
+.scard{position:absolute;inset:0;display:flex;align-items:center;overflow:hidden;will-change:transform,opacity;}
+.scard.card-1{background:
+  radial-gradient(60% 55% at 14% 8%,rgba(214,168,98,.5),transparent 68%),
+  radial-gradient(55% 60% at 88% 94%,rgba(93,70,140,.46),transparent 70%),
+  linear-gradient(165deg,#241c33 0%,#161222 55%,#0c0a14 100%);}
+.scard.card-2{background:
+  radial-gradient(58% 55% at 85% 6%,rgba(94,168,140,.48),transparent 68%),
+  radial-gradient(50% 55% at 10% 95%,rgba(214,168,98,.42),transparent 70%),
+  linear-gradient(165deg,#102420 0%,#0e1b1a 55%,#0a1210 100%);}
+.scard.card-3{background:
+  radial-gradient(60% 55% at 90% 85%,rgba(214,131,86,.5),transparent 68%),
+  radial-gradient(52% 55% at 6% 10%,rgba(168,72,96,.4),transparent 70%),
+  linear-gradient(165deg,#2b1712 0%,#1c120f 55%,#110b09 100%);}
+.scard.card-4{background:
+  radial-gradient(65% 60% at 50% 42%,rgba(214,168,98,.4),transparent 68%),
+  radial-gradient(60% 55% at 12% 100%,rgba(70,96,168,.42),transparent 70%),
+  linear-gradient(165deg,#161d2e 0%,#101521 55%,#0a0d14 100%);}
+.scard .depth{position:absolute;inset:0;will-change:filter;}
+.scard .bgscene{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none;}
+.scard .bgscene::after{content:'';position:absolute;inset:0;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.scard .bgscene .blob{position:absolute;border-radius:50%;filter:blur(90px);animation:drift 25s ease-in-out infinite;}
+.scard .bgnum{position:absolute;right:3%;top:50%;transform:translateY(-50%);font-family:var(--sys);
+  font-size:clamp(9rem,26vw,22rem);font-weight:700;color:rgba(255,255,255,.07);letter-spacing:-.04em;line-height:1;pointer-events:none;z-index:1;}
+.scard .copy{position:relative;z-index:2;max-width:640px;background:linear-gradient(165deg,rgba(255,255,255,.14),rgba(255,255,255,.04));
+  backdrop-filter:blur(30px) saturate(1.7);-webkit-backdrop-filter:blur(30px) saturate(1.7);
+  border:1px solid rgba(255,255,255,.22);border-radius:26px;padding:42px 46px;
+  box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 1px 18px rgba(255,255,255,.05) inset,0 30px 70px rgba(0,0,0,.45);}
+.scard .copy::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.5;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+@media(max-width:760px){.scard .copy{padding:26px 24px;border-radius:20px;}}
+.scard .sn{font-family:var(--sys);font-size:13px;color:var(--accent-dk);letter-spacing:.2em;}
+.scard h3{font-size:clamp(2.1rem,5.4vw,4rem);font-weight:500;max-width:14ch;margin-top:20px;}
+.scard p{color:var(--night-soft);font-size:16px;line-height:1.75;max-width:40ch;margin-top:18px;}
+.scard .meta{font-size:11.5px;color:#565450;letter-spacing:.1em;text-transform:uppercase;margin-top:30px;}
+.scard .sv{position:absolute;right:7%;bottom:9%;width:min(30vw,260px);opacity:.92;z-index:1;}
+.scard .sv svg{width:100%;height:auto;display:block;}
+@media(max-width:760px){.scard .sv{display:none;} .scard .bgnum{font-size:7rem;right:4%;top:14%;transform:none;}}
+.route{position:absolute;left:clamp(16px,3.6vw,58px);top:50%;transform:translateY(-50%);
+  height:min(66vh,540px);width:auto;z-index:3;pointer-events:none;overflow:visible;}
+.route .rn{fill:var(--night);stroke:rgba(255,255,255,.3);stroke-width:1.4;
+  transition:fill .45s var(--e),stroke .45s var(--e),r .45s var(--e);}
+.route .rn.on{fill:var(--accent-dk);stroke:var(--accent);}
+#routeDot{filter:drop-shadow(0 0 7px rgba(201,162,39,.85));}
+@media(max-width:900px){.route{display:none;}}
+.stepdots{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);display:flex;gap:9px;z-index:3;}
+.stepdots i{width:6px;height:6px;border-radius:50%;background:var(--night-hair);display:block;transition:width .4s var(--e),background .4s var(--e);}
+.stepdots i.on{background:var(--accent-dk);width:22px;border-radius:3px;}
+
+/* ── light lower ── */
+.light{background:var(--paper);padding:110px 0;}
+.lhead{max-width:640px;margin-bottom:54px;}
+.lhead h2{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:500;}
+.lhead p{color:var(--ink-soft);margin-top:16px;font-size:15.5px;line-height:1.7;}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:900px){.plans{grid-template-columns:1fr;}}
+.plan{border-radius:24px;padding:7px;background:rgba(17,17,17,.04);border:1px solid var(--hair);position:relative;}
+.plan .inner{background:#fff;border-radius:18px;padding:28px;height:100%;display:flex;flex-direction:column;position:relative;z-index:1;}
+.plan.hero-plan{background:var(--ink);border-color:var(--ink);}
+.plan.hero-plan .inner{background:var(--night-2);color:#fff;}
+.plan h3{font-size:15px;font-weight:600;}
+.plan .pr{font-family:var(--sys);font-size:31px;font-weight:600;margin:12px 0 4px;letter-spacing:-.03em;}
+.plan .per{font-size:12.5px;color:var(--ink-soft);}
+.plan.hero-plan .per{color:var(--night-soft);}
+.plan ul{list-style:none;padding:0;margin:22px 0 0;font-size:13.5px;color:var(--ink-soft);line-height:1.5;flex:1;}
+.plan.hero-plan ul{color:#b9b6b1;}
+.plan li{padding:9px 0;border-top:1px solid var(--hair);}
+.plan.hero-plan li{border-color:var(--night-hair);}
+
+.team{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+@media(max-width:980px){.team{grid-template-columns:repeat(2,1fr);}}
+.mem{background:#fff;border:1px solid var(--hair);border-radius:18px;padding:20px;will-change:transform;
+  transition:box-shadow .5s var(--e);position:relative;overflow:hidden;}
+.mem:hover{box-shadow:0 18px 40px rgba(17,17,17,.1);}
+.mem .sq{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-family:var(--sys);
+  font-weight:700;font-size:14px;background:var(--ink);color:#fff;margin-bottom:16px;position:relative;z-index:1;}
+.mem.gold .sq{background:var(--accent);}
+.mem h3{font-size:14px;font-weight:600;position:relative;z-index:1;}
+.mem .role{font-size:11.5px;color:var(--ink-soft);margin-top:3px;letter-spacing:.06em;text-transform:uppercase;position:relative;z-index:1;}
+
+/* tilt + glow micro-interaction */
+[data-tilt]::before{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;z-index:0;
+  background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(156,115,56,.16),transparent 60%);
+  transition:opacity .4s var(--e);pointer-events:none;}
+[data-tilt]:hover::before{opacity:1;}
+
+/* ── close ── */
+.close{background:var(--night);color:#fff;padding:120px 0 60px;text-align:center;position:relative;overflow:hidden;}
+.close .wrap{position:relative;z-index:2;}
+.close h2{font-size:clamp(2.1rem,5vw,3.4rem);font-weight:500;max-width:18ch;margin:0 auto;}
+.close .eyebrow{color:var(--night-soft);}
+.note{max-width:620px;margin:58px auto 0;padding:22px 0 0;border-top:1px solid var(--night-hair);font-size:12px;color:#6b6865;line-height:1.7;}
+.foot{background:var(--night);padding:34px 0 40px;border-top:1px solid var(--night-hair);margin-top:0;color:var(--night-soft);font-size:12.5px;position:relative;z-index:2;}
+.foot-in{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;}
+.foot-l{display:flex;gap:22px;flex-wrap:wrap;}
+.foot a:hover{color:#fff;}
+.reveal{will-change:transform,opacity;}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes pulse{0%,100%{opacity:.45;transform:scale(1);}50%{opacity:1;transform:scale(1.35);}}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes drift{0%,100%{transform:translate(0,0);}50%{transform:translate(38px,-30px);}}
+@keyframes glow{0%,100%{opacity:.75;}50%{opacity:1;}}
+
+
+/* ══════════════════════════════════════════════════════════════
+   LIGHT THEME LAYER — Apple-style restyle.
+   Palette: #053B50 navy · #176B87 teal · #64CCC5 aqua · #EEEEEE grey
+   Everything below overrides rules that assumed a dark background.
+   ══════════════════════════════════════════════════════════════ */
+body{background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.grain{display:none;}                      /* paper grain reads as "luxury" */
+
+/* headings: large but light, tight tracking (SF Pro behaviour) */
+h1,h2,h3{letter-spacing:-.028em;}
+h1{font-weight:600;} h2{font-weight:500;} h3{font-weight:500;}
+.mark{font-weight:600;letter-spacing:.2em;}
+
+/* ── sections that used to be near-black ── */
+.slab,.stackwrap,.close{background:var(--paper-2);color:var(--ink);}
+.slab .eyebrow,.close .eyebrow,.slab-head p,.col p,.col .idx,.scard p{color:var(--ink-soft);}
+.foot{background:var(--paper-2);color:var(--ink-soft);border-top:1px solid var(--hair);}
+.foot a:hover{color:var(--ink);}
+.foot .brand-mark,.foot .mark{color:var(--ink)!important;}
+.note{border-top-color:var(--hair);color:var(--ink-soft);}
+
+/* ── the glass stat card in the dark slab → a plain white card ── */
+.glass{background:var(--surface);border:1px solid var(--hair);
+  box-shadow:0 1px 2px rgba(5,59,80,.04),0 8px 24px rgba(5,59,80,.05);backdrop-filter:none;-webkit-backdrop-filter:none;}
+.glass .gh,.glass .rows div{color:var(--ink-soft);}
+.glass .gs{color:var(--ink-soft);}
+.glass .rows{border-top-color:var(--hair);}
+.dots-ic i{background:rgba(5,59,80,.3);}
+.spark i{background:rgba(5,59,80,.14);}
+.spark i.hi{background:var(--accent);}
+
+/* ── journey cards ── */
+.scard.card-1,.scard.card-2,.scard.card-3,.scard.card-4{background:var(--paper-2);}
+.scard .copy{background:var(--surface);border:1px solid var(--hair);border-radius:20px;
+  box-shadow:0 1px 2px rgba(5,59,80,.04),0 18px 44px rgba(5,59,80,.07);}
+.scard .bgnum{color:rgba(5,59,80,.06);font-weight:600;}
+.scard .sn{color:var(--accent);font-weight:600;}
+.scard .bgscene .blob{opacity:.22!important;filter:blur(80px);}
+/* inline white strokes inside the step illustrations */
+.scard .sv [stroke^="rgba(255"]{stroke:rgba(5,59,80,.28);}
+.scard .sv [fill^="rgba(255"]{fill:rgba(5,59,80,.04);}
+.scard .sv circle[fill="#fff"]{fill:var(--surface);}
+
+/* ── route rail ── */
+.route .rn{fill:var(--surface);stroke:rgba(5,59,80,.25);}
+.route .rn.on{fill:var(--accent);stroke:var(--accent-dk);}
+#routeBase{stroke:rgba(5,59,80,.16)!important;}
+#routeDot{filter:drop-shadow(0 0 6px rgba(100,204,197,.9));}
+.stepdots i{background:rgba(5,59,80,.18);}
+.stepdots i.on{background:var(--accent);}
+
+/* ── nav: no dark sections left, so the inverted state is retired ── */
+.nav-in,.nav-in.dark{background:rgba(255,255,255,.78);border:1px solid rgba(5,59,80,.08);
+  box-shadow:0 1px 2px rgba(5,59,80,.04),0 8px 28px rgba(5,59,80,.07);}
+.nav-in.dark .mark{color:var(--ink);}
+.nav-in.dark .nav-l a{color:var(--ink-soft);}
+.nav-in.dark .nav-l a:hover{color:var(--ink);}
+.nav-in.dark .brand-mark{color:var(--ink);}
+
+/* ── buttons: Apple-style solid navy pill ── */
+.pill{background:var(--ink);color:#fff;box-shadow:none;}
+.pill:hover{background:#06496a;}
+.pill .dot{background:rgba(255,255,255,.18);}
+.pill.gold{background:var(--accent);color:#fff;}
+.pill.gold:hover{background:#12596f;}
+.sbtn{background:var(--ink);border-radius:10px;}
+.sbtn.q{background:transparent;color:var(--ink-soft);border:1px solid var(--hair);}
+
+/* ── dashboard ── */
+.deck{background:rgba(255,255,255,.72);border:1px solid rgba(5,59,80,.08);
+  box-shadow:0 1px 2px rgba(5,59,80,.04),0 24px 60px rgba(5,59,80,.10);}
+.deck-core{background:#fbfdfd;}
+.aside .av,.mem .sq{background:var(--accent);}
+.aside nav button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(5,59,80,.06);}
+.tile,.mem,.plan .inner{box-shadow:0 1px 2px rgba(5,59,80,.04);}
+.bars i.hi{background:var(--accent);}
+.catrow .cbar i{background:var(--accent);}
+.conv .tag.on{background:var(--accent-wash);color:#0e5265;}
+
+/* ── pricing: one deliberate dark card, in brand navy ── */
+.plan.hero-plan .inner{background:var(--night-2);color:#fff;}
+.plan.hero-plan .per,.plan.hero-plan li{color:rgba(255,255,255,.72);}
+.plan.hero-plan li{border-color:rgba(255,255,255,.14);}
+.plan.hero-plan .pn{color:#fff;}
+
+/* ── cursor: smaller, quieter, brand-tinted ── */
+.cur{width:22px;height:22px;border:1.5px solid rgba(23,107,135,.5);mix-blend-mode:normal;}
+.cur.hov{width:40px;height:40px;background:rgba(100,204,197,.16);border-color:rgba(23,107,135,.6);}
+.cur-dot{width:4px;height:4px;background:var(--accent);}
+html.on-dark .cur{border-color:rgba(23,107,135,.5);}
+
+/* ── loading screen in the new palette ── */
+.loader{background:var(--paper);}
+.loader-mark-svg{color:var(--ink);}
+.loader-glow{background:radial-gradient(circle,rgba(100,204,197,.34) 0%,rgba(23,107,135,.10) 40%,transparent 68%);}
+#journeyLine{stroke:var(--accent);}
+#journeyDot{fill:var(--accent-dk);}
+
+/* ── forecast illustration ── */
+.fc{width:100%;height:100%;max-height:160px;overflow:visible;}
+.fc-grid{stroke:rgba(5,59,80,.12);stroke-width:1;}
+.fc-cap{stroke:var(--accent-dk);stroke-width:1.4;stroke-dasharray:5 5;opacity:.75;}
+.fc-real{stroke:var(--accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;}
+.fc-proj{stroke:var(--accent-dk);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:4 5;}
+.fc-now{fill:var(--accent);}
+.fc-hit{fill:#fff;stroke:var(--accent-dk);stroke-width:2.4;}
+.fc-ring{fill:none;stroke:var(--accent-dk);stroke-width:1.6;opacity:0;}
+.fc-lbl{font-size:8px;font-family:var(--sys);fill:var(--ink-soft);letter-spacing:.06em;}
+.fc-warn{fill:#0e5265;font-weight:600;}
+
+/* ── floating currency tiles in the hero ── */
+.fx-float{position:absolute;inset:0;pointer-events:none;z-index:1;}
+.fx-t{position:absolute;width:76px;height:92px;border-radius:19px;background:var(--surface);
+  border:1px solid var(--hair);box-shadow:0 2px 6px rgba(5,59,80,.06),0 16px 38px rgba(5,59,80,.10);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  transform:rotate(var(--rot));pointer-events:auto;cursor:default;will-change:transform;}
+.fx-s{font-size:26px;font-weight:600;color:var(--ink);line-height:1;}
+.fx-c{font-size:9.5px;letter-spacing:.1em;color:var(--ink-soft);font-weight:600;}
+.fx-r{position:absolute;bottom:-34px;left:50%;transform:translateX(-50%) translateY(4px);
+  white-space:nowrap;font-size:11px;font-weight:600;color:#0e5265;background:var(--accent-wash);
+  border:1px solid rgba(23,107,135,.2);padding:5px 10px;border-radius:9px;opacity:0;pointer-events:none;
+  transition:opacity .3s var(--e),transform .3s var(--e);}
+.fx-t:hover .fx-r{opacity:1;transform:translateX(-50%) translateY(0);}
+@media(max-width:1180px){.fx-float{display:none;}}
+
+/* ── illustration frames (were dark) ── */
+.frame{border:1px solid var(--hair);}
+.frame .ill [stroke="rgba(255,255,255,.5)"]{stroke:rgba(5,59,80,.3);}
+.frame .cap,.frame .cap *{color:var(--ink-soft)!important;}
+.route .rn.on{fill:var(--accent);stroke:var(--aqua);}
+#journeyDot{fill:var(--accent);}
+.loader-glow{background:radial-gradient(circle,rgba(100,204,197,.30) 0%,rgba(23,107,135,.09) 40%,transparent 68%);}
+
+/* cursor stays hidden until the pointer actually moves (it parks at 0,0 otherwise) */
+.cur,.cur-dot{opacity:0;transition:opacity .25s var(--e);}
+html.cursor-live .cur,html.cursor-live .cur-dot{opacity:1;}
+
+/* ══ performance pass ══
+   backdrop-filter forces the compositor to re-blur everything behind these
+   panels on every scrolled frame. Measured at ~10fps on its own. The light
+   design reads the same with a near-opaque surface. */
+.nav-in,.nav-in.dark,.deck,.scard .copy,.glass{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+.nav-in,.nav-in.dark{background:rgba(255,255,255,.93);}
+.deck{background:rgba(255,255,255,.94);}
+/* large blur radii on the ambient blobs cost a full-screen blur per frame —
+   the radial gradient is already soft enough on its own */
+.amb-blob,.scard .bgscene .blob{filter:none!important;}
+.amb-blob{background:radial-gradient(circle,var(--accent) 0%,transparent 62%);opacity:.14;}
+.scard .bgscene .blob{opacity:.16!important;}
+/* the cliff range is a large vector that was being re-painted every scrolled
+   frame; on its own layer it is rasterised once and just moved */
+.cliffs{will-change:transform;transform:translateZ(0);}
+.deck{will-change:transform;transform:translateZ(0);}
+/* only promote what is actually moving */
+.reveal,.scard .depth{will-change:auto;}
+
+/* ── card illustrations (flat SVG) ── */
+.art{width:100%;height:100%;max-height:170px;overflow:visible;}
+.rc-p{fill:#fff;stroke:rgba(5,59,80,.16);stroke-width:1;}
+.rc-a{font:600 12px var(--sys);fill:var(--ink);}
+.rc-w{font:500 6.5px var(--sys);fill:var(--ink-soft);letter-spacing:.02em;}
+.rc-l{stroke:rgba(5,59,80,.12);stroke-width:2;stroke-linecap:round;}
+.rs-card{fill:#fff;stroke:var(--accent);stroke-width:1.4;}
+.rs-k{font:600 5.6px var(--sys);fill:var(--ink-soft);letter-spacing:.12em;}
+.rs-v{font:600 19px var(--sys);fill:var(--ink);letter-spacing:-.02em;}
+.rs-s{font:500 6.5px var(--sys);fill:var(--ink-soft);}
+.rs-b1{fill:var(--accent);} .rs-b2{fill:var(--aqua);} .rs-b3{fill:#bcd2da;}
+.nt-floor{stroke:var(--accent-dk);stroke-width:1.3;stroke-dasharray:5 5;opacity:.6;}
+.nt-lbl{font:600 7.5px var(--sys);fill:var(--ink-soft);letter-spacing:.06em;}
+.nt-fall{stroke:#6f92a2;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
+.nt-ham{stroke:var(--accent);stroke-width:2.4;stroke-linecap:round;}
+.nt-mesh{fill:url(#ntMeshP);}
+.nt-post{fill:#fff;stroke:var(--accent);stroke-width:1.6;}
+.nt-lift{stroke:var(--accent);stroke-width:2.8;stroke-linecap:round;}
+.nt-dot{fill:var(--accent);}
+.nt-bg{fill:var(--accent-wash);stroke:rgba(23,107,135,.28);stroke-width:1;}
+.nt-bt{font:700 8.5px var(--sys);fill:#0e5265;}
+
+/* ── product section: bespoke marks, and room to breathe ── */
+.slab{padding:140px 0 150px;}
+.slab h2{font-size:clamp(2.1rem,4.4vw,3.4rem);max-width:19ch;}
+.slab-head{margin-bottom:78px;gap:72px;}
+.slab-head p{font-size:16.5px;line-height:1.75;}
+.trio{gap:34px;}
+.col .idx{display:flex;align-items:center;gap:11px;margin-bottom:20px;font-size:0;}
+.ic-tile{width:46px;height:46px;flex:none;border-radius:14px;background:var(--surface);
+  border:1px solid var(--hair);display:grid;place-items:center;color:var(--accent);
+  box-shadow:0 1px 2px rgba(5,59,80,.05),0 8px 20px rgba(5,59,80,.06);
+  transition:transform .5s var(--e),box-shadow .5s var(--e);}
+.ic-tile svg{width:25px;height:25px;display:block;}
+.col:hover .ic-tile{transform:translateY(-3px) rotate(-3deg);
+  box-shadow:0 2px 6px rgba(5,59,80,.07),0 14px 30px rgba(5,59,80,.10);}
+.idx-n{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--accent);}
+.idx-t{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);}
+@media(max-width:520px){.idx-t{display:none;}}
+.col h3{font-size:20px;line-height:1.25;margin-bottom:13px;}
+.col p{font-size:14.5px;line-height:1.72;margin-bottom:30px;}
+.frame{min-height:340px;padding:24px;}
+
+/* ── flags / chips ── */
+.chip{background:var(--accent-wash);color:#0e5265;}
+.flag.a{background:#f4f7f8;border:1px solid var(--hair);color:#2b4a58;}
+.flag.b{background:var(--accent-wash);border:1px solid rgba(23,107,135,.22);color:#0e5265;}
+
+
+/* ══ ShaderGradient hero (deep ocean) ══ */
+.hero-bg{position:absolute;left:0;right:0;top:0;height:1060px;z-index:0;pointer-events:none;overflow:hidden;
+  background:radial-gradient(70% 60% at 18% 70%,#2f8fa3 0%,transparent 60%),linear-gradient(160deg,#064861 0%,#053B50 45%,#03293a 100%);
+  -webkit-mask-image:linear-gradient(#000 0%,#000 62%,transparent 100%);mask-image:linear-gradient(#000 0%,#000 62%,transparent 100%);}
+#heroGrad{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease;}
+#heroGrad.on{opacity:1;}
+.hero-bg::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(48% 34% at 50% 26%,rgba(3,34,48,.5),transparent 72%);}
+/* light film grain: static, so it costs nothing per frame */
+.hero-bg::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.16;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:180px 180px;}
+.hero .wrap{position:relative;z-index:2;}
+.hero .scene{position:relative;z-index:1;}
+.cliffs .cl-fade{display:none;}
+.hero .eyebrow{color:rgba(255,255,255,.74);}
+.hero h1 .l1{color:#c4eeea;}
+.hero h1 .l2{color:#fff;}
+.hero .sub{color:rgba(255,255,255,.82);}
+.hero .pill:not(.ghost){background:#fff;color:#053B50;box-shadow:0 10px 30px rgba(2,24,34,.35);}
+.hero .pill:not(.ghost) .dot{background:rgba(5,59,80,.1);}
+.hero .pill.ghost{color:#fff;border-color:rgba(255,255,255,.38);}
+.hero .pill.ghost:hover{background:rgba(255,255,255,.08);}
+html.on-hero .cur{border-color:rgba(255,255,255,.7);}
+html.on-hero .cur-dot{background:#a9e4df;}
+.hero :focus-visible{outline-color:#fff;}
+/* glass currency tiles over the gradient (no backdrop-filter: keeps scroll smooth) */
+.hero .fx-t{background:linear-gradient(155deg,rgba(255,255,255,.22),rgba(255,255,255,.07));
+  border:1px solid rgba(255,255,255,.26);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 18px 40px rgba(1,20,30,.32);}
+.hero .fx-s{color:#fff;}
+.hero .fx-c{color:rgba(255,255,255,.72);}
+.hero .fx-r{color:#053B50;background:#e9f7f6;border-color:rgba(255,255,255,.6);}
+
+/* ══ soft gradient washes on the rest of the site (CSS only, no runtime cost) ══ */
+.slab,.stackwrap{background:
+  radial-gradient(55% 45% at 0% 0%,rgba(100,204,197,.20),transparent 70%),
+  radial-gradient(50% 40% at 100% 100%,rgba(23,107,135,.13),transparent 72%),
+  var(--paper-2);}
+.light{background:
+  radial-gradient(45% 40% at 100% 0%,rgba(100,204,197,.13),transparent 70%),
+  radial-gradient(40% 35% at 0% 100%,rgba(23,107,135,.08),transparent 70%),
+  var(--paper);}
+.close{background:
+  radial-gradient(60% 70% at 50% 110%,rgba(100,204,197,.32),transparent 70%),
+  radial-gradient(40% 50% at 10% 0%,rgba(23,107,135,.12),transparent 70%),
+  var(--paper-2);}
+.pill:not(.ghost):not(.gold){background:linear-gradient(135deg,#053B50 0%,#176B87 100%);}
+.hero .pill:not(.ghost){background:#fff;}
+
+
+/* ══ v2: receipt scanning, tax refund, community ══ */
+.bsub{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+.big.sm{font-size:clamp(1.5rem,3.4vw,2rem);}
+.tile.tx .v{color:var(--accent);}
+.ctl-h{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--hair);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+.ctl-h + .ctl{margin-top:10px;padding-top:0;border-top:none;}
+.lnk{background:none;border:none;font:600 12.5px var(--sys);color:var(--accent);cursor:pointer;letter-spacing:0;text-transform:none;padding:6px 0;min-height:32px;}
+.lnk:hover{text-decoration:underline;}
+.rc-pick{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
+.rc-pick button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-width:118px;padding:9px 13px;border-radius:12px;border:1px solid var(--hair);background:#fff;cursor:pointer;font:inherit;color:var(--ink);text-align:left;transition:border-color .25s,box-shadow .25s;}
+.rc-pick button b{font-size:13px;}
+.rc-pick button span{font-size:11.5px;color:var(--ink-soft);}
+.rc-pick button.on{border-color:var(--accent);box-shadow:0 0 0 3px rgba(23,107,135,.14);}
+.rc-pick button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.scan-grid{display:grid;grid-template-columns:220px 1fr;gap:22px;margin-top:18px;align-items:start;}
+@media(max-width:640px){.scan-grid{grid-template-columns:1fr;}}
+.paper-wrap{position:relative;border-radius:10px;overflow:hidden;background:linear-gradient(160deg,#e7eef0,#d6e3e7);padding:14px;}
+.paper{background:#fffefb;border-radius:4px;padding:14px 14px 18px;font:12px/1.45 "Hiragino Sans","Noto Sans JP","Yu Gothic",var(--sys);color:#2b2a28;box-shadow:0 8px 22px rgba(5,59,80,.16);
+  -webkit-mask:linear-gradient(#000,#000) top/100% calc(100% - 8px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/12px 8px repeat-x;
+  mask:linear-gradient(#000,#000) top/100% calc(100% - 8px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/12px 8px repeat-x;}
+.pp-h{font-weight:700;text-align:center;font-size:13px;}
+.pp-d{text-align:center;font-size:10.5px;color:#77746f;margin:2px 0 10px;border-bottom:1px dashed #cfcac2;padding-bottom:8px;}
+.pp-r{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;padding:2px 0;}
+.pp-r span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pp-r.pp-sub{border-top:1px dashed #cfcac2;margin-top:6px;padding-top:6px;}
+.pp-r.tot{font-weight:700;font-size:13px;border-top:1px solid #2b2a28;margin-top:4px;padding-top:5px;}
+.pp-f{text-align:center;font-size:10px;color:#8b8781;margin-top:10px;}
+.scanline{position:absolute;left:8px;right:8px;top:0;height:3px;border-radius:3px;opacity:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent,#64ccc5 20%,#64ccc5 80%,transparent);box-shadow:0 0 14px 4px rgba(100,204,197,.55);}
+.scan-out{min-height:200px;}
+.so-p{font-size:13.5px;color:var(--ink-soft);line-height:1.65;}
+.so-act{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px;}
+.so-read{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--ink);padding:16px 0;}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(23,107,135,.2);border-top-color:var(--accent);animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.so-row{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:6px 0;border-bottom:1px solid var(--hair);}
+.so-row span{color:var(--ink-soft);}
+.so-items{padding:6px 0;border-bottom:1px solid var(--hair);}
+.so-items div{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:3px 0;color:var(--ink);}
+.so-tot{display:flex;justify-content:space-between;align-items:flex-end;padding:10px 0 4px;}
+.so-tot b{display:block;font-size:20px;font-weight:600;letter-spacing:-.02em;margin-top:2px;}
+.so-rm{font-size:20px;font-weight:600;color:var(--accent);letter-spacing:-.02em;}
+.so-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px;}
+.cchip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--accent-wash);color:#0e5265;}
+.so-rate{font-size:11px;color:var(--ink-soft);}
+.txb{margin-top:12px;padding:11px 14px;border-radius:12px;font-size:12.5px;line-height:1.5;}
+.txb b{display:block;font-size:13px;}
+.txb.ok{background:#e9f6f2;border:1px solid rgba(14,82,101,.22);color:#0e4d43;}
+.txb.no{background:#f4f6f7;border:1px solid var(--hair);color:#3c5864;}
+.so-done{padding:14px 16px;border-radius:12px;background:var(--accent-wash);color:#0e5265;font-size:13px;line-height:1.55;}
+.so-done b{display:block;font-size:14.5px;margin-bottom:2px;}
+.hrow .hv small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-soft);}
+.hrow .hv.no{color:var(--ink-soft);font-weight:500;font-size:12.5px;}
+.tx-note{font-size:12px;color:var(--ink-soft);line-height:1.65;margin-top:14px;padding-top:14px;border-top:1px solid var(--hair);}
+/* tax illustration */
+.tx-hl{fill:rgba(100,204,197,.35);}
+.tx-k{font:700 7px var(--sys);fill:#0e5265;letter-spacing:.06em;}
+.tx-v{font:700 8px var(--sys);fill:#0e5265;}
+.tx-st{fill:rgba(255,255,255,.9);stroke:#176b87;stroke-width:1.4;stroke-dasharray:3 2;}
+.tx-stt{font:800 7.5px var(--sys);fill:#176b87;letter-spacing:.08em;}
+.tx-pot{fill:#fff;stroke:rgba(23,107,135,.35);stroke-width:1.2;}
+.tx-pk{font:700 6.5px var(--sys);fill:#4e6b78;letter-spacing:.12em;}
+.tx-pv{font:700 15px var(--sys);fill:#053b50;letter-spacing:-.02em;}
+.tx-coin{fill:#64ccc5;stroke:#176b87;stroke-width:1.4;}
+.tx-ct{font:800 8.5px var(--sys);fill:#053b50;}
+/* extras strip */
+.extras{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;position:relative;z-index:2;}
+@media(max-width:900px){.extras{grid-template-columns:1fr;}}
+.ex{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.75);border:1px solid var(--hair);border-radius:18px;padding:18px 20px;}
+.ex-ic{flex:0 0 auto;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--accent-wash);color:#0e5265;}
+.ex-ic svg{width:20px;height:20px;}
+.ex b,.ex .ex-t{font-size:14.5px;font-weight:600;line-height:1.35;}
+.ex p{font-size:13px;color:var(--ink-soft);line-height:1.6;margin-top:4px;}
+/* community */
+.cm-grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:26px;align-items:start;}
+@media(max-width:900px){.cm-grid{grid-template-columns:1fr;}}
+.cm-dest{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.cm-dest button{font:600 13px var(--sys);padding:9px 16px;border-radius:999px;border:1px solid var(--hair);background:#fff;color:var(--ink-soft);cursor:pointer;min-height:40px;}
+.cm-dest button.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+.cm-dest button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.cm-stat{background:linear-gradient(150deg,#ffffff 0%,#f1f8f8 100%);border:1px solid var(--hair);border-radius:22px;padding:24px 24px 22px;box-shadow:0 1px 2px rgba(5,59,80,.04),0 20px 50px rgba(5,59,80,.07);}
+.cm-sub{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+.cm-split{display:flex;height:12px;border-radius:99px;overflow:hidden;margin-top:20px;gap:2px;}
+.cm-split i{display:block;height:100%;}
+.cm-split.mini{height:6px;margin-top:8px;}
+.cm-legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:12px;color:var(--ink-soft);}
+.cm-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px;}
+.cm-legend b{color:var(--ink);font-weight:600;}
+.cm-feed{display:grid;gap:14px;}
+.post{background:#fff;border:1px solid var(--hair);border-radius:18px;padding:18px 20px;box-shadow:0 1px 2px rgba(5,59,80,.04);}
+.po-h{display:flex;gap:11px;align-items:center;}
+.po-av{width:34px;height:34px;border-radius:11px;background:var(--accent-wash);color:#0e5265;display:grid;place-items:center;font:700 12px var(--sys);}
+.po-h b{display:block;font-size:13.5px;}
+.po-h span{font-size:11.5px;color:var(--ink-soft);}
+.po-sum{margin-top:12px;padding:12px 14px;border-radius:12px;background:#f4f8f9;}
+.po-sum b{display:block;font-size:18px;font-weight:600;letter-spacing:-.02em;}
+.post p{font-size:13.5px;line-height:1.6;color:var(--ink);margin-top:10px;}
+.post .po-tip{color:var(--ink-soft);}
+.po-tip b{color:#0e5265;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-right:4px;}
+.po-f{display:flex;gap:16px;align-items:center;margin-top:12px;font-size:12px;color:var(--ink-soft);}
+.po-like{background:none;border:1px solid var(--hair);border-radius:999px;padding:6px 12px;font:600 12px var(--sys);color:var(--ink-soft);cursor:pointer;min-height:32px;}
+.po-like.on{color:#c2414b;border-color:rgba(194,65,75,.35);background:#fdf2f3;}
+.cm-note{font-size:11.5px;color:var(--ink-soft);margin-top:18px;text-align:center;}
+.comm{padding-bottom:40px;}
+
+/* product trio: cards line up even when the text above differs in length */
+@media(min-width:901px){.trio .col{display:flex;flex-direction:column;}.trio .col .frame{margin-top:auto;}}
+/* ══ Plans ══ */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.plans-sec{position:relative;overflow:hidden;padding:120px 0 100px;}
+.pl-glow{position:absolute;left:50%;top:40px;width:min(980px,120vw);height:640px;transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(closest-side,rgba(100,204,197,.26),rgba(100,204,197,.08) 55%,transparent 75%);}
+.pl-head{position:relative;text-align:center;max-width:620px;margin:0 auto 56px;}
+.pl-head .eyebrow{display:inline-block;background:var(--ink);color:#fff;padding:6px 12px;border-radius:999px;letter-spacing:.14em;margin-bottom:18px;}
+.pl-head h2{font-size:clamp(2.4rem,5.4vw,3.6rem);font-weight:500;letter-spacing:-.03em;}
+.pl-head p{font-size:17px;color:var(--ink-soft);margin-top:12px;}
+.pl-cell{display:flex;}
+.pl-cell>.pl-card{flex:1;}
+.pl-grid{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:stretch;max-width:1040px;margin:0 auto;}
+@media(max-width:900px){.pl-grid{grid-template-columns:1fr;max-width:460px;gap:18px;}}
+.pl-card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--hair);border-radius:24px;padding:30px 28px 28px;
+  box-shadow:0 1px 2px rgba(5,59,80,.04),0 18px 44px rgba(5,59,80,.08);transition:transform .35s var(--e),box-shadow .35s var(--e);}
+.pl-card:hover{transform:translateY(-4px);box-shadow:0 1px 2px rgba(5,59,80,.05),0 26px 56px rgba(5,59,80,.13);}
+.pl-card.is-featured{color:#fff;border-color:transparent;padding:40px 30px 32px;
+  background:radial-gradient(120% 80% at 0% 0%,#3f9fb0 0%,transparent 55%),linear-gradient(160deg,#176b87 0%,#053b50 70%);
+  box-shadow:0 2px 4px rgba(5,59,80,.12),0 30px 70px rgba(5,59,80,.32);}
+@media(min-width:901px){.pl-card.is-featured{transform:translateY(-14px);}.pl-card.is-featured:hover{transform:translateY(-18px);}}
+.pl-label{align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:.04em;color:#0e5265;background:var(--accent-wash);padding:6px 12px;border-radius:999px;}
+.is-featured .pl-label{color:#053b50;background:#c4eeea;}
+.pl-name{font-size:21px;font-weight:600;margin-top:18px;letter-spacing:-.01em;}
+.pl-price{display:flex;align-items:baseline;gap:6px;margin-top:14px;}
+.pl-cur{font-size:18px;font-weight:600;}
+.pl-amt{font-size:46px;font-weight:600;letter-spacing:-.04em;line-height:1;}
+.pl-unit{font-size:14px;color:var(--ink-soft);margin-top:6px;}
+.is-featured .pl-unit{color:rgba(255,255,255,.82);}
+.pl-desc{font-size:15px;line-height:1.6;color:#2b4a58;margin:18px 0 26px;flex:1;}
+.is-featured .pl-desc{color:rgba(255,255,255,.9);}
+.pl-btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 20px;border-radius:14px;
+  background:var(--ink);color:#fff;font:600 15px var(--sys);text-decoration:none;transition:transform .3s var(--e),background .3s var(--e);}
+.pl-btn:hover{background:#0a4a63;transform:translateY(-1px);}
+.pl-btn:active{transform:scale(.98);}
+.pl-btn:focus-visible{outline:3px solid #64ccc5;outline-offset:3px;}
+.is-featured .pl-btn{background:#fff;color:#053b50;}
+.is-featured .pl-btn:hover{background:#e6f5f4;}
+.pl-arrow{font-size:13px;}
+.pl-inc{position:relative;max-width:1040px;margin:56px auto 0;background:rgba(255,255,255,.85);border:1px solid var(--hair);border-radius:22px;padding:30px 32px;}
+.pl-inc h3{font-size:18px;font-weight:600;margin-bottom:18px;}
+.pl-inc ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 32px;}
+@media(max-width:700px){.pl-inc ul{grid-template-columns:1fr;}.pl-inc{padding:24px 20px;}}
+.pl-inc li{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.5;color:var(--ink);}
+.pl-tick{flex:0 0 auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--accent-wash);color:#0e5265;margin-top:-1px;}
+.pl-tick svg{width:14px;height:14px;}
+.pl-fine{position:relative;text-align:center;margin-top:26px;font-size:13.5px;color:var(--ink-soft);line-height:1.7;}
+@media(prefers-reduced-motion:reduce){.pl-card,.pl-btn{transition:none;}.pl-card:hover{transform:none;}}
+/* phone: dashboard tabs as a swipeable row, not a stacked list */
+@media(max-width:820px){
+  .deck-core{grid-template-columns:minmax(0,1fr);}
+  .aside,.panel{min-width:0;}
+  .tiles{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .tile{padding:12px 10px;}
+  .tile .v{font-size:15px;}
+  .aside .who{display:none;}
+  .aside nav{flex-direction:row;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .aside nav::-webkit-scrollbar{display:none;}
+  .aside nav button{width:auto;flex:0 0 auto;white-space:nowrap;min-height:40px;padding:9px 14px;}
+  .panel{padding:20px 18px 22px;}
+}
+/* ══ temporary speed tuner ══ */
+.sg-tune{position:fixed;left:16px;bottom:16px;z-index:250;width:250px;padding:14px 16px 12px;border-radius:16px;
+  background:rgba(255,255,255,.96);border:1px solid rgba(5,59,80,.12);box-shadow:0 14px 40px rgba(5,59,80,.18);
+  font:500 12.5px/1.4 var(--sys);color:#053B50;}
+.sg-tune b{font-weight:600;}
+.sg-tune .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.sg-tune input[type=range]{width:100%;accent-color:#176B87;margin:2px 0 8px;}
+.sg-tune .pre{display:flex;gap:6px;}
+.sg-tune .pre button{flex:1;font:600 11.5px var(--sys);color:#053B50;background:#eef6f6;border:1px solid rgba(23,107,135,.2);
+  border-radius:9px;padding:7px 0;cursor:pointer;}
+.sg-tune .pre button.on{background:#053B50;color:#fff;border-color:#053B50;}
+.sg-tune .x{background:none;border:0;font-size:16px;line-height:1;color:#4e6b78;cursor:pointer;padding:2px 4px;}
+.sg-tune small{display:block;margin-top:8px;color:#4e6b78;font-size:11px;}
+.sg-tune .val{font-variant-numeric:tabular-nums;}
+html.no-sg .sg-tune{display:none;}
+@media(max-width:700px){.sg-tune{left:10px;right:10px;width:auto;padding:10px 12px;}.sg-tune small{display:none;}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+/* v18: link-style pills + feature blocks */
+a.pill{text-decoration:none;}
+.pill{min-height:44px;}
+.extras{grid-template-columns:repeat(6,minmax(0,1fr));}
+.extras .ex{grid-column:span 2;}
+.extras .ex:nth-child(n+4){grid-column:span 3;}
+@media(max-width:1000px){.extras{grid-template-columns:repeat(2,minmax(0,1fr));}.extras .ex,.extras .ex:nth-child(n+4){grid-column:auto;}.extras .ex:last-child{grid-column:1/-1;}}
+@media(max-width:620px){.extras{grid-template-columns:1fr;}}
+.ex p{color:var(--ink-soft);}
+.nav-l a{padding:12px 2px;}
+.foot-l a{display:inline-block;padding:12px 4px;}
+
+@media (pointer:coarse){#dashNav button,.po-like,.lnk,#rcPick button,#cmDest button{min-height:44px;}}
+</style>
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   ITER SITE CONFIG: every price, link and feature sentence lives here.
+   Change a word or number below and the page updates.
+   Prices are in Malaysian Ringgit (RM).
+   Plan "desc" tokens: {perDay} = price ÷ days, {minDays} = shortest trip
+   where this plan beats Day Passes, {currency} = RM.
+   ════════════════════════════════════════════════════════════════════ */
+window.ITER_SITE = {
+  appUrl: 'https://iter-app-alpha.vercel.app',
+  siteUrl: 'https://itertravel.vercel.app',   // this website's own address (also used in the share-preview tags above)
+
+  buttons: {
+    tryApp:  'Try ITER',        // nav, hero and closing buttons → opens the app
+    demo:    'Try the demo'     // hero button → scrolls to the demo on this page
+  },
+
+  features: {
+    // The three big cards (with illustrations), in this order
+    main: [
+      { id:'safe', tag:'Your daily number',  title:'Safe to spend, every day',
+        text:'Set your budget once. ITER tells you what you can spend today, and rebalances it each morning so one big day never wrecks the rest of your trip.' },
+      { id:'snap', tag:'Receipts read for you', title:'Snap a receipt, we log it',
+        text:'AI reads receipts and menus in any language, converts them to Ringgit and files them in the right category. You just confirm.' },
+      { id:'tax',  tag:'Tax you can claim back', title:'Tax refund tracker',
+        text:'Every receipt is checked for tourist tax refunds (Japan supported). ITER shows what you can claim and tells you what to bring to the airport.' }
+    ],
+    // The smaller blocks underneath
+    more: [
+      { icon:'translate', title:'Menu translate',
+        text:'Every dish in English, with Ringgit prices including tax and service, plus pork and alcohol flags.' },
+      { icon:'globe',     title:'Go anywhere',
+        text:'8 featured cities plus 110 countries, with live exchange rates for 87 currencies.' },
+      { icon:'people',    title:'Community',
+        text:'See what a typical trip really costs, from trips shared by Malaysian travellers.' },
+      { icon:'wrapped',   title:'Trip Wrapped',
+        text:'Your trip’s highlights as shareable cards, like Spotify Wrapped.' },
+      { icon:'phone',     title:'Works like an app',
+        text:'Add ITER to your home screen and it opens full screen, just like an app.' }
+    ]
+  },
+
+  plans: {
+    currency: 'RM',
+    eyebrow: 'Pricing',
+    title: 'Plans',
+    subtitle: 'Pay only for the days you travel.',
+    list: [
+      { id:'trial', label:'Try ITER',        name:'Free trial', price:0,     days:3, unit:'3 days',
+        desc:'Try everything on your trip. Up to 10 scans a day. Starts on day 1 of your trip.', button:'Try ITER',    featured:false },
+      { id:'day',   label:'For short trips', name:'Day Pass',   price:2.90,  days:1, unit:'1 day',
+        desc:'Good for day trips and weekend trips.',                                          button:'Get the app', featured:false },
+      { id:'week',  label:'Best value',      name:'7-Day Pass', price:12.90, days:7, unit:'7 days in a row',
+        desc:'About {currency} {perDay} a day. Good for trips of 5 days or more.',             button:'Get the app', featured:true }
+    ],
+    includesTitle: 'Every plan includes',
+    includes: [
+      'Safe to spend per day for the rest of your trip',
+      'Spending warnings before you run short',
+      'AI receipt and menu scanning',
+      'Tax refund check and tracker',
+      'Live currency rates and converter',
+      'Community: see what other travellers spent'
+    ],
+    finePrint: [
+      'No pass? Community and your own records stay free.',
+      'Passes start by themselves on your next trip day. Unused passes expire 12 months after purchase.'
+    ]
+  }
+};
+/* Visit counts (Vercel Web Analytics: no cookies). Loads only on the real site, never in previews. */
+(function(){try{var h=location.hostname;if(h===new URL(window.ITER_SITE.siteUrl).hostname||/\.vercel\.app$/.test(h)){
+  var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);}}catch(e){}})();
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="grain"></div>
+
+<!-- shared brand mark -->
+<svg width="0" height="0" style="position:absolute;" aria-hidden="true">
+  <defs>
+    <symbol id="iterMark" viewBox="0 0 104.5 131">
+      <g transform="translate(-90.5,-524)">
+        <path d="M0 0 C4.53 0.53 7.39 2.27 11 5 C13.5 8.75 13.45 10.55 13 15 C7.96 26.53 -8.33 30.97 -19.19 35.44 C-28.14 39.15 -37.04 42.9 -45.72 47.21 C-46.36 47.53 -47.01 47.85 -47.67 48.18 C-55.26 52.02 -64.52 56.89 -68 65 C-68.65 69.87 -68.6 74.71 -66 79 C-64.05 80.23 -64.05 80.23 -62 81 C-61.34 81.66 -60.68 82.32 -60 83 C-69.9 81.4 -77.64 77.44 -83.94 69.52 C-87.03 65.09 -86.69 60.2 -86 55 C-80.87 41.83 -65.13 35.33 -53 30 C-43.02 25.8 -32.88 22.03 -22.7 18.35 C-21.48 17.9 -20.26 17.46 -19.01 17 C-16.63 16.14 -14.25 15.29 -11.87 14.45 C-10.79 14.06 -9.7 13.67 -8.59 13.26 C-7.63 12.92 -6.67 12.58 -5.68 12.23 C-2.7 10.86 -0.47 9.14 2 7 C1.34 3.39 1.34 3.39 0 0 Z " fill="currentColor" transform="translate(177,554)"/>
+        <path d="M0 0 C0.1 4.27 0.17 8.54 0.22 12.81 C0.24 14.25 0.27 15.7 0.3 17.15 C0.7 34.04 0.7 34.04 -5.54 40.63 C-9.63 44.35 -14.28 47.23 -19 50.06 C-23.06 52.52 -27.05 54.99 -30.88 57.81 C-34 60 -34 60 -36 60 C-36.07 55.29 -36.13 50.57 -36.16 45.86 C-36.18 44.26 -36.2 42.66 -36.23 41.05 C-36.26 38.74 -36.28 36.43 -36.29 34.12 C-36.31 33.41 -36.32 32.71 -36.34 31.98 C-36.34 26.2 -35.08 21.66 -31.48 17.07 C-24.77 11.25 -9.18 0 0 0 Z " fill="currentColor" transform="translate(165,595)"/>
+        <path d="M0 0 C2.84 2.84 2.41 5.64 2.44 9.44 C2.47 10.12 2.5 10.8 2.54 11.5 C2.56 13.5 2.56 13.5 2 17 C-1.36 19.44 -5 20.9 -8.86 22.38 C-9.98 22.8 -11.09 23.23 -12.24 23.67 C-13.98 24.33 -13.98 24.33 -15.75 25 C-17.46 25.66 -17.46 25.66 -19.21 26.33 C-25.43 28.7 -31.67 30.95 -38 33 C-38.52 25.33 -37.44 20.34 -32.62 14.26 C-28.01 9.61 -22.26 6.9 -16.44 4.06 C-15.62 3.66 -14.81 3.26 -13.97 2.84 C-9.16 0.61 -5.41 -0.68 0 0 Z " fill="currentColor" transform="translate(163,544)"/>
+        <path d="M0 0 C1.5 1.38 1.5 1.38 3 3 C3 3.66 3 4.32 3 5 C3.62 5.29 4.24 5.58 4.88 5.88 C7 7 7 7 9 9 C7.54 8.72 6.08 8.42 4.62 8.12 C3.81 7.96 3 7.8 2.16 7.63 C0 7 0 7 -2 5 C-1.34 3.35 -0.68 1.7 0 0 Z " fill="currentColor" transform="translate(108,628)"/>
+      </g>
+      <path d="M92.5,0 C93.4,6.9 97.6,11.1 104.5,12.5 C97.6,13.9 93.4,18.1 92.5,25 C91.6,18.1 87.4,13.9 80.5,12.5 C87.4,11.1 91.6,6.9 92.5,0 Z" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- LOADING SCREEN -->
+<script>
+/* Failsafe, deliberately standalone: whatever happens in the main script —
+   a CDN file that never arrives, a plugin that fails to define — the intro
+   overlay comes down and the page becomes usable. */
+(function(){
+  var drop=function(){
+    try{
+      var l=document.getElementById('loader');
+      if(l){l.style.opacity='0';l.style.pointerEvents='none';setTimeout(function(){l.style.display='none';},400);}
+      document.documentElement.classList.remove('loading');
+    }catch(e){}
+  };
+  setTimeout(drop,7000);
+  window.addEventListener('error',function(){setTimeout(drop,1200);});
+})();
+</script>
+<div class="loader" id="loader">
+  <div class="loader-stage"><div class="loader-glow" id="loaderGlow"></div>
+  <svg class="loader-mark-svg" viewBox="0 0 104.5 131" aria-hidden="true">
+    <defs>
+      <clipPath id="loaderClip"><rect id="loaderWipe" x="-14" y="-14" width="134" height="160"/></clipPath>
+      <filter id="lineGlow" x="-60%" y="-30%" width="220%" height="160%">
+        <feGaussianBlur stdDeviation="2.4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <g id="journeyWrap" filter="url(#lineGlow)">
+      <path id="journeyLine" d="M58,131 C80,116 84,100 68,88 C52,76 30,78 30,64 C30,50 56,46 68,38 C78,31 84,26 88,20" fill="none" stroke="var(--accent-dk)"
+            stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle id="journeyDot" cx="0" cy="0" r="3.4" fill="var(--accent)"/>
+    </g>
+    <g id="loaderBody" clip-path="url(#loaderClip)">
+      <g transform="translate(-90.5,-524)">
+
+        <path d="M0 0 C4.53 0.53 7.39 2.27 11 5 C13.5 8.75 13.45 10.55 13 15 C7.96 26.53 -8.33 30.97 -19.19 35.44 C-28.14 39.15 -37.04 42.9 -45.72 47.21 C-46.36 47.53 -47.01 47.85 -47.67 48.18 C-55.26 52.02 -64.52 56.89 -68 65 C-68.65 69.87 -68.6 74.71 -66 79 C-64.05 80.23 -64.05 80.23 -62 81 C-61.34 81.66 -60.68 82.32 -60 83 C-69.9 81.4 -77.64 77.44 -83.94 69.52 C-87.03 65.09 -86.69 60.2 -86 55 C-80.87 41.83 -65.13 35.33 -53 30 C-43.02 25.8 -32.88 22.03 -22.7 18.35 C-21.48 17.9 -20.26 17.46 -19.01 17 C-16.63 16.14 -14.25 15.29 -11.87 14.45 C-10.79 14.06 -9.7 13.67 -8.59 13.26 C-7.63 12.92 -6.67 12.58 -5.68 12.23 C-2.7 10.86 -0.47 9.14 2 7 C1.34 3.39 1.34 3.39 0 0 Z " fill="currentColor" transform="translate(177,554)"/>
+        <path d="M0 0 C0.1 4.27 0.17 8.54 0.22 12.81 C0.24 14.25 0.27 15.7 0.3 17.15 C0.7 34.04 0.7 34.04 -5.54 40.63 C-9.63 44.35 -14.28 47.23 -19 50.06 C-23.06 52.52 -27.05 54.99 -30.88 57.81 C-34 60 -34 60 -36 60 C-36.07 55.29 -36.13 50.57 -36.16 45.86 C-36.18 44.26 -36.2 42.66 -36.23 41.05 C-36.26 38.74 -36.28 36.43 -36.29 34.12 C-36.31 33.41 -36.32 32.71 -36.34 31.98 C-36.34 26.2 -35.08 21.66 -31.48 17.07 C-24.77 11.25 -9.18 0 0 0 Z " fill="currentColor" transform="translate(165,595)"/>
+        <path d="M0 0 C2.84 2.84 2.41 5.64 2.44 9.44 C2.47 10.12 2.5 10.8 2.54 11.5 C2.56 13.5 2.56 13.5 2 17 C-1.36 19.44 -5 20.9 -8.86 22.38 C-9.98 22.8 -11.09 23.23 -12.24 23.67 C-13.98 24.33 -13.98 24.33 -15.75 25 C-17.46 25.66 -17.46 25.66 -19.21 26.33 C-25.43 28.7 -31.67 30.95 -38 33 C-38.52 25.33 -37.44 20.34 -32.62 14.26 C-28.01 9.61 -22.26 6.9 -16.44 4.06 C-15.62 3.66 -14.81 3.26 -13.97 2.84 C-9.16 0.61 -5.41 -0.68 0 0 Z " fill="currentColor" transform="translate(163,544)"/>
+        <path d="M0 0 C1.5 1.38 1.5 1.38 3 3 C3 3.66 3 4.32 3 5 C3.62 5.29 4.24 5.58 4.88 5.88 C7 7 7 7 9 9 C7.54 8.72 6.08 8.42 4.62 8.12 C3.81 7.96 3 7.8 2.16 7.63 C0 7 0 7 -2 5 C-1.34 3.35 -0.68 1.7 0 0 Z " fill="currentColor" transform="translate(108,628)"/>
+      </g>
+    </g>
+    <path id="loaderSpark" d="M92.5,0 C93.4,6.9 97.6,11.1 104.5,12.5 C97.6,13.9 93.4,18.1 92.5,25 C91.6,18.1 87.4,13.9 80.5,12.5 C87.4,11.1 91.6,6.9 92.5,0 Z" fill="currentColor"/>
+  </svg>
+  </div>
+  <span class="loader-mark">ITER</span>
+</div>
+
+<!-- custom cursor -->
+<div class="cur" id="cur"></div>
+<div class="cur-dot" id="curDot"></div>
+
+<header class="nav"><div class="nav-in" id="navIn">
+  <span class="brand"><svg class="brand-mark" viewBox="0 0 104.5 131" width="17.5" height="22" aria-hidden="true"><use href="#iterMark"/></svg><span class="mark">ITER</span></span>
+  <nav class="nav-l" aria-label="Primary">
+    <a href="#clarity">Product</a><a href="#journey">How it works</a><a href="#community">Community</a><a href="#plans">Plans</a><a href="#team">Team</a>
+  </nav>
+  <a class="pill" data-mag data-cta="tryApp" href="https://iter-app-alpha.vercel.app" target="_blank" rel="noopener"><span data-cta-label>Try ITER</span> <span class="dot" aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+</div></header>
+
+<div id="shell"><div id="track"><main id="main">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true"><div id="heroGrad"></div></div>
+  <div class="wrap">
+    <span class="eyebrow">Snap it · Know it · Claim it back</span>
+    <h1>
+      <span class="l1" id="l1">Know what's safe</span>
+      <span class="l2" id="l2">to spend today</span>
+    </h1>
+    <p class="sub">Snap every receipt, in any language. ITER logs it in Ringgit, tells you what's safe to spend for the rest of your trip, and finds the tax you can claim back.</p>
+    <div class="acts">
+      <a class="pill lg" data-mag data-cta="tryApp" href="https://iter-app-alpha.vercel.app" target="_blank" rel="noopener"><span data-cta-label>Try ITER</span> <span class="dot" aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+      <button class="pill lg ghost" data-mag data-cta="demo" onclick="jump('#deck')"><span data-cta-label>Try the demo</span></button>
+    </div>
+  </div>
+
+    <div class="fx-float" id="fxFloat" aria-hidden="true">
+    <div class="fx-t" style="left:6%;top:16%;--rot:-7deg"><span class="fx-s">¥</span><span class="fx-c">JPY</span><span class="fx-r">¥1,200 = RM 30.99</span></div>
+    <div class="fx-t" style="left:15%;top:52%;--rot:5deg"><span class="fx-s">฿</span><span class="fx-c">THB</span><span class="fx-r">฿320 = RM 38.86</span></div>
+    <div class="fx-t" style="left:4%;top:80%;--rot:-4deg"><span class="fx-s">₫</span><span class="fx-c">VND</span><span class="fx-r">₫50,000 = RM 7.87</span></div>
+    <div class="fx-t" style="left:23%;top:27%;--rot:8deg"><span class="fx-s">S$</span><span class="fx-c">SGD</span><span class="fx-r">S$18 = RM 57.51</span></div>
+    <div class="fx-t" style="left:88%;top:18%;--rot:6deg"><span class="fx-s">$</span><span class="fx-c">USD</span><span class="fx-r">$25 = RM 102.15</span></div>
+    <div class="fx-t" style="left:79%;top:54%;--rot:-6deg"><span class="fx-s">€</span><span class="fx-c">EUR</span><span class="fx-r">€20 = RM 91.78</span></div>
+    <div class="fx-t" style="left:90%;top:79%;--rot:4deg"><span class="fx-s">Rp</span><span class="fx-c">IDR</span><span class="fx-r">Rp90,000 = RM 20.57</span></div>
+    <div class="fx-t" style="left:72%;top:12%;--rot:-9deg"><span class="fx-s">₩</span><span class="fx-c">KRW</span><span class="fx-r">₩9,000 = RM 30.78</span></div>
+  </div>
+
+  <!-- scenery -->
+  <div class="scene">
+    <svg class="cliffs" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="rkA" x1="0" y1="0" x2=".6" y2="1">
+          <stop offset="0" stop-color="#e3edf0"/><stop offset=".55" stop-color="#bcd2da"/><stop offset="1" stop-color="#8fb3c0"/>
+        </linearGradient>
+        <linearGradient id="rkB" x1="1" y1="0" x2=".3" y2="1">
+          <stop offset="0" stop-color="#dce9ed"/><stop offset=".5" stop-color="#aec8d2"/><stop offset="1" stop-color="#7ea5b4"/>
+        </linearGradient>
+        <linearGradient id="rkC" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#cfe0e6"/><stop offset="1" stop-color="#6e98a8"/>
+        </linearGradient>
+        <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffffff" stop-opacity="1"/><stop offset=".3" stop-color="#ffffff" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <!-- left mass -->
+      <g>
+        <polygon points="0,620 0,236 112,104 232,244 334,160 446,296 528,242 592,620" fill="url(#rkA)"/>
+        <polygon points="128,128 232,244 186,286 104,186" fill="#eaf2f5" opacity=".6"/>
+        <polygon points="348,186 446,296 398,330 318,228" fill="#dceaef" opacity=".45"/>
+        <polygon points="0,620 0,326 92,222 204,338 302,276 404,388 504,348 560,620" fill="url(#rkC)" opacity=".9"/>
+        <polygon points="0,620 0,428 104,344 212,448 312,396 422,478 512,448 552,620" fill="#484644" opacity=".95"/>
+        <polygon points="110,366 212,448 168,482 92,414" fill="#6e6b67" opacity=".5"/>
+      </g>
+      <!-- right mass -->
+      <g>
+        <polygon points="1440,620 1440,196 1322,66 1200,212 1096,134 988,280 902,230 848,620" fill="url(#rkB)"/>
+        <polygon points="1306,92 1200,212 1248,252 1334,146" fill="#eaf2f5" opacity=".55"/>
+        <polygon points="1080,160 988,280 1034,312 1110,214" fill="#dceaef" opacity=".4"/>
+        <polygon points="1440,620 1440,292 1338,188 1226,314 1122,250 1018,364 932,322 880,620" fill="url(#rkC)" opacity=".9"/>
+        <polygon points="1440,620 1440,412 1330,322 1218,436 1116,382 1008,466 930,436 888,620" fill="#7ba3b2" opacity=".95"/>
+        <polygon points="1322,344 1218,436 1264,470 1344,392" fill="#9dbecb" opacity=".45"/>
+      </g>
+      <rect class="cl-fade" x="0" y="0" width="1440" height="260" fill="url(#fade)"/>
+    </svg>
+
+    <!-- dashboard -->
+    <div class="deck-hold" id="deck">
+      <div class="deck" id="deckEl">
+        <div class="deck-core">
+          <div class="aside">
+            <div class="who"><span class="av">AT</span><span><b>Amanda T.</b><span>Tokyo · Day 6 of 10</span></span></div>
+            <nav role="tablist" aria-label="Dashboard view" id="dashNav">
+              <button type="button" class="on" role="tab" aria-selected="true" aria-controls="panel-safe" id="tab-safe" data-tab="safe">Safe to spend</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-scan" id="tab-scan" data-tab="scan">Scan a receipt</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-categories" id="tab-categories" data-tab="categories">Categories</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-tax" id="tab-tax" data-tab="tax">Tax refund</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-history" id="tab-history" data-tab="history">Trip history</button>
+            </nav>
+          </div>
+          <div class="panel">
+
+            <div class="tabpanel" id="panel-safe" role="tabpanel" aria-labelledby="tab-safe" tabindex="0">
+              <div class="p-top">
+                <div>
+                  <span class="lbl">Safe to spend · per day</span>
+                  <div class="big" id="amt">RM 200</div>
+                  <div class="bsub" id="amtSub">for each of the next 4 days</div>
+                </div>
+                <span class="chip" id="chip">On track</span>
+              </div>
+
+              <div class="tiles">
+                <div class="tile"><div class="k">Spent so far</div><div class="v" id="spentV">RM 2,700</div></div>
+                <div class="tile"><div class="k">Remaining</div><div class="v" id="rem">RM 1,500</div></div>
+                <div class="tile tx"><div class="k">Tax refund to collect</div><div class="v" id="taxV">RM 38</div></div>
+              </div>
+
+              <div class="bars" id="bars" aria-hidden="true">
+                <i style="height:29px"></i><i style="height:40px"></i><i style="height:26px"></i><i style="height:50px"></i>
+                <i style="height:35px"></i><i style="height:55px"></i><i class="hi" style="height:44px"></i>
+                <i style="height:20px"></i><i style="height:23px"></i><i style="height:17px"></i>
+              </div>
+              <div class="bars-cap"><span>Daily spend · day 1</span><span>Today</span><span>Day 10</span></div>
+
+              <div class="ctl-h"><span>No receipt? Type it in</span><button type="button" class="lnk" onclick="showTab('scan')">or scan a receipt →</button></div>
+              <div class="ctl">
+                <select class="sel" id="fxCur" aria-label="Currency you paid in"><option value="MYR">MYR · Ringgit</option><option value="JPY" selected>JPY · Japanese Yen</option><option value="THB">THB · Thai Baht</option><option value="SGD">SGD · Singapore Dollar</option><option value="IDR">IDR · Indonesian Rupiah</option><option value="VND">VND · Vietnamese Dong</option><option value="USD">USD · US Dollar</option><option value="EUR">EUR · Euro</option><option value="KRW">KRW · Korean Won</option></select>
+                <input type="number" id="exp" placeholder="Amount" min="0" step="any" aria-label="Amount you paid">
+                <select class="sel" id="fxCat" aria-label="Spend category">
+                  <option>Food</option><option>Transport</option><option>Stay</option>
+                  <option>Activities</option><option>Shopping</option>
+                </select>
+                <button class="sbtn" onclick="logExp()">Log expense</button>
+                <button class="sbtn q" onclick="resetDemo()">Reset</button>
+              </div>
+              <div class="conv" id="convOut" role="status" aria-live="polite"></div>
+              <div class="flag a" id="fWarn"></div>
+            </div>
+
+            <div class="tabpanel" id="panel-scan" role="tabpanel" aria-labelledby="tab-scan" tabindex="0" hidden>
+              <div class="p-top">
+                <div><span class="lbl">Scan a receipt</span><div class="big sm">Snap it. It's logged.</div></div>
+                <span class="chip">AI receipt reader</span>
+              </div>
+              <div class="rc-pick" id="rcPick" role="radiogroup" aria-label="Sample receipt"></div>
+              <div class="scan-grid">
+                <div class="paper-wrap">
+                  <div class="paper" id="paper" aria-label="Receipt preview"></div>
+                  <div class="scanline" id="scanline" aria-hidden="true"></div>
+                </div>
+                <div class="scan-out" id="scanOut" aria-live="polite"></div>
+              </div>
+            </div>
+
+            <div class="tabpanel" id="panel-categories" role="tabpanel" aria-labelledby="tab-categories" tabindex="0" hidden>
+              <div class="p-top">
+                <div><span class="lbl">Spent by category</span><div class="big" id="catTotal">RM 2,700</div></div>
+                <span class="chip">Day 6 of 10</span>
+              </div>
+              <div class="cats">
+                <div class="catrow" data-cat="Food"><span class="cn">Food</span><div class="cbar"><i style="width:62%"></i></div><span class="cv">RM 720</span></div>
+                <div class="catrow" data-cat="Transport"><span class="cn">Transport</span><div class="cbar"><i style="width:36%"></i></div><span class="cv">RM 410</span></div>
+                <div class="catrow" data-cat="Stay"><span class="cn">Stay</span><div class="cbar"><i style="width:100%"></i></div><span class="cv">RM 1,150</span></div>
+                <div class="catrow" data-cat="Activities"><span class="cn">Activities</span><div class="cbar"><i style="width:24%"></i></div><span class="cv">RM 280</span></div>
+                <div class="catrow" data-cat="Shopping"><span class="cn">Shopping</span><div class="cbar"><i style="width:12%"></i></div><span class="cv">RM 140</span></div>
+                <div class="catrow" data-cat="Reserve"><span class="cn">Reserve held</span><div class="cbar"><i style="width:26%;background:var(--ink-soft);"></i></div><span class="cv">RM 300</span></div>
+              </div>
+            </div>
+
+            <div class="tabpanel" id="panel-tax" role="tabpanel" aria-labelledby="tab-tax" tabindex="0" hidden>
+              <div class="p-top">
+                <div><span class="lbl">Tax refund to collect</span><div class="big" id="taxBig">RM 38</div></div>
+                <span class="chip">Japan · claim at departure</span>
+              </div>
+              <div class="hist" id="taxList"></div>
+              <p class="tx-note">From 1 Nov 2026, Japan refunds consumption tax when you leave: you pay the full price in store, then complete the customs procedure at the airport before check-in. Keep the items unused and bring your passport. Amounts are estimates; the store's refund method may deduct a fee.</p>
+            </div>
+
+            <div class="tabpanel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden>
+              <div class="p-top">
+                <div><span class="lbl">Trip history</span><div class="big">3 trips</div></div>
+                <span class="chip">Past trips</span>
+              </div>
+              <div class="hist">
+                <div class="hrow"><div><b>Tokyo</b><span>Current trip · day 6 of 10</span></div><span class="hv live" id="histNow">RM 2,700 so far</span></div>
+                <div class="hrow"><div><b>Seoul</b><span>2–9 Jul 2025</span></div><span class="hv">RM 2,940</span></div>
+                <div class="hrow"><div><b>Bangkok</b><span>12–16 Mar 2025</span></div><span class="hv">RM 1,180</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <p class="scene-cap">Interactive demo · sample receipts and simulated data</p>
+    </div>
+  </div>
+</section>
+
+<!-- DARK: clarity trio -->
+<section class="slab" id="clarity">
+  <div class="ambient"><div class="amb-blob" style="width:520px;height:520px;left:-140px;top:-100px;"></div>
+    <div class="amb-blob" style="width:420px;height:420px;right:-120px;bottom:-80px;animation-duration:27s;animation-delay:-6s;"></div></div>
+  <div class="wrap">
+    <div class="slab-head reveal">
+      <div>
+        <span class="eyebrow">The product</span>
+        <h2 data-scramble>One photo in, one honest number out</h2>
+      </div>
+      <p>ITER turns every receipt into a logged expense, every expense into a safe daily number, and every eligible purchase into tax you can claim back.</p>
+    </div>
+
+    <div class="trio">
+      <div class="col reveal" data-feature="safe">
+        <div class="idx"><span class="ic-tile" aria-hidden="true"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M4,24 L11,18.5 L17,20.5 L23,13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23,13 L29,7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 3.4" opacity=".6"/><circle cx="23" cy="13" r="2.6"/></svg></span><span class="idx-n" data-f="n">02</span><span class="idx-t" data-f="tag">Pace projected forward</span></div>
+        <h3 data-f="title">Know what's safe to spend</h3>
+        <p data-f="text">ITER weighs what's left against the days you have and your pace, and recalculates a safe daily number the moment a receipt lands. Overspend early, and you hear about it while there's still room to adjust.</p>
+        <div class="frame two" data-tilt>
+          <div class="ill">
+            <svg class="fc" viewBox="0 0 220 128" fill="none" aria-hidden="true">
+              <line class="fc-grid" x1="8" y1="104" x2="212" y2="104"/>
+              <line class="fc-grid" x1="8" y1="70"  x2="212" y2="70"/>
+              <!-- the budget ceiling, and where the current pace meets it -->
+              <line class="fc-cap" id="fcCap" x1="8" y1="34" x2="212" y2="34"/>
+              <text class="fc-lbl" x="8" y="27">Budget ceiling</text>
+              <!-- spend so far -->
+              <path id="fcReal" class="fc-real" d="M14,100 L46,92 L78,78 L110,68"/>
+              <!-- where that pace lands -->
+              <g clip-path="url(#fcClip)">
+                <path id="fcProj" class="fc-proj" d="M110,68 L142,54 L174,41 L200,31"/>
+              </g>
+              <defs><clipPath id="fcClip"><rect id="fcWipe" x="108" y="0" width="0" height="128"/></clipPath></defs>
+              <circle id="fcNow" class="fc-now" cx="110" cy="68" r="4"/>
+              <circle id="fcHit" class="fc-hit" cx="186" cy="36" r="5"/>
+              <circle id="fcRing" class="fc-ring" cx="186" cy="36" r="5"/>
+              <text class="fc-lbl fc-warn" id="fcHitLbl" x="212" y="20" text-anchor="end">runs out · day 8</text>
+            </svg>
+          </div>
+          <div class="glass">
+            <div class="gh"><span>Safe to spend</span><span>Today</span></div>
+            <div class="gv">RM 200</div>
+            <div class="gs">Across 4 remaining days</div>
+            <div class="spark"><i style="height:70%"></i><i style="height:58%"></i><i style="height:52%"></i><i class="hi" style="height:44%"></i><i style="height:40%"></i><i style="height:36%"></i><i style="height:30%"></i></div>
+            <div class="rows"><div><span>Pace vs plan</span><span>+4%</span></div><div><span>Reserve held</span><span>RM 300</span></div><div><span>Forecast end</span><span>Day 10</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col reveal" data-feature="snap">
+        <div class="idx"><span class="ic-tile" aria-hidden="true"><svg viewBox="0 0 32 32" fill="currentColor"><rect x="4" y="6"  width="24" height="4.4" rx="2.2"/><rect x="4" y="13.8" width="17" height="4.4" rx="2.2" opacity=".62"/><rect x="4" y="21.6" width="10" height="4.4" rx="2.2" opacity=".34"/></svg></span><span class="idx-n" data-f="n">01</span><span class="idx-t" data-f="tag">Receipts read for you</span></div>
+        <h3 data-f="title">Snap a receipt, it's logged</h3>
+        <p data-f="text">Point your camera at any receipt, in any language. AI reads the shop, items and total, converts it to Ringgit and files it in the right category. You just confirm.</p>
+        <div class="frame one" data-tilt>
+          <div class="ill">
+            <svg class="art rcpt" viewBox="0 0 220 128" fill="none" aria-hidden="true">
+              <g class="rc" data-i="0">
+                <path class="rc-p" d="M72,22 h76 a6,6 0 0 1 6,6 v70 l-6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 v-70 a6,6 0 0 1 6,-6 z"/>
+                <text class="rc-a" x="78" y="44">¥1,200</text>
+                <text class="rc-w" x="78" y="56">Ramen · Shinjuku</text>
+                <line class="rc-l" x1="78" y1="68" x2="142" y2="68"/>
+                <line class="rc-l" x1="78" y1="76" x2="128" y2="76"/>
+                <line class="rc-l" x1="78" y1="84" x2="136" y2="84"/>
+              </g>
+              <g class="rc" data-i="1">
+                <path class="rc-p" d="M72,22 h76 a6,6 0 0 1 6,6 v70 l-6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 v-70 a6,6 0 0 1 6,-6 z"/>
+                <text class="rc-a" x="78" y="44">฿320</text>
+                <text class="rc-w" x="78" y="56">Grab · Sukhumvit</text>
+                <line class="rc-l" x1="78" y1="68" x2="142" y2="68"/>
+                <line class="rc-l" x1="78" y1="76" x2="128" y2="76"/>
+                <line class="rc-l" x1="78" y1="84" x2="136" y2="84"/>
+              </g>
+              <g class="rc" data-i="2">
+                <path class="rc-p" d="M72,22 h76 a6,6 0 0 1 6,6 v70 l-6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 v-70 a6,6 0 0 1 6,-6 z"/>
+                <text class="rc-a" x="78" y="44">$25</text>
+                <text class="rc-w" x="78" y="56">Museum entry</text>
+                <line class="rc-l" x1="78" y1="68" x2="142" y2="68"/>
+                <line class="rc-l" x1="78" y1="76" x2="128" y2="76"/>
+                <line class="rc-l" x1="78" y1="84" x2="136" y2="84"/>
+              </g>
+              <g class="rc" data-i="3">
+                <path class="rc-p" d="M72,22 h76 a6,6 0 0 1 6,6 v70 l-6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 v-70 a6,6 0 0 1 6,-6 z"/>
+                <text class="rc-a" x="78" y="44">€20</text>
+                <text class="rc-w" x="78" y="56">Train ticket</text>
+                <line class="rc-l" x1="78" y1="68" x2="142" y2="68"/>
+                <line class="rc-l" x1="78" y1="76" x2="128" y2="76"/>
+                <line class="rc-l" x1="78" y1="84" x2="136" y2="84"/>
+              </g>
+              <g id="rcSum">
+                <rect class="rs-card" x="56" y="26" width="108" height="78" rx="11"/>
+                <text class="rs-k" x="68" y="44">TRIP SO FAR · IN RM</text>
+                <text class="rs-v" x="68" y="68">RM 1,500</text>
+                <text class="rs-s" x="68" y="79">left of RM 4,200</text>
+                <rect class="rs-b1" x="68" y="88" width="34" height="5" rx="2.5"/>
+                <rect class="rs-b2" x="104" y="88" width="20" height="5" rx="2.5"/>
+                <rect class="rs-b3" x="126" y="88" width="26" height="5" rx="2.5"/>
+              </g>
+            </svg>
+          </div>
+          <div class="glass">
+            <div class="gh"><span>Trip overview</span><span class="dots-ic"><i></i><i></i><i></i></span></div>
+            <div class="gv">RM 1,500</div>
+            <div class="gs">Remaining of RM 4,200 budget</div>
+            <div class="spark"><i style="height:40%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:78%"></i><i class="hi" style="height:56%"></i><i style="height:34%"></i><i style="height:44%"></i></div>
+            <div class="rows"><div><span>Food</span><span>RM 720</span></div><div><span>Transport</span><span>RM 410</span></div><div><span>Stay</span><span>RM 1,150</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col reveal" data-feature="tax">
+        <div class="idx"><span class="ic-tile" aria-hidden="true"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M8,4 h16 a2,2 0 0 1 2,2 v22 l-3,-2 -3,2 -3,-2 -3,2 -3,-2 -3,2 v-22 a2,2 0 0 1 2,-2 z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M16,20 V10 M12,14 L16,10 L20,14" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="idx-n" data-f="n">03</span><span class="idx-t" data-f="tag">Tax you can claim back</span></div>
+        <h3 data-f="title">Tax refunds, found for you</h3>
+        <p data-f="text">Every scanned receipt is checked against the country's tourist tax-free rules. ITER shows what qualifies, how much you can collect, and reminds you before you fly home.</p>
+        <div class="frame three" data-tilt>
+          <div class="ill">
+            <svg class="art taxart" viewBox="0 0 220 128" fill="none" aria-hidden="true">
+              <g id="txRc">
+                <path class="rc-p" d="M22,10 h70 a6,6 0 0 1 6,6 v92 l-6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 -6,4 -6,-4 v-92 a6,6 0 0 1 6,-6 z"/>
+                <text class="rc-w" x="30" y="26">UNIQLO · GINZA</text>
+                <line class="rc-l" x1="30" y1="36" x2="88" y2="36"/>
+                <line class="rc-l" x1="30" y1="44" x2="78" y2="44"/>
+                <rect id="txHl" class="tx-hl" x="27" y="53" width="66" height="13" rx="3"/>
+                <text class="tx-k" x="31" y="62.5">TAX 10%</text>
+                <text class="tx-v" x="89" y="62.5" text-anchor="end">¥869</text>
+                <line class="rc-l" x1="30" y1="72" x2="88" y2="72"/>
+                <text class="rc-a" x="30" y="85">¥9,570</text>
+              </g>
+              <g id="txStamp" transform="translate(62 101) rotate(-10)">
+                <rect class="tx-st" x="-30" y="-9" width="60" height="18" rx="4"/>
+                <text class="tx-stt" x="0" y="3.6" text-anchor="middle">TAX-FREE ✓</text>
+              </g>
+              <path id="txPath" d="M90,60 C118,10 156,8 170,44" stroke="none"/>
+              <g id="txPot">
+                <rect class="tx-pot" x="124" y="48" width="88" height="44" rx="13"/>
+                <text class="tx-pk" x="136" y="65">TO COLLECT</text>
+                <text class="tx-pv" id="txAmt" x="136" y="83">RM 38.22</text>
+              </g>
+              <g id="txCoin" opacity="0">
+                <circle class="tx-coin" cx="0" cy="0" r="8"/>
+                <text class="tx-ct" x="0" y="3.3" text-anchor="middle">¥</text>
+              </g>
+            </svg>
+          </div>
+          <div class="glass">
+            <div class="gh"><span>Tax refund</span><span>Japan</span></div>
+            <div class="gv">RM 60.66</div>
+            <div class="gs">Ready to collect at departure</div>
+            <div class="spark"><i style="height:30%"></i><i style="height:30%"></i><i style="height:52%"></i><i style="height:52%"></i><i class="hi" style="height:78%"></i><i style="height:78%"></i><i style="height:78%"></i></div>
+            <div class="rows"><div><span>Bic Camera</span><span>RM 38.22</span></div><div><span>Uniqlo</span><span>RM 22.44</span></div><div><span>Don Quijote</span><span>Under ¥5,000</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="extras reveal" id="moreFeatures"></div>
+  </div>
+</section>
+
+<!-- STACKING JOURNEY — full-screen + layered depth -->
+<section class="stackwrap" id="journey">
+  <div class="ambient"><div class="amb-blob" style="width:600px;height:600px;left:30%;top:-220px;animation-duration:30s;"></div></div>
+  <div class="stage" id="stage">
+    <article class="scard card-1">
+      <div class="depth">
+        <div class="bgscene">
+          <div class="blob" style="width:480px;height:480px;left:-140px;top:-120px;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.4;"></div>
+          <div class="blob" style="width:360px;height:360px;right:-100px;bottom:-140px;background:radial-gradient(circle,rgba(255,255,255,.5) 0%,transparent 70%);opacity:.12;animation-duration:19s;animation-delay:-4s;"></div>
+        </div>
+        <div class="bgnum">01</div>
+        <div class="sv"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="78" fill="none" stroke="var(--accent-dk)" stroke-width="1.6" opacity=".7"/><path d="M100,40 L118,100 L100,160 L82,100 Z" fill="var(--accent-dk)" opacity=".85"/><circle cx="100" cy="100" r="5" fill="#fff"/></svg></div>
+      </div>
+      <div class="wrap"><div class="copy">
+        <div class="sn">PLAN</div><h3>Set the trip before you leave</h3>
+        <p>Destination, dates, total budget. ITER splits it across food, transport, stay, activities and shopping, and holds back a reserve you don't touch.</p>
+        <div class="meta">Step one of four</div>
+      </div></div>
+    </article>
+    <article class="scard card-2">
+      <div class="depth">
+        <div class="bgscene">
+          <div class="blob" style="width:420px;height:420px;left:20%;top:-200px;background:radial-gradient(circle,var(--accent-dk) 0%,transparent 70%);opacity:.32;animation-duration:21s;"></div>
+          <div class="blob" style="width:300px;height:300px;right:5%;bottom:-120px;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.3;animation-duration:17s;animation-delay:-7s;"></div>
+        </div>
+        <div class="bgnum">02</div>
+        <div class="sv"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="M50,70 H150 M150,70 L130,50 M150,70 L130,90" fill="none" stroke="var(--accent-dk)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M150,130 H50 M50,130 L70,110 M50,130 L70,150" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+      <div class="wrap"><div class="copy">
+        <div class="sn">SNAP</div><h3>Snap every receipt</h3>
+        <p>Ramen in Shibuya, a jacket in Ginza, a Grab in Bangkok. Point your camera and ITER reads it in any language and logs it in Ringgit. No receipt? Type “1200 yen ramen”.</p>
+        <div class="meta">Step two of four</div>
+      </div></div>
+    </article>
+    <article class="scard card-3">
+      <div class="depth">
+        <div class="bgscene">
+          <div class="blob" style="width:260px;height:260px;left:8%;top:60%;background:radial-gradient(circle,rgba(255,255,255,.5) 0%,transparent 70%);opacity:.14;animation-duration:16s;"></div>
+          <div class="blob" style="width:520px;height:520px;right:-180px;top:-160px;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.36;animation-duration:23s;animation-delay:-10s;"></div>
+        </div>
+        <div class="bgnum">03</div>
+        <div class="sv"><svg viewBox="0 0 200 200" aria-hidden="true"><polyline points="30,150 70,120 100,135 140,80 170,95" fill="none" stroke="var(--accent-dk)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="170,95 190,60" fill="none" stroke="var(--accent-dk)" stroke-width="2" stroke-dasharray="4 5" opacity=".7"/><circle cx="190" cy="60" r="4" fill="var(--accent-dk)"/></svg></div>
+      </div>
+      <div class="wrap"><div class="copy">
+        <div class="sn">KNOW</div><h3>Know what's safe, every day</h3>
+        <p>Every receipt updates one number: what you can safely spend per day for the rest of the trip. If your pace won't last, you hear about it while there's still room to adjust.</p>
+        <div class="meta">Step three of four</div>
+      </div></div>
+    </article>
+    <article class="scard card-4">
+      <div class="depth">
+        <div class="bgscene">
+          <div class="blob" style="width:560px;height:560px;left:50%;top:50%;margin-left:-280px;margin-top:-280px;background:radial-gradient(circle,var(--accent-dk) 0%,transparent 72%);opacity:.3;animation-duration:20s;"></div>
+        </div>
+        <div class="bgnum">04</div>
+        <div class="sv"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="M62,36 h76 a8,8 0 0 1 8,8 v116 l-9,-6 -9,6 -9,-6 -9,6 -9,-6 -9,6 -9,-6 -9,6 -9,-6 -12,6 v-116 a8,8 0 0 1 8,-8 z" fill="rgba(255,255,255,.04)" stroke="var(--accent-dk)" stroke-width="1.8" stroke-linejoin="round"/><path d="M100,130 V78 M80,98 L100,78 L120,98" fill="none" stroke="var(--accent-dk)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+      <div class="wrap"><div class="copy">
+        <div class="sn">CLAIM</div><h3>Get your tax back</h3>
+        <p>ITER flags every purchase that qualifies for a tourist tax refund, keeps a running total, and reminds you at the airport with exactly what to bring.</p>
+        <div class="meta">Step four of four</div>
+      </div></div>
+    </article>
+    <svg class="route" id="route" viewBox="0 0 60 600" aria-hidden="true">
+      <path id="routeBase" d="M30,20 C12,80 48,150 30,210 C12,270 48,340 30,400 C14,460 44,520 30,580"
+            fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.4" stroke-dasharray="3 7" stroke-linecap="round"/>
+      <path id="routeDraw" d="M30,20 C12,80 48,150 30,210 C12,270 48,340 30,400 C14,460 44,520 30,580"
+            fill="none" stroke="var(--accent-dk)" stroke-width="2" stroke-linecap="round"/>
+      <g id="routeNodes">
+        <circle class="rn" cx="30" cy="20" r="4.5"/><circle class="rn" cx="30" cy="210" r="4.5"/>
+        <circle class="rn" cx="30" cy="400" r="4.5"/><circle class="rn" cx="30" cy="580" r="4.5"/>
+      </g>
+      <circle id="routeDot" cx="30" cy="20" r="5.5" fill="var(--accent)"/>
+    </svg>
+    <div class="stepdots" id="stepdots"></div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section class="light comm" id="community">
+  <div class="wrap">
+    <div class="lhead reveal">
+      <span class="eyebrow">Community</span>
+      <h2 data-scramble>See what a trip really costs, before you book</h2>
+      <p>Travellers share their trip totals in one tap. Pick a destination to see what Malaysians actually spent there, and the tips that saved them money.</p>
+    </div>
+    <div class="cm-grid">
+      <div class="cm-left reveal">
+        <div class="cm-dest" id="cmDest" role="tablist" aria-label="Destination"></div>
+        <div class="cm-stat">
+          <span class="lbl">Typical <span id="cmDays">5</span>-day trip · <span id="cmCity">Tokyo</span></span>
+          <div class="big" id="cmTotal">RM 2,900</div>
+          <div class="cm-sub" id="cmBase">Median of 46 trip summaries · excluding flights</div>
+          <div class="cm-split" id="cmSplit" aria-hidden="true"></div>
+          <div class="cm-legend" id="cmLegend"></div>
+        </div>
+      </div>
+      <div class="cm-feed reveal" id="cmFeed" aria-live="polite"></div>
+    </div>
+    <p class="cm-note">Sample posts and figures for the prototype.</p>
+  </div>
+</section>
+
+<!-- PLANS (display only: no payments happen on this site) -->
+<section class="light plans-sec" id="plans" aria-labelledby="plansTitle">
+  <div class="pl-glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="pl-head reveal">
+      <span class="eyebrow" id="plansEyebrow"></span>
+      <h2 id="plansTitle"></h2>
+      <p id="plansSub"></p>
+    </div>
+    <div class="pl-grid" id="plansGrid"></div>
+    <div class="pl-inc reveal">
+      <h3 id="plansIncTitle"></h3>
+      <ul id="plansInc"></ul>
+    </div>
+    <div class="pl-fine" id="plansFine"></div>
+  </div>
+</section>
+<script>
+(function renderPlans(){
+  var C=window.ITER_SITE.plans, APP=window.ITER_SITE.appUrl, $=function(id){return document.getElementById(id);};
+  var esc=function(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+  var money=function(n){return n===0?'0':n.toFixed(2);};
+  var day=C.list.filter(function(p){return p.days===1&&p.price>0;})[0];
+  var fill=function(p,t){
+    var perDay=p.days?(p.price/p.days).toFixed(2):'';
+    var minDays=(day&&p.days>1&&p.price>0)?Math.ceil(p.price/day.price+1e-9):'';
+    return t.replace(/\{perDay\}/g,perDay).replace(/\{minDays\}/g,minDays).replace(/\{currency\}/g,C.currency);
+  };
+  $('plansEyebrow').textContent=C.eyebrow;
+  $('plansTitle').textContent=C.title;
+  $('plansSub').textContent=C.subtitle;
+  $('plansIncTitle').textContent=C.includesTitle;
+  $('plansGrid').innerHTML=C.list.map(function(p){
+    return '<div class="pl-cell reveal"><article class="pl-card'+(p.featured?' is-featured':'')+'" aria-label="'+esc(p.name)+'">'+
+      '<span class="pl-label">'+esc(p.label)+'</span>'+
+      '<h3 class="pl-name">'+esc(p.name)+'</h3>'+
+      '<div class="pl-price"><span class="pl-cur">'+esc(C.currency)+'</span><span class="pl-amt">'+money(p.price)+'</span></div>'+
+      '<div class="pl-unit">'+esc(p.unit)+'</div>'+
+      '<p class="pl-desc">'+esc(fill(p,p.desc))+'</p>'+
+      '<a class="pl-btn" href="'+esc(APP)+'" target="_blank" rel="noopener">'+esc(p.button)+
+        '<span class="pl-arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>'+
+    '</article></div>';
+  }).join('');
+  $('plansInc').innerHTML=C.includes.map(function(t){
+    return '<li><span class="pl-tick" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'+esc(t)+'</li>';
+  }).join('');
+  $('plansFine').innerHTML=C.finePrint.map(function(t){return '<p>'+esc(t)+'</p>';}).join('');
+})();
+
+(function renderSite(){
+  var S=window.ITER_SITE;
+  var esc=function(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+  document.querySelectorAll('[data-cta]').forEach(function(el){
+    var k=el.getAttribute('data-cta'), lab=el.querySelector('[data-cta-label]');
+    if(lab&&S.buttons[k]) lab.textContent=S.buttons[k];
+    if(k==='tryApp') el.setAttribute('href',S.appUrl);
+  });
+  var trio=document.querySelector('.trio');
+  S.features.main.forEach(function(f,i){
+    var col=document.querySelector('.col[data-feature="'+f.id+'"]'); if(!col) return;
+    trio.appendChild(col);                 // order follows the config
+    col.querySelector('[data-f="n"]').textContent=('0'+(i+1)).slice(-2);
+    col.querySelector('[data-f="tag"]').textContent=f.tag;
+    col.querySelector('[data-f="title"]').textContent=f.title;
+    col.querySelector('[data-f="text"]').textContent=f.text;
+  });
+  var IC={
+    translate:'<path d="M4 5h9M8.5 3v2M6 5c.5 3 2.5 5.5 5 7M11 5c-.6 3.4-3 6.4-6 8"/><path d="M13 20l4-9 4 9M14.5 17h5"/>',
+    globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9S14.6 18.4 12 21C9.4 18.4 8.2 15.4 8.2 12S9.4 5.6 12 3z"/>',
+    people:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.6 3-5.6 6-5.6s5.4 2 6 5.6"/><path d="M15.5 4.9a3.2 3.2 0 0 1 0 6.2M17.5 14.6c2 .6 3.2 2.4 3.5 5.4"/>',
+    wrapped:'<rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M9 15l2.2-3 1.8 2 2-3"/><path d="M9.5 7h5"/>',
+    phone:'<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/><path d="M9.5 8.5l2.5 2.5 2.5-2.5M12 11V5.5"/>'
+  };
+  document.getElementById('moreFeatures').innerHTML=S.features.more.map(function(f){
+    return '<div class="ex"><span class="ex-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+(IC[f.icon]||'')+'</svg></span><div><h3 class="ex-t">'+esc(f.title)+'</h3><p>'+esc(f.text)+'</p></div></div>';
+  }).join('');
+})();
+</script>
+
+<!-- TEAM -->
+<section class="light" id="team" style="padding-top:0;">
+  <div class="wrap">
+    <div class="lhead reveal">
+      <span class="eyebrow">Team</span>
+      <h2 data-scramble>Seven people who kept blowing their own travel budgets</h2>
+    </div>
+    <div class="team">
+      <div class="mem gold" data-mag data-tilt><div class="sq">AT</div><h3>Amanda Tan Li-Wen</h3><div class="role">Chief Executive</div></div>
+      <div class="mem" data-mag data-tilt><div class="sq">GT</div><h3>Geoffrey Tan Hsien Yang</h3><div class="role">Finance</div></div>
+      <div class="mem" data-mag data-tilt><div class="sq">AL</div><h3>Aldrich Low</h3><div class="role">Finance</div></div>
+      <div class="mem" data-mag data-tilt><div class="sq">AB</div><h3>Abraham</h3><div class="role">Operations · Legal</div></div>
+      <div class="mem gold" data-mag data-tilt><div class="sq">NH</div><h3>Ng Hao Sen</h3><div class="role">Marketing</div></div>
+      <div class="mem" data-mag data-tilt><div class="sq">DF</div><h3>Darren Foong Tze Xuan</h3><div class="role">Technology</div></div>
+      <div class="mem" data-mag data-tilt><div class="sq">TL</div><h3>Tara Lo</h3><div class="role">Technology</div></div>
+      <div class="mem" data-mag style="display:grid;place-items:center;background:transparent;border-style:dashed;">
+        <div style="text-align:center;"><div class="role" style="margin:0;">Monash University</div><div style="font-size:12px;color:var(--ink-soft);margin-top:6px;">FinTech group project</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<section class="close">
+  <div class="ambient"><div class="amb-blob" style="width:560px;height:560px;left:50%;top:-180px;margin-left:-280px;"></div></div>
+  <div class="wrap">
+    <span class="eyebrow">Ready when you are</span>
+    <h2 data-scramble>Know what's safe to spend. Every day of the trip.</h2>
+    <div style="margin-top:34px;"><a class="pill lg gold" data-mag data-cta="tryApp" href="https://iter-app-alpha.vercel.app" target="_blank" rel="noopener"><span data-cta-label>Try ITER</span> <span class="dot" aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot"><div class="wrap foot-in">
+  <span class="brand"><svg class="brand-mark" style="color:#fff;" viewBox="0 0 104.5 131" width="16" height="20" aria-hidden="true"><use href="#iterMark"/></svg><span class="mark" style="color:#fff;">ITER</span></span>
+  <span class="foot-l"><a href="#clarity">Product</a><a href="#journey">How it works</a><a href="#community">Community</a><a href="#plans">Plans</a><a href="#team">Team</a></span>
+  <span class="foot-l foot-legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span>
+</div></footer>
+
+</div></div>
+
+<script>
+/* ---------- demo logic ---------- */
+/* demo trip: Tokyo, RM 4,200 budget, day 6 of 10, RM 2,700 spent before the demo starts */
+const TOTAL=4200, BASE_SPENT=2700, ESSENTIAL=400, RESERVE=300, DAYS=4;
+let spent=0;   /* added during the demo */
+const fmt=n=>'RM '+Math.round(n).toLocaleString('en-MY');
+
+/* ---------- currency ---------- */
+const CURRENCIES=[['MYR','Ringgit','RM'],['JPY','Japanese Yen','¥'],['THB','Thai Baht','฿'],
+  ['SGD','Singapore Dollar','S$'],['IDR','Indonesian Rupiah','Rp'],['VND','Vietnamese Dong','₫'],
+  ['USD','US Dollar','$'],['EUR','Euro','€'],['KRW','Korean Won','₩']];
+const SYM=Object.fromEntries(CURRENCIES.map(c=>[c[0],c[2]]));
+/* how many of each currency one Ringgit buys. Pulled live from api.frankfurter.dev;
+   these baked values (8 Oct 2026) are only used if that call fails. */
+const FALLBACK={MYR:1,EUR:0.21792,IDR:4375.35,JPY:38.725,SGD:0.31301,THB:8.2354,USD:0.24474,VND:6351,KRW:292.4};
+let RATES=Object.assign({},FALLBACK), rateDate='8 Oct 2026', rateLive=false;
+
+const curSel=document.getElementById('fxCur');
+/* options ship in the HTML so the control exists even if this script never runs;
+   only fill them in if something stripped them */
+if(curSel && !curSel.options.length){
+  CURRENCIES.forEach(([code,name])=>{
+    const o=document.createElement('option');
+    o.value=code; o.textContent=code+' · '+name;
+    if(code==='JPY')o.selected=true;
+    curSel.appendChild(o);
+  });
+}
+
+const nfRate=n=>n>=100?Math.round(n).toLocaleString('en-MY'):n.toFixed(n>=10?3:4);
+
+async function loadRates(){
+  const quotes=CURRENCIES.map(c=>c[0]).filter(c=>c!=='MYR').join(',');
+  const ac=new AbortController(), timer=setTimeout(()=>ac.abort(),6000);
+  try{
+    const res=await fetch('https://api.frankfurter.dev/v2/rates?base=MYR&quotes='+quotes,{signal:ac.signal});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    /* v2 answers with a flat array of {date,base,quote,rate}; tolerate the older
+       {date,rates:{...}} shape too so a future change doesn't break the demo */
+    const next={MYR:1}; let date=null;
+    if(Array.isArray(data)){
+      data.forEach(r=>{if(r&&r.quote&&isFinite(r.rate)){next[r.quote]=r.rate;date=date||r.date;}});
+    }else if(data&&data.rates){
+      Object.entries(data.rates).forEach(([k,v])=>{if(isFinite(v))next[k]=v;});
+      date=data.date||null;
+    }
+    if(Object.keys(next).length<4)throw new Error('too few rates');
+    RATES=next; rateLive=true;
+    if(date){const d=new Date(date+'T00:00:00Z');
+      if(!isNaN(d))rateDate=d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});}
+  }catch(e){
+    rateLive=false;   /* keep FALLBACK and say so rather than showing nothing */
+  }finally{ clearTimeout(timer); updateConv(); renderTax(); if(window.__rcSel!=null)drawPaper(); }
+}
+
+const toMYR=(amt,code)=>{const r=RATES[code];return (isFinite(r)&&r>0)?amt/r:null;};
+
+function updateConv(){
+  const out=document.getElementById('convOut'); if(!out)return;
+  const code=curSel.value, v=parseFloat(document.getElementById('exp').value);
+  const tag=rateLive?'<span class="tag on">Live rate</span>':'<span class="tag">Indicative rate</span>';
+  if(code==='MYR'){out.innerHTML='<span class="rate">Logged directly in Ringgit — no conversion needed.</span>';return;}
+  const r=RATES[code];
+  const basis='<span class="rate">1 RM = '+nfRate(r)+' '+code+' · '+rateDate+'</span>';
+  if(!isFinite(v)||v<=0){out.innerHTML=basis+' '+tag;return;}
+  const myr=toMYR(v,code);
+  out.innerHTML='<b>'+SYM[code]+v.toLocaleString('en-MY')+' = RM '+myr.toFixed(2)+'</b> '+basis+' '+tag;
+}
+
+/* ---------- category totals ---------- */
+const BASE_CATS={Food:720,Transport:410,Stay:1150,Activities:280,Shopping:140};
+const RESERVE_HELD=300;
+let cats=Object.assign({},BASE_CATS);
+function renderCats(){
+  const max=Math.max(RESERVE_HELD,...Object.values(cats),1);
+  Object.keys(cats).forEach(k=>{
+    const row=document.querySelector('.catrow[data-cat="'+k+'"]'); if(!row)return;
+    row.querySelector('i').style.width=(cats[k]/max*100).toFixed(1)+'%';
+    row.querySelector('.cv').textContent=fmt(cats[k]);
+  });
+  const res=document.querySelector('.catrow[data-cat="Reserve"] i');
+  if(res)res.style.width=(RESERVE_HELD/max*100).toFixed(1)+'%';
+  const tot=document.getElementById('catTotal');
+  if(tot)tot.textContent=fmt(Object.values(cats).reduce((a,b)=>a+b,0));
+}
+
+function render(){
+  const totalSpent=BASE_SPENT+spent, remaining=TOTAL-totalSpent;
+  const safe=Math.max(0,(remaining-ESSENTIAL-RESERVE)/DAYS);
+  document.getElementById('amt').textContent=fmt(safe);
+  document.getElementById('rem').textContent=fmt(Math.max(0,remaining));
+  document.getElementById('spentV').textContent=fmt(totalSpent);
+  const hn=document.getElementById('histNow'); if(hn)hn.textContent=fmt(totalSpent)+' so far';
+  const chip=document.getElementById('chip'), w=document.getElementById('fWarn');
+  if(remaining<ESSENTIAL+RESERVE){
+    chip.textContent='Running short';chip.className='chip warn';
+    w.textContent="You're running short: what's left no longer covers essentials and your reserve. Hold off on shopping and activities for the rest of the trip.";
+    w.classList.add('on');
+  }else if(safe<120){
+    chip.textContent='Ahead of plan';chip.className='chip warn';
+    w.textContent="Your pace is running ahead of plan. Trim non-essential spend, or tomorrow's number drops again.";
+    w.classList.add('on');
+  }else{chip.textContent='On track';chip.className='chip';w.classList.remove('on');}
+}
+function addSpend(myr,cat){
+  spent+=myr; if(cat in cats)cats[cat]+=myr;
+  render();renderCats();
+  if(typeof gsap!=='undefined'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    gsap.fromTo('#amt',{scale:1.06,color:'#176b87'},{scale:1,color:'#053b50',duration:.7,ease:'power2.out',transformOrigin:'0% 50%'});
+}
+function logExp(){
+  const el=document.getElementById('exp'), v=parseFloat(el.value);
+  if(isNaN(v)||v<=0){el.style.borderColor='#9c7338';el.focus();return;}
+  const myr=toMYR(v,curSel.value);
+  if(myr==null){el.style.borderColor='#9c7338';return;}
+  el.style.borderColor='';
+  addSpend(myr,document.getElementById('fxCat').value);
+  el.value='';
+  updateConv();
+}
+
+/* ---------- receipt scanning (sample receipts; the real app sends the photo to an AI model) ---------- */
+const RECEIPTS=[
+  {id:'uq',label:'UNIQLO',shop:'UNIQLO Ginza',jp:'ユニクロ 銀座店',date:'14 Nov 2026  15:42',cat:'Shopping',
+   items:[['ヒートテック クルーネック ×2','HEATTECH crew neck ×2',2580],['ウルトラライトダウン','Ultra Light Down jacket',6990]],
+   pre:8701,tax:869,taxLbl:'内消費税 10%',total:9570,taxIncl:true,
+   rule:{ok:true,why:'Tax-free shop · ¥8,701 before tax, over the ¥5,000 minimum'}},
+  {id:'ic',label:'Ichiran',shop:'Ichiran Shibuya',jp:'一蘭 渋谷店',date:'14 Nov 2026  21:08',cat:'Food',
+   items:[['天然とんこつラーメン','Classic tonkotsu ramen',1480],['替玉','Extra noodles (kaedama)',210]],
+   pre:1537,tax:153,taxLbl:'内消費税 10%',total:1690,taxIncl:true,
+   rule:{ok:false,why:'Restaurant meals are not tax-free'}},
+  {id:'dq',label:'Don Quijote',shop:'Don Quijote Shibuya',jp:'ドン・キホーテ 渋谷本店',date:'15 Nov 2026  11:15',cat:'Shopping',
+   items:[['うまい棒 アソート','Umaibo snack assortment',450],['ルルルン フェイスマスク 7枚','LuLuLun face masks, 7 pack',660]],
+   pre:1110,tax:102,taxLbl:'消費税 8% / 10%',total:1212,taxIncl:false,
+   rule:{ok:false,why:'Under the ¥5,000 minimum (before tax, same store, same day)'}}
+];
+const TAX_SEED=[{shop:'Bic Camera Shinjuku',date:'12 Nov',tax:1480,ok:true,note:'¥14,800 before tax'}];
+let taxItems=TAX_SEED.slice(), logged={};
+window.__rcSel=0;
+const yen=n=>'¥'+Math.round(n).toLocaleString('en-MY');
+const rm2=n=>'RM '+n.toFixed(2);
+
+function renderPick(){
+  const wrap=document.getElementById('rcPick'); if(!wrap)return;
+  wrap.innerHTML=RECEIPTS.map((r,i)=>'<button type="button" role="radio" aria-checked="'+(i===window.__rcSel)+'" class="'+(i===window.__rcSel?'on':'')+'" data-i="'+i+'"><b>'+r.label+'</b><span>'+yen(r.total)+(logged[r.id]?' · logged':'')+'</span></button>').join('');
+}
+function drawPaper(){
+  const r=RECEIPTS[window.__rcSel], el=document.getElementById('paper'); if(!el)return;
+  el.innerHTML='<div class="pp-h">'+r.jp+'</div><div class="pp-d">'+r.date+'</div>'+
+    r.items.map(it=>'<div class="pp-r"><span>'+it[0]+'</span><span>'+yen(it[2])+'</span></div>').join('')+
+    '<div class="pp-r pp-sub"><span>'+(r.taxIncl?'合計':'小計')+'</span><span>'+yen(r.taxIncl?r.total:r.pre)+'</span></div>'+
+    '<div class="pp-r"><span>'+r.taxLbl+'</span><span>'+(r.taxIncl?'(':'')+yen(r.tax)+(r.taxIncl?')':'')+'</span></div>'+
+    (r.taxIncl?'':'<div class="pp-r tot"><span>合計</span><span>'+yen(r.total)+'</span></div>')+
+    '<div class="pp-f">ありがとうございました</div>';
+  idleOut();
+}
+function idleOut(){
+  const r=RECEIPTS[window.__rcSel], out=document.getElementById('scanOut');
+  if(logged[r.id]){out.innerHTML='<p class="so-p">This receipt is already logged. Pick another sample, or reset the demo.</p><div class="so-act"><button class="sbtn q" type="button" onclick="resetDemo()">Reset demo</button></div>';return;}
+  out.innerHTML='<p class="so-p">Point ITER at any receipt, in any language. It reads the shop, items, tax and total, converts to Ringgit and checks for a tax refund.</p>'+
+    '<div class="so-act"><button class="sbtn" type="button" id="scanBtn" onclick="scanReceipt()">Scan this receipt</button></div>';
+}
+function scanReceipt(){
+  const r=RECEIPTS[window.__rcSel], out=document.getElementById('scanOut'), line=document.getElementById('scanline');
+  out.innerHTML='<div class="so-read"><span class="spin" aria-hidden="true"></span>Reading receipt…</div>';
+  const red=window.matchMedia('(prefers-reduced-motion: reduce)').matches||typeof gsap==='undefined';
+  if(!red){
+    gsap.set(line,{opacity:1,top:'0%'});
+    gsap.to(line,{top:'100%',duration:.75,ease:'sine.inOut',repeat:1,yoyo:true,onComplete:()=>gsap.to(line,{opacity:0,duration:.2})});
+  }
+  setTimeout(()=>showResult(r),red?200:1550);
+}
+function showResult(r){
+  const out=document.getElementById('scanOut'), myr=toMYR(r.total,'JPY'), taxMyr=toMYR(r.tax,'JPY');
+  out.innerHTML=
+    '<div class="so-row"><span>Shop</span><b>'+r.shop+'</b></div>'+
+    '<div class="so-row"><span>Date</span><b>'+r.date.replace(/\s{2,}/,' · ')+'</b></div>'+
+    '<div class="so-items">'+r.items.map(it=>'<div><span>'+it[1]+'</span><span>'+yen(it[2])+'</span></div>').join('')+'</div>'+
+    '<div class="so-tot"><div><span class="lbl">Total</span><b>'+yen(r.total)+'</b></div><div class="so-rm">'+rm2(myr)+'</div></div>'+
+    '<div class="so-meta"><span class="cchip">'+r.cat+'</span><span class="so-rate">1 RM = '+nfRate(RATES.JPY)+' JPY · '+rateDate+'</span></div>'+
+    (r.rule.ok
+      ?'<div class="txb ok"><b>✓ Tax refund eligible</b><span>Collect up to '+yen(r.tax)+' ≈ '+rm2(taxMyr)+' at departure. '+r.rule.why+'.</span></div>'
+      :'<div class="txb no"><b>Not tax-refundable</b><span>'+r.rule.why+'.</span></div>')+
+    '<div class="so-act"><button class="sbtn" type="button" onclick="confirmScan()">Confirm &amp; log</button><button class="sbtn q" type="button" onclick="idleOut()">Rescan</button></div>';
+  if(typeof gsap!=='undefined'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    gsap.from(out.children,{opacity:0,y:8,duration:.4,ease:'power2.out',stagger:.05});
+}
+function confirmScan(){
+  const r=RECEIPTS[window.__rcSel]; if(logged[r.id])return;
+  logged[r.id]=true;
+  addSpend(toMYR(r.total,'JPY'),r.cat);
+  if(r.rule.ok)taxItems.push({shop:r.shop,date:'Today',tax:r.tax,ok:true,note:yen(r.pre)+' before tax'});
+  else taxItems.push({shop:r.shop,date:'Today',tax:r.tax,ok:false,note:r.rule.why});
+  renderTax(); renderPick();
+  const out=document.getElementById('scanOut');
+  out.innerHTML='<div class="so-done"><b>Logged · '+rm2(toMYR(r.total,'JPY'))+' in '+r.cat+'</b><span>Safe to spend is now '+document.getElementById('amt').textContent+' a day.'+(r.rule.ok?' Tax refund added to your tracker.':'')+'</span></div>'+
+    '<div class="so-act"><button class="sbtn" type="button" onclick="showTab(\'safe\')">See safe to spend</button>'+(r.rule.ok?'<button class="sbtn q" type="button" onclick="showTab(\'tax\')">Tax refund</button>':'')+'</div>';
+}
+function renderTax(){
+  const list=document.getElementById('taxList'); if(!list)return;
+  const ok=taxItems.filter(t=>t.ok), total=ok.reduce((a,t)=>a+toMYR(t.tax,'JPY'),0);
+  document.getElementById('taxBig').textContent=fmt(total);
+  document.getElementById('taxV').textContent=fmt(total);
+  list.innerHTML=taxItems.map(t=>'<div class="hrow"><div><b>'+t.shop+'</b><span>'+t.date+' · '+t.note+'</span></div>'+
+    (t.ok?'<span class="hv live">'+rm2(toMYR(t.tax,'JPY'))+'<small>'+yen(t.tax)+' to collect</small></span>':'<span class="hv no">Not eligible</span>')+'</div>').join('');
+}
+document.getElementById('rcPick').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-i]'); if(!b)return;
+  window.__rcSel=+b.dataset.i; renderPick(); drawPaper();
+});
+
+function resetDemo(){
+  spent=0;cats=Object.assign({},BASE_CATS);logged={};taxItems=TAX_SEED.slice();
+  document.getElementById('exp').value='';
+  render();renderCats();updateConv();renderTax();renderPick();drawPaper();
+}
+document.getElementById('exp').addEventListener('keydown',e=>{if(e.key==='Enter')logExp();});
+document.getElementById('exp').addEventListener('input',updateConv);
+curSel.addEventListener('change',updateConv);
+render();renderCats();updateConv();renderPick();drawPaper();renderTax();loadRates();
+
+/* ---------- dashboard tabs ---------- */
+function showTab(name){
+  document.querySelectorAll('#dashNav button').forEach(b=>{
+    const on=b.dataset.tab===name;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-selected',on?'true':'false');
+  });
+  document.querySelectorAll('.tabpanel').forEach(p=>{
+    const show=p.id==='panel-'+name;
+    p.hidden=!show;
+    if(show && typeof gsap!=='undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      gsap.fromTo(p,{opacity:0,y:8},{opacity:1,y:0,duration:.5,ease:'power2.out'});
+    }
+  });
+}
+document.getElementById('dashNav').addEventListener('click',e=>{
+  const btn=e.target.closest('button[data-tab]');
+  if(btn)showTab(btn.dataset.tab);
+});
+
+/* ---------- community (sample data) ---------- */
+const CM={
+  Tokyo:{days:5,total:2900,n:46,split:[34,31,14,12,9],posts:[
+    {n:'Hafiz R.',t:'s',total:2640,days:5,body:'Came in RM 260 under budget.',tip:'Put Suica on your phone. No ticket queues every morning.',l:128,c:14},
+    {n:'Mei Ling T.',t:'p',body:'Don Quijote tax-free: spend ¥5,000 or more before tax at the same store on the same day, and keep your passport handy.',l:86,c:9}]},
+  Bangkok:{days:4,total:1450,n:63,split:[38,30,10,12,10],posts:[
+    {n:'Aiman Z.',t:'s',total:1380,days:4,body:'Street food made this the cheapest trip of the year.',tip:'Grab bike for short hops is about half the price of a car.',l:97,c:11},
+    {n:'Priya S.',t:'p',body:'Menus with “++” add about 17% at the bill (10% service + 7% VAT). Budget for it before you order.',l:142,c:22}]},
+  Seoul:{days:6,total:3300,n:38,split:[30,33,12,13,12],posts:[
+    {n:'Jun Wei L.',t:'s',total:3120,days:6,body:'Skincare haul blew the shopping budget, everything else on plan.',tip:'One T-money card covers buses and the subway. Top up at any convenience store.',l:74,c:8},
+    {n:'Nurul A.',t:'p',body:'Many shops in Myeongdong can process the tax refund at the counter. Ask before you pay.',l:63,c:6}]},
+  Bali:{days:5,total:1900,n:52,split:[32,36,14,14,4],posts:[
+    {n:'Daniel K.',t:'s',total:1760,days:5,body:'Villa split four ways was the best decision of the trip.',tip:'Book scooters for the week, not the day.',l:58,c:5},
+    {n:'Siti H.',t:'p',body:'Agree the fare before any taxi without a meter, or use the ride-hailing apps.',l:44,c:7}]},
+  Singapore:{days:3,total:1600,n:71,split:[30,42,10,12,6],posts:[
+    {n:'Kavin R.',t:'s',total:1540,days:3,body:'Hotel was almost half the trip. Food was cheap.',tip:'Tap your card on MRT gates. No need to buy a pass.',l:66,c:4},
+    {n:'Chloe W.',t:'p',body:'Hawker centres are the best food per ringgit. Lunch under S$6 is easy.',l:118,c:15}]}
+};
+const CM_CATS=['Food','Stay','Transport','Activities','Shopping'];
+const CM_COL=['#176b87','#053b50','#3f9fb0','#64ccc5','#a9d8d3'];
+let cmCity='Tokyo', cmLiked={};
+function renderCM(){
+  const d=CM[cmCity];
+  document.getElementById('cmDest').innerHTML=Object.keys(CM).map(c=>'<button type="button" role="tab" aria-selected="'+(c===cmCity)+'" class="'+(c===cmCity?'on':'')+'" data-c="'+c+'">'+c+'</button>').join('');
+  document.getElementById('cmCity').textContent=cmCity;
+  document.getElementById('cmDays').textContent=d.days;
+  document.getElementById('cmTotal').textContent=fmt(d.total);
+  document.getElementById('cmBase').textContent='Median of '+d.n+' trip summaries · excluding flights';
+  document.getElementById('cmSplit').innerHTML=d.split.map((v,i)=>'<i style="width:'+v+'%;background:'+CM_COL[i]+'"></i>').join('');
+  document.getElementById('cmLegend').innerHTML=d.split.map((v,i)=>'<span><i style="background:'+CM_COL[i]+'"></i>'+CM_CATS[i]+' <b>'+v+'%</b></span>').join('');
+  document.getElementById('cmFeed').innerHTML=d.posts.map((p,k)=>{
+    const id=cmCity+k, liked=!!cmLiked[id], ini=p.n.split(' ').map(w=>w[0]).join('').slice(0,2);
+    return '<article class="post"><div class="po-h"><span class="po-av">'+ini+'</span><div><b>'+p.n+'</b><span>'+cmCity+' · '+(p.t==='s'?'Trip summary':'Tip')+'</span></div></div>'+
+      (p.t==='s'?'<div class="po-sum"><div><span class="lbl">'+p.days+' days</span><b>'+fmt(p.total)+'</b></div><div class="cm-split mini">'+d.split.map((v,i)=>'<i style="width:'+v+'%;background:'+CM_COL[i]+'"></i>').join('')+'</div></div>':'')+
+      '<p>'+p.body+'</p>'+(p.tip?'<p class="po-tip"><b>Tip</b> '+p.tip+'</p>':'')+
+      '<div class="po-f"><button type="button" class="po-like'+(liked?' on':'')+'" data-id="'+id+'" aria-pressed="'+liked+'">♥ '+(p.l+(liked?1:0))+'</button><span>💬 '+p.c+' comments</span></div></article>';
+  }).join('');
+}
+document.getElementById('cmDest').addEventListener('click',e=>{const b=e.target.closest('button[data-c]');if(!b)return;cmCity=b.dataset.c;renderCM();
+  if(typeof gsap!=='undefined'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)gsap.from('#cmFeed .post, .cm-stat',{opacity:0,y:10,duration:.45,stagger:.06,ease:'power2.out'});});
+document.getElementById('cmFeed').addEventListener('click',e=>{const b=e.target.closest('.po-like');if(!b)return;cmLiked[b.dataset.id]=!cmLiked[b.dataset.id];renderCM();});
+renderCM();
+
+/* ---------- motion ---------- */
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const desktop=window.matchMedia('(min-width: 900px)').matches;
+const loaderEl=document.getElementById('loader');
+
+const NAV_OFFSET=90;
+function jump(sel){
+  const t=typeof sel==='string'?document.querySelector(sel):sel;
+  if(!t)return;
+  /* the intro locks the page with overflow:hidden, so scrollTo is a no-op —
+     hold the request and run it the moment the loader lets go */
+  if(document.documentElement.classList.contains('loading')){window.__pendingJump=t;return;}
+  const pos=()=>(window.__smooth&&window.__cur!=null)?window.__cur:window.scrollY;
+  const aim=()=>{
+    const max=Math.max(0,document.body.scrollHeight-window.innerHeight);
+    return Math.min(Math.max(0,t.getBoundingClientRect().top+pos()-NAV_OFFSET),max);
+  };
+  if(window.__smooth&&window.__jumpTo){
+    let passes=0;
+    const go=()=>{
+      const d=aim(), dist=Math.abs(d-pos());
+      if(dist<4||passes>=4)return;           /* arrived, or stop trying */
+      passes++;
+      const dur=Math.min(1.1,Math.max(.5,dist/2600));
+      window.__jumpTo(d,dur);
+      setTimeout(go,dur*1000+90);            /* pins can shift layout — re-aim once landed */
+    };
+    go();
+  }else{
+    window.scrollTo({top:aim(),behavior:'smooth'});
+  }
+}
+
+/* in-page anchors go through jump() — native anchor scrolling lands wrong under the
+   transform-based smooth scroll and double-smooths against it */
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[href^="#"]');
+  if(!a)return;
+  const href=a.getAttribute('href');
+  if(!href||href.length<2)return;
+  if(!document.querySelector(href))return;
+  e.preventDefault();
+  jump(href);
+});
+
+(function(){
+  if(typeof gsap==='undefined'){
+    document.getElementById('shell').removeAttribute('id');
+    if(loaderEl)loaderEl.style.display='none';
+    return;
+  }
+  const _plugins=['ScrollTrigger','SplitText','DrawSVGPlugin','MotionPathPlugin']
+    .map(n=>window[n]).filter(Boolean);
+  gsap.registerPlugin.apply(gsap,_plugins);
+  const haveST=!!window.ScrollTrigger, haveSplit=!!window.SplitText;
+  if(!haveST){                       /* nothing scroll-driven can run without it */
+    document.documentElement.classList.remove('loading');
+    const _l=document.getElementById('loader'); if(_l)_l.style.display='none';
+  }
+
+  /* smooth inertia scroll (desktop only, transform-based) */
+  if(desktop && !reduced){
+    try{
+      const track=document.getElementById('track');
+      document.documentElement.classList.add('smooth-on');
+      let target=window.scrollY, cur=target, EASE=0.12, jumping=null;
+      const setH=()=>{document.body.style.height=track.getBoundingClientRect().height+'px';};
+      setH(); new ResizeObserver(setH).observe(track);
+      window.__smooth=true;
+      window.__setTarget=v=>{window.scrollTo(0,v);};
+      ScrollTrigger.scrollerProxy(document.body,{
+        /* MUST report the rendered (lerped) position. Reporting the raw scroll made
+           ScrollTrigger place pins from a value the track wasn't drawn at, so the
+           pinned journey juddered by the size of the gap on every frame. */
+        scrollTop(v){if(arguments.length){target=v;}return cur;},
+        getBoundingClientRect(){return{top:0,left:0,width:innerWidth,height:innerHeight};},
+        pinType:'transform'
+      });
+      ScrollTrigger.defaults({scroller:document.body});
+      window.addEventListener('scroll',()=>{target=window.scrollY;},{passive:true});
+      /* programmatic jumps move cur and target together, so what ScrollTrigger reads
+         is always exactly what is on screen — no divergence, nothing to shake */
+      window.__jumpTo=(dest,dur)=>{
+        if(jumping)jumping.kill();
+        const o={v:cur};
+        jumping=gsap.to(o,{v:dest,duration:dur,ease:'power2.inOut',
+          onUpdate(){cur=target=o.v;window.scrollTo(0,o.v);},
+          onComplete(){cur=target=dest;window.scrollTo(0,dest);jumping=null;}});
+      };
+      ['wheel','touchstart','keydown'].forEach(ev=>window.addEventListener(ev,()=>{
+        if(jumping){jumping.kill();jumping=null;target=cur;}   /* user input wins */
+      },{passive:true}));
+
+      gsap.ticker.add(()=>{
+        if(!jumping){
+          cur+=(target-cur)*EASE;
+          if(Math.abs(target-cur)<0.05)cur=target;
+        }
+        window.__cur=cur;
+        track.style.transform=`translate3d(0,${-cur}px,0)`;
+        ScrollTrigger.update();
+      });
+      ScrollTrigger.addEventListener('refresh',setH);
+    }catch(e){
+      document.documentElement.classList.remove('smooth-on');
+      window.__smooth=false;
+      console.warn('smooth scroll off:',e);
+    }
+  }
+
+  /* generic reveals */
+  gsap.utils.toArray('.reveal').forEach(el=>{
+    gsap.from(el,{y:34,opacity:0,duration:1,ease:'power3.out',
+      scrollTrigger:{trigger:el,start:'top 86%'}});
+  });
+
+  /* feature illustrations — Three.js 3D objects (globe / radar / shield), lazy-started once each frame scrolls in,
+     plus anime.js-driven icon flourishes (index marks + glass "···" dots) living alongside GSAP's own layout/scroll work. */
+  (function(){
+    const canvases=document.querySelectorAll('canvas[data-three]');
+    if(!canvases.length)return;
+    const haveThree=typeof THREE!=='undefined';
+    const haveAnime=typeof anime!=='undefined';
+    const brass=0x176b87;   /* globe accent, now brand teal */
+    const live=[];
+    const clock=haveThree?new THREE.Clock():null;
+
+    function sizeOf(canvas){const r=canvas.parentElement.getBoundingClientRect();return{w:Math.max(1,r.width),h:150};}
+    function baseScene(canvas){
+      const {w,h}=sizeOf(canvas);
+      const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));  /* decorative: 1.5x is plenty */
+      renderer.setSize(w,h,false);
+      const camera=new THREE.PerspectiveCamera(40,w/h,.1,100);
+      const scene=new THREE.Scene();
+      return{renderer,camera,scene,resize(){
+        const s=sizeOf(canvas);
+        camera.aspect=s.w/s.h;camera.updateProjectionMatrix();
+        renderer.setSize(s.w,s.h,false);
+      }};
+    }
+
+    function buildGlobe(canvas){
+      const {renderer,camera,scene,resize}=baseScene(canvas);
+      camera.position.set(0,0,4.6);camera.lookAt(0,0,0);
+      const group=new THREE.Group();scene.add(group);
+      group.add(new THREE.Mesh(new THREE.IcosahedronGeometry(1.22,2),new THREE.MeshBasicMaterial({color:0x053b50,wireframe:true,transparent:true,opacity:.22})));
+      group.add(new THREE.Mesh(new THREE.SphereGeometry(1.5,24,24),new THREE.MeshBasicMaterial({color:brass,transparent:true,opacity:.1,side:THREE.BackSide})));
+      const pts=[];
+      [[18,40],[-30,-10],[50,100],[-55,170],[10,-120],[40,-50]].forEach(([lat,lon])=>{
+        const phi=(90-lat)*Math.PI/180,theta=(lon+180)*Math.PI/180;
+        const p=new THREE.Vector3(-1.26*Math.sin(phi)*Math.cos(theta),1.26*Math.cos(phi),1.26*Math.sin(phi)*Math.sin(theta));
+        pts.push(p);
+        const dot=new THREE.Mesh(new THREE.SphereGeometry(.035,8,8),new THREE.MeshBasicMaterial({color:brass}));
+        dot.position.copy(p);group.add(dot);
+      });
+      const travellers=[];
+      [[0,1],[2,3]].forEach(([a,b],i)=>{
+        const mid=pts[a].clone().add(pts[b]).multiplyScalar(.5).normalize().multiplyScalar(1.75);
+        const curve=new THREE.QuadraticBezierCurve3(pts[a],mid,pts[b]);
+        group.add(new THREE.Mesh(new THREE.TubeGeometry(curve,32,.006,6,false),new THREE.MeshBasicMaterial({color:brass,transparent:true,opacity:.5})));
+        const trav=new THREE.Mesh(new THREE.SphereGeometry(.05,8,8),new THREE.MeshBasicMaterial({color:0xffffff}));
+        group.add(trav);
+        travellers.push({curve,mesh:trav,speed:.18+i*.07,phase:i*.5});
+      });
+      live.push({resize,render(t,dt){
+        if(!reduced)group.rotation.y+=dt*.14;
+        travellers.forEach(tr=>{const tt=(t*tr.speed+tr.phase)%1;tr.mesh.position.copy(tr.curve.getPointAt(tt));});
+        renderer.render(scene,camera);
+      }});
+    }
+
+    function buildRadar(canvas){
+      const {renderer,camera,scene,resize}=baseScene(canvas);
+      camera.position.set(0,1.75,3.1);camera.lookAt(0,0,0);
+      const tilt=new THREE.Group();tilt.rotation.x=-.62;scene.add(tilt);
+      [.32,.58,.84].forEach(r=>{
+        tilt.add(new THREE.Mesh(new THREE.RingGeometry(r-.008,r,64),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.18,side:THREE.DoubleSide})));
+      });
+      const sweep=new THREE.Mesh(new THREE.CircleGeometry(.82,40,0,Math.PI/4),new THREE.MeshBasicMaterial({color:brass,transparent:true,opacity:.4,side:THREE.DoubleSide}));
+      tilt.add(sweep);
+      const hub=new THREE.Mesh(new THREE.SphereGeometry(.03,8,8),new THREE.MeshBasicMaterial({color:0xffffff}));
+      tilt.add(hub);
+      const blips=[];
+      [[.22,.38],[-.45,.15],[.08,-.5],[-.22,-.3]].forEach(([x,y],i)=>{
+        const m=new THREE.Mesh(new THREE.SphereGeometry(.04,8,8),new THREE.MeshBasicMaterial({color:brass,transparent:true}));
+        m.position.set(x,y,.01);tilt.add(m);blips.push({mesh:m,phase:i*1.3});
+      });
+      const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(
+        [[-.78,-.15,.3],[-.4,-.02,.32],[0,.08,.34],[.4,.3,.36],[.78,.42,.38]].map(p=>new THREE.Vector3(...p))
+      ),new THREE.LineBasicMaterial({color:brass,transparent:true,opacity:.9}));
+      scene.add(line);
+      live.push({resize,render(t,dt){
+        if(!reduced){sweep.rotation.z-=dt*1.1;tilt.rotation.z=Math.sin(t*.25)*.05;}
+        blips.forEach(b=>{b.mesh.material.opacity=.35+.5*(0.5+0.5*Math.sin(t*1.4+b.phase));});
+        renderer.render(scene,camera);
+      }});
+    }
+
+    function buildShield(canvas){
+      const {renderer,camera,scene,resize}=baseScene(canvas);
+      camera.position.set(0,0,4.4);camera.lookAt(0,0,0);
+      scene.add(new THREE.AmbientLight(0xffffff,.6));
+      const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(2,3,4);scene.add(dl);
+      const shape=new THREE.Shape();
+      shape.moveTo(0,.935);shape.lineTo(.645,.677);shape.lineTo(.645,-.0645);
+      shape.bezierCurveTo(.645,-.548,.355,-.839,0,-1);
+      shape.bezierCurveTo(-.355,-.839,-.645,-.548,-.645,-.0645);
+      shape.lineTo(-.645,.677);shape.closePath();
+      const geo=new THREE.ExtrudeGeometry(shape,{depth:.22,bevelEnabled:true,bevelThickness:.03,bevelSize:.03,bevelSegments:3,curveSegments:16});
+      geo.center();
+      const shield=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:brass,metalness:.6,roughness:.35,emissive:0x2a1d0c,emissiveIntensity:.3}));
+      const group=new THREE.Group();group.add(shield);scene.add(group);
+      const check=new THREE.Line(new THREE.BufferGeometry().setFromPoints(
+        [[-.26,.03,.14],[-.06,-.19,.14],[.32,.32,.14]].map(p=>new THREE.Vector3(...p))
+      ),new THREE.LineBasicMaterial({color:0xffffff}));
+      group.add(check);
+      const coins=[];
+      [[-.5,-1.05],[0,-1.18],[.5,-1.05]].forEach(([x,y],i)=>{
+        const c=new THREE.Mesh(new THREE.TorusGeometry(.15,.045,12,28),new THREE.MeshStandardMaterial({color:brass,metalness:.55,roughness:.4,emissive:0x2a1d0c,emissiveIntensity:.2}));
+        c.position.set(x,y,0);group.add(c);coins.push({mesh:c,phase:i*1.4,baseY:y});
+      });
+      /* a protective pulse that rings outward from the shield */
+      const rings=[0,1,2].map(i=>{
+        const r=new THREE.Mesh(new THREE.RingGeometry(.98,1.02,48),
+          new THREE.MeshBasicMaterial({color:brass,transparent:true,opacity:0,side:THREE.DoubleSide}));
+        r.position.z=-.18; group.add(r); return {mesh:r,offset:i/3};
+      });
+      live.push({resize,render(t,dt){
+        if(!reduced){
+          group.rotation.y=Math.sin(t*.28)*.38;
+          group.rotation.x=Math.sin(t*.21)*.09;          /* slow nod */
+          const breath=1+Math.sin(t*.9)*.022;            /* it breathes */
+          shield.scale.set(breath,breath,breath);
+          group.position.y=Math.sin(t*.55)*.045;         /* and floats */
+          rings.forEach(r=>{
+            const k=(t*.42+r.offset)%1;                  /* 0 → 1, then restart */
+            const sc=.62+k*1.5;
+            r.mesh.scale.set(sc,sc,sc);
+            r.mesh.material.opacity=Math.max(0,.5*(1-k)*(k<.06?k/.06:1));
+          });
+        }
+        coins.forEach((c,i)=>{
+          const a=t*.5+c.phase;                          /* coins orbit the base */
+          c.mesh.position.x=(i-1)*.52+Math.cos(a)*.12;
+          c.mesh.position.y=c.baseY+Math.sin(a)*.09;
+          c.mesh.position.z=Math.sin(a)*.1;
+          c.mesh.rotation.y+=dt*1.15; c.mesh.rotation.x=Math.sin(a)*.3;
+        });
+        renderer.render(scene,camera);
+      }});
+    }
+
+    const builders={globe:buildGlobe,radar:buildRadar,shield:buildShield};
+
+    /* these are ambient decoration, not gameplay — 30fps is indistinguishable
+       and halves the cost of three simultaneous WebGL contexts */
+    let _acc=0;
+    function tick(){
+      requestAnimationFrame(tick);
+      if(document.hidden||!live.length)return;
+      const t=clock.getElapsedTime(),dt=Math.min(clock.getDelta(),.05);
+      _acc+=dt;
+      if(_acc<1/30)return;
+      const step=_acc; _acc=0;
+      live.forEach(inst=>{if(inst.onScreen===false)return;inst.render(t,step);});
+    }
+    if(haveThree){tick();window.addEventListener('resize',()=>live.forEach(i=>i.resize()));}
+
+    canvases.forEach(canvas=>{
+      const frame=canvas.closest('.frame');
+      const col=canvas.closest('.col');
+      ScrollTrigger.create({trigger:frame,start:'top 80%',once:true,onEnter:()=>{
+        if(haveThree){try{
+          builders[canvas.dataset.three](canvas);
+          /* a WebGL scene that nobody can see still costs a frame — park it */
+          const inst=live[live.length-1];
+          if(inst&&'IntersectionObserver' in window){
+            inst.onScreen=true;
+            new IntersectionObserver(es=>{inst.onScreen=es[0].isIntersecting;},
+              {rootMargin:'150px'}).observe(canvas);
+          }
+        }catch(e){console.warn('three init failed:',e);}}
+        gsap.to(canvas,{opacity:1,duration:1,ease:'power2.out'});
+        if(haveAnime&&col){
+          const ic=col.querySelector('.idx-ic');
+          if(ic)anime({targets:ic,rotate:reduced?0:'+=360',opacity:[.4,1],duration:2600,easing:'easeInOutSine',loop:!reduced,direction:'alternate'});
+          const dots=col.querySelectorAll('.dots-ic i');
+          if(dots.length&&!reduced)anime({targets:dots,scale:[{value:.55,duration:0},{value:1.35,duration:420},{value:.55,duration:420}],opacity:[{value:.3,duration:0},{value:1,duration:420},{value:.3,duration:420}],delay:anime.stagger(180,{repeat:true}),loop:true,easing:'easeInOutSine'});
+        }
+      }});
+    });
+  })();
+
+  /* card stacking — full-screen crossfade + scale/blur depth, with parallax ghost numerals */
+  const cards=gsap.utils.toArray('.scard');
+  const SLOT=2, DWELL=1.3, TRANS=SLOT-DWELL;
+  const depths=cards.map(c=>c.querySelector('.depth'));
+  gsap.set(cards,{
+    autoAlpha:(i)=>i===0?1:0,
+    scale:(i)=>i===0?1:1.06
+  });
+  gsap.set(depths,{filter:(i)=>i===0?'blur(0px)':'blur(16px)'});
+  const dotsWrap=document.getElementById('stepdots');
+  cards.forEach((_,i)=>{const d=document.createElement('i');if(i===0)d.className='on';dotsWrap.appendChild(d);});
+  const dots=gsap.utils.toArray('#stepdots i');
+  const rnodes=gsap.utils.toArray('.route .rn');
+
+  const jtl=gsap.timeline({
+    scrollTrigger:{
+      trigger:'#stage',start:'top top',
+      end:()=>'+='+(window.innerHeight*cards.length*1.55),
+      pin:true,scrub:.9,invalidateOnRefresh:true,
+      onUpdate:self=>{
+        const idx=Math.min(cards.length-1,Math.floor(self.progress*cards.length));
+        dots.forEach((d,i)=>d.classList.toggle('on',i===idx));
+        rnodes.forEach((n,i)=>n.classList.toggle('on',i<=idx));
+      }
+    }
+  });
+  /* route rail: draws through the four waypoints as the journey advances */
+  const routeDraw=document.getElementById('routeDraw'), routeDot=document.getElementById('routeDot');
+  const TOTAL=cards.length*SLOT;
+  if(routeDraw && !reduced){
+    gsap.set(routeDraw,{drawSVG:'0% 0%'});
+    jtl.fromTo(routeDraw,{drawSVG:'0% 0%'},{drawSVG:'0% 100%',duration:TOTAL,ease:'none'},0);
+    jtl.to(routeDot,{motionPath:{path:'#routeDraw',align:'#routeDraw',alignOrigin:[.5,.5]},
+                     duration:TOTAL,ease:'none'},0);
+  }
+
+  cards.forEach((c,i)=>{
+    const t0=i*SLOT;
+    const bg=c.querySelector('.bgnum');
+    const scene=c.querySelector('.bgscene'), copy=c.querySelector('.copy'), sv=c.querySelector('.sv');
+    if(bg)jtl.fromTo(bg,{yPercent:10},{yPercent:-10,duration:SLOT,ease:'none'},t0);
+    /* layered parallax: scene drifts least, foreground copy most */
+    if(scene)jtl.fromTo(scene,{yPercent:4,scale:1.06},{yPercent:-4,scale:1,duration:SLOT,ease:'none'},t0);
+    if(sv)jtl.fromTo(sv,{yPercent:16,rotate:-3},{yPercent:-16,rotate:3,duration:SLOT,ease:'none'},t0);
+    if(copy)jtl.fromTo(copy,{y:34},{y:-34,duration:SLOT,ease:'none'},t0);
+    if(i<cards.length-1){
+      jtl.to(c,{autoAlpha:0,scale:.92,duration:TRANS,ease:'none'},t0+DWELL)
+         .to(depths[i],{filter:'blur(16px)',duration:TRANS,ease:'none'},t0+DWELL)
+         .fromTo(cards[i+1],{autoAlpha:0,scale:1.06},{autoAlpha:1,scale:1,duration:TRANS,ease:'none'},t0+DWELL)
+         .fromTo(depths[i+1],{filter:'blur(16px)'},{filter:'blur(0px)',duration:TRANS,ease:'none'},t0+DWELL);
+    }
+  });
+
+  /* magnetic hover */
+  if(desktop && !reduced){
+    document.querySelectorAll('[data-mag]').forEach(el=>{
+      const xTo=gsap.quickTo(el,'x',{duration:.5,ease:'power3'});
+      const yTo=gsap.quickTo(el,'y',{duration:.5,ease:'power3'});
+      el.addEventListener('mousemove',e=>{
+        const r=el.getBoundingClientRect();
+        xTo((e.clientX-(r.left+r.width/2))*0.28);
+        yTo((e.clientY-(r.top+r.height/2))*0.42);
+      });
+      el.addEventListener('mouseleave',()=>{xTo(0);yTo(0);});
+    });
+  }
+
+  /* tilt + glow on cards */
+  if(desktop && !reduced){
+    document.querySelectorAll('[data-tilt]').forEach(el=>{
+      gsap.set(el,{transformPerspective:700});
+      const rx=gsap.quickTo(el,'rotateX',{duration:.6,ease:'power3'});
+      const ry=gsap.quickTo(el,'rotateY',{duration:.6,ease:'power3'});
+      el.addEventListener('mousemove',e=>{
+        const r=el.getBoundingClientRect();
+        const px=((e.clientX-r.left)/r.width)*100, py=((e.clientY-r.top)/r.height)*100;
+        el.style.setProperty('--mx',px+'%'); el.style.setProperty('--my',py+'%');
+        ry((px-50)/50*6); rx(-(py-50)/50*6);
+      });
+      el.addEventListener('mouseleave',()=>{rx(0);ry(0);});
+    });
+  }
+
+  /* custom cursor */
+  if(desktop && !reduced){
+    document.documentElement.classList.add('cursor-on');
+    const cur=document.getElementById('cur'), curDot=document.getElementById('curDot');
+    gsap.set([cur,curDot],{xPercent:-50,yPercent:-50});
+    const cx=gsap.quickTo(cur,'x',{duration:.5,ease:'power3'}), cy=gsap.quickTo(cur,'y',{duration:.5,ease:'power3'});
+    const dx=gsap.quickTo(curDot,'x',{duration:.12,ease:'power3'}), dy=gsap.quickTo(curDot,'y',{duration:.12,ease:'power3'});
+    let curLive=false;
+    window.addEventListener('mousemove',e=>{
+      if(!curLive){curLive=true;document.documentElement.classList.add('cursor-live');}
+      cx(e.clientX);cy(e.clientY);dx(e.clientX);dy(e.clientY);});
+    document.querySelectorAll('a,button,[data-mag],[data-tilt]').forEach(el=>{
+      el.addEventListener('mouseenter',()=>cur.classList.add('hov'));
+      el.addEventListener('mouseleave',()=>cur.classList.remove('hov'));
+    });
+  }
+
+  /* headlines resolve out of blur as they arrive */
+  if(!reduced){
+    const blurOK = desktop && window.matchMedia('(min-width:900px)').matches;
+    document.fonts.ready.then(()=>{
+      gsap.utils.toArray('[data-scramble]').forEach(el=>{
+        SplitText.create(el,{
+          type:'words', autoSplit:true, aria:'auto',
+          onSplit(self){
+            const tw = blurOK
+              ? gsap.from(self.words,{opacity:0,filter:'blur(14px)',y:16,
+                  duration:.95,ease:'power2.out',stagger:.035,paused:true})
+              : gsap.from(self.words,{opacity:0,y:14,
+                  duration:.7,ease:'power2.out',stagger:.03,paused:true});
+            ScrollTrigger.create({trigger:el,start:'top 82%',once:true,
+              onEnter:()=>tw.play()});
+            return tw;
+          }
+        });
+      });
+      ScrollTrigger.refresh();
+    });
+  }
+
+  /* nav turns dark + cursor inverts over dark slabs */
+  const nav=document.getElementById('navIn');
+  ['.slab','.stackwrap','.close'].forEach(sel=>{
+    ScrollTrigger.create({trigger:sel,start:'top 70px',end:'bottom 70px',
+      onToggle:self=>{
+        nav.classList.toggle('dark',self.isActive);
+        document.documentElement.classList.toggle('on-dark',self.isActive);
+      }});
+  });
+
+  ScrollTrigger.create({trigger:'.hero-bg',start:'top top',end:'bottom 30%',
+    onToggle:self=>document.documentElement.classList.toggle('on-hero',self.isActive)});
+
+  /* hero entrance — played once the loader finishes */
+  function heroIntro(){
+    if(reduced)return;
+    ['l1','l2'].forEach(id=>{
+      const el=document.getElementById(id);
+      el.innerHTML=el.textContent.trim().split(' ').map(w=>`<span class="w">${w}&nbsp;</span>`).join('');
+    });
+    gsap.from('.hero .w',{yPercent:110,opacity:0,duration:1.05,ease:'power3.out',stagger:.055,delay:.12});
+    gsap.from('.hero .eyebrow, .hero .sub, .hero .acts',{y:16,opacity:0,duration:.9,ease:'power2.out',stagger:.09,delay:.45});
+    gsap.from('#deckEl',{y:70,opacity:0,scale:.97,duration:1.3,ease:'power3.out',delay:.5});
+  }
+
+  /* loading screen */
+  if(reduced || !loaderEl){
+    if(loaderEl)loaderEl.style.display='none';
+    document.documentElement.classList.remove('loading');
+    ScrollTrigger.refresh();
+    if(window.__pendingJump){const pj=window.__pendingJump;window.__pendingJump=null;jump(pj);}
+    heroIntro();
+  }else{
+    document.documentElement.classList.add('loading');
+    const wipe=document.getElementById('loaderWipe'), spark=document.getElementById('loaderSpark'),
+          jline=document.getElementById('journeyLine'), jdot=document.getElementById('journeyDot'),
+          jwrap=document.getElementById('journeyWrap'), glow=document.getElementById('loaderGlow');
+    gsap.set(wipe,{attr:{y:146,height:0}});
+    gsap.set(spark,{scale:0,opacity:0,transformOrigin:'50% 50%'});
+    gsap.set(jline,{drawSVG:'0% 0%'});
+    gsap.set(jdot,{opacity:0,scale:0,transformOrigin:'50% 50%'});
+    gsap.set('.loader-mark-svg',{opacity:0,scale:.9,rotationY:14,transformOrigin:'50% 60%'});
+    gsap.set('.loader-mark',{y:10,letterSpacing:'.62em'});
+    /* safety net: if the intro stalls for any reason — a throttled background tab,
+       a plugin that failed to load, a slow network — never leave the page blank. */
+    const unlock=()=>{
+      if(!document.documentElement.classList.contains('loading'))return;
+      if(loaderEl){loaderEl.style.display='none';}
+      document.documentElement.classList.remove('loading');
+      try{ScrollTrigger.refresh();}catch(e){}
+      if(window.__pendingJump){const pj=window.__pendingJump;window.__pendingJump=null;jump(pj);}
+    };
+    setTimeout(unlock,6000);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(unlock,2500);});
+
+    const ltl=gsap.timeline({onComplete:()=>{
+      gsap.to(loaderEl,{autoAlpha:0,duration:.6,ease:'power2.inOut',
+        onStart:()=>{loaderEl.style.pointerEvents='none';},   /* stop eating clicks while fading */
+        onComplete:()=>{
+        loaderEl.style.display='none';
+        document.documentElement.classList.remove('loading');
+        /* positions measured while the page was overflow:hidden are stale — remeasure */
+        ScrollTrigger.refresh();
+        if(window.__pendingJump){const pj=window.__pendingJump;window.__pendingJump=null;jump(pj);}
+      }});
+      heroIntro();
+    }});
+    ltl.to('.loader-mark-svg',{opacity:1,scale:1,rotationY:0,duration:1.5,ease:'power3.out'},0)
+       .to(glow,{opacity:1,duration:1.2,ease:'power2.out'},.1)
+       /* the journey: a route climbing from the base */
+       .to(jdot,{opacity:1,scale:1,duration:.3,ease:'power2.out'},.1)
+       .to(jline,{drawSVG:'0% 100%',duration:1.25,ease:'power1.inOut'},.1)
+       .to(jdot,{motionPath:{path:'#journeyLine',align:'#journeyLine',alignOrigin:[.5,.5],start:0,end:1},
+                 duration:1.25,ease:'power1.inOut'},.1)
+       .to(jdot,{opacity:0,scale:.4,duration:.3,ease:'power2.in'},1.25)
+       /* arrival: the mark rises and takes the line's place */
+       .to(wipe,{attr:{y:-14,height:160},duration:1.0,ease:'power3.inOut'},1.0)
+       .to(jwrap,{opacity:0,duration:.55,ease:'power2.inOut'},1.35)
+       .to(spark,{scale:1,opacity:1,duration:.6,ease:'back.out(2.8)'},1.85)
+       .to(glow,{opacity:.55,duration:.8,ease:'power2.inOut'},1.85)
+       .to('.loader-mark',{opacity:1,y:0,letterSpacing:'.32em',duration:.9,ease:'power3.out'},1.95)
+       .to({},{duration:.5});
+  }
+
+  /* ── forecast illustration: the line draws, the projection runs on, the
+        moment it crosses the ceiling keeps pulsing ── */
+  (function(){
+    const svg=document.querySelector('.fc'); if(!svg||!haveST)return;
+    const real=svg.querySelector('#fcReal'), proj=svg.querySelector('#fcProj'),
+          cap=svg.querySelector('#fcCap'), now=svg.querySelector('#fcNow'),
+          hit=svg.querySelector('#fcHit'), ring=svg.querySelector('#fcRing'),
+          lbl=svg.querySelector('#fcHitLbl');
+    const drawable=!!window.DrawSVGPlugin;
+    if(reduced)return;
+    gsap.set([hit,lbl],{opacity:0});
+    gsap.set(now,{scale:0,transformOrigin:'center'});
+    const wipe=svg.querySelector('#fcWipe');
+    /* drawSVG rewrites stroke-dasharray, which would turn the dashed forecast and
+       ceiling solid — so only the solid line is drawn that way; the dashed ones
+       are revealed with a clip and a fade, keeping their dashes intact. */
+    if(drawable)gsap.set(real,{drawSVG:'0%'});
+    gsap.set(cap,{opacity:0});
+    gsap.set(wipe,{attr:{width:0}});
+    const tl=gsap.timeline({paused:true});
+    tl.to(cap,{opacity:.75,duration:.6,ease:'power2.out'},0);
+    if(drawable)tl.to(real,{drawSVG:'100%',duration:.9,ease:'power2.out'},.2);
+    tl.to(now,{scale:1,duration:.4,ease:'back.out(2.4)'},.95);
+    tl.to(wipe,{attr:{width:106},duration:1,ease:'power1.inOut'},1.1);
+    tl.to([hit,lbl],{opacity:1,duration:.4,ease:'power2.out'},1.85)
+      .call(()=>{
+        /* the crossing keeps ringing — this is the warning, so it shouldn't settle */
+        gsap.fromTo(ring,{scale:1,opacity:.85,transformOrigin:'center'},
+          {scale:3.2,opacity:0,duration:1.8,ease:'power2.out',repeat:-1,repeatDelay:.5});
+        gsap.to(hit,{scale:1.18,duration:1,ease:'sine.inOut',repeat:-1,yoyo:true,transformOrigin:'center'});
+      },null,2.2);
+    ScrollTrigger.create({trigger:svg,start:'top 85%',once:true,onEnter:()=>tl.play()});
+  })();
+
+  /* ── card 1: receipts in four currencies fan in, then fold into one number ── */
+  (function(){
+    const svg=document.querySelector('.rcpt'); if(!svg||!haveST||reduced)return;
+    const rcs=gsap.utils.toArray(svg.querySelectorAll('.rc'));
+    const sum=svg.querySelector('#rcSum'), bars=svg.querySelectorAll('#rcSum rect:not(.rs-card)');
+    const FAN=[{x:-62,y:8,r:-15},{x:-21,y:-5,r:-5},{x:21,y:3,r:6},{x:62,y:-6,r:16}];
+    gsap.set(rcs,{transformOrigin:'50% 60%'});
+    const tl=gsap.timeline({repeat:-1,repeatDelay:.4,paused:true});
+    tl.set(sum,{opacity:0,scale:.82,transformOrigin:'50% 50%'})
+      .set(bars,{scaleX:0,transformOrigin:'0% 50%'})
+      .set(rcs,{opacity:0,scale:1,x:i=>FAN[i].x,y:i=>FAN[i].y+22,rotation:i=>FAN[i].r})
+      /* the pile you actually come home with */
+      .to(rcs,{opacity:1,y:i=>FAN[i].y,duration:.7,ease:'power3.out',stagger:.09})
+      .to(rcs,{rotation:i=>FAN[i].r*1.15,duration:.5,ease:'sine.inOut',yoyo:true,repeat:1},'+=.1')
+      /* ITER pulls them together */
+      .to(rcs,{x:0,y:0,rotation:i=>(i-1.5)*2,duration:.75,ease:'power3.inOut',stagger:.05},'+=.15')
+      .to(rcs,{opacity:0,scale:.9,duration:.35,ease:'power2.in'},'-=.1')
+      /* and what's left is one number */
+      .to(sum,{opacity:1,scale:1,duration:.65,ease:'back.out(1.8)'},'-=.2')
+      .to(bars,{scaleX:1,duration:.55,ease:'power3.out',stagger:.08},'-=.3')
+      .to(sum,{opacity:0,scale:.96,duration:.4,ease:'power2.in'},'+=2.2');
+    ScrollTrigger.create({trigger:svg,start:'top 88%',end:'bottom 8%',
+      onToggle:self=>self.isActive?tl.play():tl.pause()});
+  })();
+
+  /* ── card 3: the tax line lights up, gets stamped, and drops into "to collect" ── */
+  (function(){
+    const svg=document.querySelector('.taxart'); if(!svg||!haveST||reduced)return;
+    const q=id=>svg.querySelector(id);
+    const rc=q('#txRc'), hl=q('#txHl'), stamp=q('#txStamp'), coin=q('#txCoin'), pot=q('#txPot'), amt=q('#txAmt');
+    const n={v:38.22};
+    const tl=gsap.timeline({repeat:-1,repeatDelay:.6,paused:true});
+    tl.set(rc,{opacity:0,y:10})
+      .set(hl,{scaleX:0,transformOrigin:'0% 50%'})
+      .set(stamp,{opacity:0,scale:1.8,transformOrigin:'50% 50%'})
+      .set(coin,{opacity:0,scale:.4,x:90,y:60,transformOrigin:'50% 50%'})
+      .set(pot,{opacity:0,x:8})
+      .call(()=>{n.v=38.22;amt.textContent='RM 38.22';})
+      .to(rc,{opacity:1,y:0,duration:.6,ease:'power3.out'})
+      .to(pot,{opacity:1,x:0,duration:.5,ease:'power3.out'},'-=.3')
+      .to(hl,{scaleX:1,duration:.5,ease:'power2.out'},'+=.1')
+      .to(stamp,{opacity:1,scale:1,duration:.35,ease:'back.out(3)'},'+=.15')
+      .to(rc,{x:-1.5,duration:.05,yoyo:true,repeat:3},'<')
+      .to(coin,{opacity:1,scale:1,duration:.3,ease:'back.out(2.4)'},'+=.1');
+    if(window.MotionPathPlugin){
+      tl.to(coin,{motionPath:{path:'#txPath',align:'#txPath',alignOrigin:[.5,.5]},duration:.9,ease:'power1.inOut'});
+    }else{
+      tl.to(coin,{x:170,y:44,duration:.9,ease:'power1.inOut'});
+    }
+    tl.to(coin,{scale:.2,opacity:0,duration:.2,ease:'power2.in'})
+      .to(pot,{scale:1.06,duration:.15,yoyo:true,repeat:1,transformOrigin:'50% 50%',ease:'power2.out'},'<')
+      .to(n,{v:60.66,duration:.7,ease:'power2.out',onUpdate:()=>{amt.textContent='RM '+n.v.toFixed(2);}},'<')
+      .to([rc,stamp,pot,hl],{opacity:0,duration:.45,ease:'power2.in'},'+=1.8');
+    ScrollTrigger.create({trigger:svg,start:'top 88%',end:'bottom 8%',
+      onToggle:self=>self.isActive?tl.play():tl.pause()});
+  })();
+
+  /* ── floating currency tiles: the hero's one piece of continuous life ── */
+  (function(){
+    const tiles=gsap.utils.toArray('.fx-t');
+    if(!tiles.length||reduced)return;
+
+    /* arrive: thrown in from off-centre, settling into their resting rotation */
+    gsap.from(tiles,{
+      opacity:0,
+      scale:.6,
+      x:()=>gsap.utils.random(-160,160),
+      y:()=>gsap.utils.random(60,220),
+      rotation:()=>gsap.utils.random(-40,40),
+      duration:1.5,ease:'power3.out',
+      stagger:{each:.075,from:'random'},
+      delay:.25
+    });
+
+    /* drift: every tile on its own clock, so the group never pulses in unison */
+    const idle=[];
+    tiles.forEach((t,i)=>{
+      const d=gsap.utils.random(3.6,6.2), r=gsap.utils.random(2.5,5);
+      idle.push(gsap.to(t,{yPercent:gsap.utils.random(-14,-6),duration:d,ease:'sine.inOut',
+        repeat:-1,yoyo:true,delay:1.5+i*.12}));
+      idle.push(gsap.to(t,{rotation:`+=${gsap.utils.random(-r,r)}`,duration:d*1.45,ease:'sine.inOut',
+        repeat:-1,yoyo:true,delay:1.5+i*.09}));
+    });
+    /* once the hero is gone these are invisible work on every frame */
+    let heroLive=true;
+    ScrollTrigger.create({trigger:'.hero',start:'bottom top',
+      onEnter:()=>{heroLive=false;idle.forEach(t=>t.pause());},
+      onLeaveBack:()=>{heroLive=true;idle.forEach(t=>t.resume());}});
+
+    /* parallax: nearer tiles travel further, so the field has depth */
+    if(desktop){
+      const movers=tiles.map((t,i)=>({
+        x:gsap.quickTo(t,'x',{duration:1.1,ease:'power3'}),
+        y:gsap.quickTo(t,'y',{duration:1.1,ease:'power3'}),
+        depth:8+(i%4)*9
+      }));
+      window.addEventListener('mousemove',e=>{
+        if(!heroLive)return;                 /* no parallax maths once it is off-screen */
+        const nx=(e.clientX/window.innerWidth-.5), ny=(e.clientY/window.innerHeight-.5);
+        movers.forEach(m=>{m.x(-nx*m.depth);m.y(-ny*m.depth);});
+      },{passive:true});
+    }
+
+    /* lift on hover, and let the conversion read */
+    tiles.forEach(t=>{
+      t.addEventListener('mouseenter',()=>gsap.to(t,{scale:1.12,duration:.45,ease:'power3.out',overwrite:'auto'}));
+      t.addEventListener('mouseleave',()=>gsap.to(t,{scale:1,duration:.55,ease:'power3.out',overwrite:'auto'}));
+    });
+
+    /* scroll: the field rises and clears out as the hero leaves */
+    gsap.to('.fx-float',{yPercent:-26,opacity:0,ease:'none',
+      scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:.8}});
+  })();
+
+  window.addEventListener('load',()=>ScrollTrigger.refresh());
+})();
+</script>
+
+<script src="sg.js" defer></script>
+</body>
+</html>
