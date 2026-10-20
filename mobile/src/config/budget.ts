@@ -9,10 +9,16 @@ import type { Category } from '@/domain/types';
  */
 export const budgetRules = {
   /**
-   * "Spending fast" shows when safe-to-spend drops below this share of the daily allowance the
-   * trip started with (brief §13 Q5; renamed from "Ahead of plan", see docs/DECISIONS.md).
+   * "Spending fast" shows when today goes over today's amount, or when the days after today would
+   * get less than this share of the planned daily amount (team review, 20 Oct 2026).
    */
   spendingFastThreshold: 0.7,
+
+  /**
+   * "Running short" shows when the days after today would get less than this share of the planned
+   * daily amount (team review, 20 Oct 2026). Using the reserve is always "running short".
+   */
+  runningShortThreshold: 0.4,
 
   /** Suggested split of the budget (after the reserve) when planning a trip. Adds up to 100. */
   suggestedSplitPercent: {

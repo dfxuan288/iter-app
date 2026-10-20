@@ -413,6 +413,27 @@ Scope agreed with the team: finish what exists, no new features (the under-budge
   springs back with a small bounce; on a laptop, buttons lift slightly under the pointer. With reduced motion on they
   only dim. One shared component (`PressableScale`), so every button behaves the same.
 
+## Warnings reworked: one measure for every chip and message (20 Oct 2026)
+
+The team's CTO found three problems: "Spending fast" could not react to today's spending (it read this morning's
+fixed amount); "Running short" only fired once all spending money was gone (money left under the reserve); and
+"money runs out on day N" used the average since day 1, a different calculation that contradicted the card (it
+appeared after spending only RM 126 of an allowed RM 200).
+
+Now one measure drives everything, the same maths as the card: **what each day after today would get if spending
+stopped now** = (budget − reserve − everything spent, today included) ÷ days after today. The big daily number still
+stays fixed all day.
+- **On track**: within today's amount, and the days ahead get at least 70% of the planned daily amount.
+- **Spending fast**: over today's amount, or the days ahead get under 70% of the plan.
+- **Running short**: the days ahead get under 40% of the plan, or the reserve is being used.
+- The warning box says the same in words ("You are RM 100 over today's RM 200. From tomorrow you have RM 166.66 a
+  day for your last 3 days."). The "money runs out on day N" forecast is removed.
+- Demo day 7 (allowance RM 200): spend RM 0 or RM 200 → On track; RM 250 or RM 300 → Spending fast; RM 560 → Running
+  short; over RM 800 → Running short, using the reserve. All tested.
+- Thresholds (70%, 40%) are in `mobile/src/config/budget.ts`.
+- Home card: the "left today" line is highlighted (green within today's amount, amber once over), and "Remaining" is
+  now "Total remaining".
+
 ## Still open
 
 

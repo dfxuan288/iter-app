@@ -1,5 +1,5 @@
 import { budgetRules } from '@/config/budget';
-import { addDays, daysInclusive, diffDays, eachDay, type IsoDate } from '@/domain/dates';
+import { daysInclusive, diffDays, eachDay, type IsoDate } from '@/domain/dates';
 import { sumMinor } from '@/domain/money';
 import { CATEGORIES, isCategory, type Category, type CategoryBudget, type Expense, type Trip } from '@/domain/types';
 
@@ -30,13 +30,6 @@ export interface CategoryProgress {
   unspentMyr: number;
 }
 
-export interface Forecast {
-  /** Average spend per trip day so far, daily transport included. */
-  burnRateMyr: number;
-  /** The trip day on which the money (after the reserve) runs out at this pace, if it does. */
-  runOutDayNumber: number | null;
-  runOutDate: IsoDate | null;
-}
 
 export interface TripSummary {
   phase: TripPhase;
@@ -60,9 +53,19 @@ export interface TripSummary {
   /** Safe-to-spend per day as the trip was planned, before anything was spent. */
   plannedPerDayMyr: number;
   status: BudgetStatus;
+  /** Money still to spend: budget − reserve − everything spent, today included. Negative once the reserve is being used. */
+  spendableLeftMyr: number;
+  /** Trip days after today (0 on the last day and outside the trip). */
+  daysAfterToday: number;
+  /**
+   * What each day after today would get if spending stopped now. It reacts to today's spending at
+   * once, while today's own amount stays fixed. `null` on the last day and outside the trip.
+   */
+  tomorrowPerDayMyr: number | null;
+  /** How far today's spending is over today's amount (0 when within it). */
+  overTodayMyr: number;
   categories: CategoryProgress[];
   dailySpend: DailySpend[];
-  forecast: Forecast;
 }
 
 /**
@@ -111,40 +114,20 @@ export function safeToSpendPerDay(budgetMyr: number, reserveMyr: number, spentMy
   return Math.max(0, Math.floor((budgetMyr - reserveMyr - spentMyr) / daysLeft));
 }
 
-export function budgetStatus(input: { remainingMyr: number; reserveMyr: number; safePerDayMyr: number; plannedPerDayMyr: number }): BudgetStatus {
-  if (input.remainingMyr < input.reserveMyr) return 'running_short';
-  if (input.safePerDayMyr < input.plannedPerDayMyr * budgetRules.spendingFastThreshold) return 'spending_fast';
-  return 'on_track';
-}
-
 /**
- * Projects spending forward at the average pace so far, on the same money as safe-to-spend
- * (the budget minus the reserve).
- *
- * - `paceSpentMyr`: spending dated from the first day of the trip up to today, daily transport
- *   included. This sets the pace.
- * - `oneOffMyr`: spending dated outside those days (bought before the trip, or logged ahead). It
- *   comes out of the budget once and is not projected forward.
- *
- * The run-out day is the first day where one-offs plus the projected pace pass the budget.
+ * The status chip (team review, 20 Oct 2026). One measure drives everything, the same maths as the
+ * card: what each day after today would get if spending stopped now.
+ * - Running short: the reserve is being used, or the days ahead would get under 40% of the plan.
+ * - Spending fast: today has gone over today's amount, or the days ahead would get under 70% of the plan.
+ * - On track: otherwise. Spending exactly today's amount is on track: it keeps the trip on plan.
  */
-export function forecastRunOut(input: {
-  paceSpentMyr: number;
-  oneOffMyr: number;
-  spendableMyr: number;
-  daysElapsed: number;
-  totalDays: number;
-  startDate: IsoDate;
-}): Forecast {
-  const { paceSpentMyr, oneOffMyr, spendableMyr, daysElapsed, totalDays, startDate } = input;
-  if (daysElapsed <= 0) return { burnRateMyr: 0, runOutDayNumber: null, runOutDate: null };
-  const burnRate = Math.max(0, paceSpentMyr) / daysElapsed;
-  for (let day = daysElapsed; day <= totalDays; day++) {
-    if (oneOffMyr + burnRate * day > spendableMyr) {
-      return { burnRateMyr: Math.round(burnRate), runOutDayNumber: day, runOutDate: addDays(startDate, day - 1) };
-    }
-  }
-  return { burnRateMyr: Math.round(burnRate), runOutDayNumber: null, runOutDate: null };
+export function budgetStatus(input: { spendableLeftMyr: number; tomorrowPerDayMyr: number | null; overTodayMyr: number; plannedPerDayMyr: number }): BudgetStatus {
+  const { spendableLeftMyr, tomorrowPerDayMyr, overTodayMyr, plannedPerDayMyr } = input;
+  if (spendableLeftMyr < 0) return 'running_short';
+  if (tomorrowPerDayMyr !== null && tomorrowPerDayMyr < plannedPerDayMyr * budgetRules.runningShortThreshold) return 'running_short';
+  if (overTodayMyr > 0) return 'spending_fast';
+  if (tomorrowPerDayMyr !== null && tomorrowPerDayMyr < plannedPerDayMyr * budgetRules.spendingFastThreshold) return 'spending_fast';
+  return 'on_track';
 }
 
 export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSummaryInput): TripSummary {
@@ -155,7 +138,6 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
   const dayNumber = Math.min(totalDays, Math.max(1, diffDays(trip.startDate, today) + 1));
   // Before the trip every day is still ahead; "days left" counts today while the trip is running.
   const daysLeft = phase === 'upcoming' ? totalDays : phase === 'ended' ? 0 : totalDays - dayNumber + 1;
-  const daysElapsed = phase === 'upcoming' ? 0 : dayNumber;
   const total = (list: readonly Expense[]) => sumMinor(list.map((e) => e.amountMyr));
 
   const spentMyr = total(tripExpenses);
@@ -167,8 +149,11 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
   const safePerDayMyr = safeToSpendPerDay(trip.totalBudgetMyr, trip.reserveMyr, spentMyr - spentTodayMyr, daysLeft);
   const leftTodayMyr = phase === 'active' ? safePerDayMyr - spentTodayMyr : safePerDayMyr;
   const plannedPerDayMyr = safeToSpendPerDay(trip.totalBudgetMyr, trip.reserveMyr, 0, totalDays);
-
-  const isTripDaySoFar = (e: Expense) => e.purchaseDate >= trip.startDate && e.purchaseDate <= today;
+  // Reacts to today's spending at once: the same sum as the card, over the days after today.
+  const spendableLeftMyr = trip.totalBudgetMyr - trip.reserveMyr - spentMyr;
+  const daysAfterToday = phase === 'active' ? daysLeft - 1 : 0;
+  const tomorrowPerDayMyr = daysAfterToday > 0 ? safeToSpendPerDay(trip.totalBudgetMyr, trip.reserveMyr, spentMyr, daysAfterToday) : null;
+  const overTodayMyr = phase === 'active' ? Math.max(0, spentTodayMyr - safePerDayMyr) : 0;
   const dailySpend = eachDay(trip.startDate, trip.endDate).map((date, index) => ({
     date,
     dayNumber: index + 1,
@@ -189,17 +174,13 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
     spentTodayMyr,
     leftTodayMyr,
     plannedPerDayMyr,
-    status: budgetStatus({ remainingMyr, reserveMyr: trip.reserveMyr, safePerDayMyr, plannedPerDayMyr }),
+    status: phase === 'active' ? budgetStatus({ spendableLeftMyr, tomorrowPerDayMyr, overTodayMyr, plannedPerDayMyr }) : 'on_track',
+    spendableLeftMyr,
+    daysAfterToday,
+    tomorrowPerDayMyr,
+    overTodayMyr,
     categories,
     dailySpend,
-    forecast: forecastRunOut({
-      paceSpentMyr: total(tripExpenses.filter(isTripDaySoFar)),
-      oneOffMyr: total(tripExpenses.filter((e) => !isTripDaySoFar(e))),
-      spendableMyr: trip.totalBudgetMyr - trip.reserveMyr,
-      daysElapsed,
-      totalDays,
-      startDate: trip.startDate,
-    }),
   };
 }
 

@@ -1,7 +1,7 @@
 import { budgetRules } from '@/config/budget';
 import { createSeedData, DEMO_TRIP_ID } from '@/data/seed';
 
-import { budgetStatus, expensesAsOf, forecastRunOut, safeToSpendPerDay, splitByPercent, summarizeTrip } from '../budget';
+import { budgetStatus, expensesAsOf, safeToSpendPerDay, splitByPercent, summarizeTrip } from '../budget';
 import { CATEGORIES, type CategoryBudget, type Expense, type Trip } from '../types';
 
 const RM = (ringgit: number) => Math.round(ringgit * 100);
@@ -24,58 +24,60 @@ describe('safeToSpendPerDay: (budget − reserve − spent so far) ÷ days left'
   });
 });
 
-describe('budgetStatus', () => {
-  const base = { reserveMyr: RM(300), plannedPerDayMyr: RM(200) };
+describe('budgetStatus (team review, 20 Oct 2026)', () => {
+  const planned = { plannedPerDayMyr: RM(200) };
 
-  it('is "running short" when what remains is less than the reserve', () => {
-    expect(budgetStatus({ ...base, remainingMyr: RM(299), safePerDayMyr: 0 })).toBe('running_short');
-    expect(budgetStatus({ ...base, remainingMyr: RM(300), safePerDayMyr: 0 })).not.toBe('running_short');
+  it('is "running short" once the reserve is being used, or when the days ahead get under 40% of the plan', () => {
+    expect(budgetStatus({ ...planned, spendableLeftMyr: -1, tomorrowPerDayMyr: 0, overTodayMyr: 0 })).toBe('running_short');
+    expect(budgetStatus({ ...planned, spendableLeftMyr: RM(500), tomorrowPerDayMyr: RM(79), overTodayMyr: 0 })).toBe('running_short');
+    expect(budgetStatus({ ...planned, spendableLeftMyr: RM(500), tomorrowPerDayMyr: RM(80), overTodayMyr: 0 })).not.toBe('running_short');
   });
 
-  it('is "spending fast" when safe-to-spend falls below 70% of the planned daily amount', () => {
-    expect(budgetStatus({ ...base, remainingMyr: RM(1200), safePerDayMyr: RM(139) })).toBe('spending_fast');
+  it('is "spending fast" when today goes over its amount, even by a little', () => {
+    expect(budgetStatus({ ...planned, spendableLeftMyr: RM(900), tomorrowPerDayMyr: RM(190), overTodayMyr: 1 })).toBe('spending_fast');
   });
 
-  it('is "on track" at exactly 70% and above', () => {
-    expect(budgetStatus({ ...base, remainingMyr: RM(1260), safePerDayMyr: RM(140) })).toBe('on_track');
-    expect(budgetStatus({ ...base, remainingMyr: RM(1500), safePerDayMyr: RM(200) })).toBe('on_track');
+  it('is "spending fast" when the days ahead get under 70% of the plan', () => {
+    expect(budgetStatus({ ...planned, spendableLeftMyr: RM(900), tomorrowPerDayMyr: RM(139), overTodayMyr: 0 })).toBe('spending_fast');
+    expect(budgetStatus({ ...planned, spendableLeftMyr: RM(900), tomorrowPerDayMyr: RM(140), overTodayMyr: 0 })).toBe('on_track');
   });
 
-  it('uses the threshold from config', () => {
+  it('on the last day, judges by today and the reserve only', () => {
+    expect(budgetStatus({ ...planned, spendableLeftMyr: 0, tomorrowPerDayMyr: null, overTodayMyr: 0 })).toBe('on_track');
+    expect(budgetStatus({ ...planned, spendableLeftMyr: 0, tomorrowPerDayMyr: null, overTodayMyr: 1 })).toBe('spending_fast');
+  });
+
+  it('uses the thresholds from config', () => {
     expect(budgetRules.spendingFastThreshold).toBe(0.7);
+    expect(budgetRules.runningShortThreshold).toBe(0.4);
   });
 });
 
-describe('forecastRunOut', () => {
-  // RM 2,000 to spend over 10 days, after the reserve.
-  const trip = { totalDays: 10, spendableMyr: RM(2000), oneOffMyr: 0, startDate: '2026-11-09' };
+describe('the demo on day 7, reacting to what is spent today (the CTO review cases)', () => {
+  const data = createSeedData();
+  const trip = data.trips[0] as Trip;
+  const spendToday = (ringgit: number) => {
+    const extra = { ...data.expenses[0], id: 'today', category: 'shopping', amountMyr: RM(ringgit), purchaseDate: '2026-11-15' } as Expense;
+    return summarizeTrip({ trip, categoryBudgets: data.categoryBudgets, expenses: [...data.expenses, extra], today: '2026-11-15' });
+  };
 
-  it('reports no run-out when the pace lasts the whole trip', () => {
-    const forecast = forecastRunOut({ ...trip, paceSpentMyr: RM(1190), daysElapsed: 7 });
-    expect(forecast.runOutDayNumber).toBeNull();
-    expect(forecast.burnRateMyr).toBe(RM(170));
+  it.each([
+    [0, 'on_track', 26666],
+    [200, 'on_track', 20000],
+    [250, 'spending_fast', 18333],
+    [300, 'spending_fast', 16666],
+    [560, 'running_short', 8000],
+    [801, 'running_short', 0],
+  ])('spending RM %d today: %s, tomorrow gets %d sen a day', (ringgit, status, tomorrow) => {
+    const summary = spendToday(ringgit);
+    expect(summary.status).toBe(status);
+    expect(summary.tomorrowPerDayMyr).toBe(tomorrow);
+    // The big daily number stays fixed all day.
+    expect(summary.safePerDayMyr).toBe(RM(200));
   });
 
-  it('finds the first day the projected pace passes the budget', () => {
-    // RM 250 a day: day 8 reaches RM 2,000 exactly, day 9 passes it.
-    const forecast = forecastRunOut({ ...trip, paceSpentMyr: RM(1250), daysElapsed: 5 });
-    expect(forecast.runOutDayNumber).toBe(9);
-    expect(forecast.runOutDate).toBe('2026-11-17');
-  });
-
-  it('takes spending from outside the trip days out once, instead of repeating it every day', () => {
-    const forecast = forecastRunOut({ ...trip, oneOffMyr: RM(400), paceSpentMyr: RM(1190), daysElapsed: 7 });
-    expect(forecast.burnRateMyr).toBe(RM(170));
-    expect(forecast.runOutDayNumber).toBe(10);
-  });
-
-  it('says today when the money has already run out', () => {
-    expect(forecastRunOut({ ...trip, paceSpentMyr: RM(2100), daysElapsed: 6 }).runOutDayNumber).toBe(6);
-  });
-
-  it('makes no forecast before anything is spent or before the trip starts', () => {
-    expect(forecastRunOut({ ...trip, paceSpentMyr: 0, daysElapsed: 3 }).runOutDayNumber).toBeNull();
-    expect(forecastRunOut({ ...trip, paceSpentMyr: RM(100), daysElapsed: 0 }).runOutDayNumber).toBeNull();
+  it('spending past all the spending money means the reserve is in use', () => {
+    expect(spendToday(801).spendableLeftMyr).toBe(RM(-1));
   });
 });
 
@@ -96,7 +98,8 @@ describe('summarizeTrip with the demo data', () => {
     expect(summary.remainingMyr).toBe(RM(1100));
     expect(summary.safePerDayMyr).toBe(RM(200));
     expect(summary.status).toBe('on_track');
-    expect(summary.forecast.runOutDayNumber).toBeNull();
+    // (2,550 − 300 − 1,450) ÷ 3 days after today
+    expect(summary.tomorrowPerDayMyr).toBe(26666);
   });
 
   it('opens on the morning of day 7 with all of today’s RM 200 still to spend', () => {
@@ -109,10 +112,10 @@ describe('summarizeTrip with the demo data', () => {
     expect(data.expenses.some((e) => /hotel|agoda|narita/i.test(`${e.merchantName} ${e.note}`))).toBe(false);
   });
 
-  it('does not warn about running out after one more small expense', () => {
+  it('stays on track after one more small expense', () => {
     const ramen = { ...data.expenses[0], id: 'ramen', category: 'food', amountMyr: RM(31), purchaseDate: '2026-11-15' } as Expense;
     const after = summarizeTrip({ trip, categoryBudgets: data.categoryBudgets, expenses: [...data.expenses, ramen], today: '2026-11-15' });
-    expect(after.forecast.runOutDayNumber).toBeNull();
+    expect(after.status).toBe('on_track');
   });
 
   it('has category totals and daily totals that both add up to the amount spent', () => {
@@ -193,17 +196,19 @@ describe('the new rule (15 Oct 2026): every category is everyday spending', () =
     expect(on('2026-12-02', [grab]).safePerDayMyr).toBe(RM(580));
   });
 
-  it('includes daily transport in the forecast pace', () => {
+  it('counts daily transport in what the days ahead get', () => {
+    // Day 2 of 4: (1,800 − 500 − 500) ÷ 2 days after today = 400, under 70% of 450.
     const summary = on('2026-12-02', [spend('transport', 500, '2026-12-01'), spend('food', 500, '2026-12-02')]);
-    expect(summary.forecast.burnRateMyr).toBe(RM(500));
-    // RM 500 a day reaches RM 2,000 on day 4, past the RM 1,800 after the reserve.
-    expect(summary.forecast.runOutDayNumber).toBe(4);
+    expect(summary.tomorrowPerDayMyr).toBe(RM(400));
+    expect(summary.status).toBe('spending_fast');
   });
 
-  it('is running short only when what remains is less than the reserve', () => {
-    expect(on('2026-12-02', [spend('shopping', 1790)]).status).not.toBe('running_short');
-    expect(on('2026-12-02', [spend('shopping', 1801)]).status).toBe('running_short');
-    expect(on('2026-12-02', [spend('shopping', 1801)]).safePerDayMyr).toBe(0);
+  it('warns "running short" while there is still money to save, not only once it is gone', () => {
+    // Spent before today: 1,500, so today's amount is (1,800 − 1,500) ÷ 3 = 100 and the days ahead would get 150.
+    const summary = on('2026-12-02', [spend('shopping', 1500, '2026-12-01')]);
+    expect(summary.spendableLeftMyr).toBe(RM(300));
+    expect(summary.tomorrowPerDayMyr).toBe(RM(150));
+    expect(summary.status).toBe('running_short');
   });
 
   it('ignores old saved hotel ("stay") expenses: they do not crash anything or count in totals', () => {
@@ -251,10 +256,11 @@ describe('today’s amount is set once at the start of the day (the Home card)',
     expect(summary.dayNumber).toBe(4);
   });
 
-  it('agrees with the forecast: spending exactly the daily amount never warns', () => {
-    const summary = on('2026-12-03', [spend('food', 450, '2026-12-01'), spend('food', 450, '2026-12-02')]);
+  it('spending exactly the daily amount every day never warns', () => {
+    const summary = on('2026-12-03', [spend('food', 450, '2026-12-01'), spend('food', 450, '2026-12-02'), spend('food', 450, '2026-12-03')]);
     expect(summary.safePerDayMyr).toBe(RM(450));
-    expect(summary.forecast.runOutDayNumber).toBeNull();
+    expect(summary.tomorrowPerDayMyr).toBe(RM(450));
+    expect(summary.status).toBe('on_track');
   });
 });
 
