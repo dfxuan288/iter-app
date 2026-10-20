@@ -7,7 +7,7 @@ import { DailySpendBars } from '@/components/home/DailySpendBars';
 import { ExpenseList } from '@/components/home/ExpenseList';
 import { MissedDayCard } from '@/components/home/MissedDayCard';
 import { InstallAppCard } from '@/components/InstallAppCard';
-import { PaceWarning } from '@/components/home/PaceWarning';
+import { StatusWarning } from '@/components/home/StatusWarning';
 import { RefundCard } from '@/components/home/RefundCard';
 import { SafeToSpendCard } from '@/components/home/SafeToSpendCard';
 import { LockedFeature } from '@/components/plan/LockedFeature';
@@ -135,7 +135,7 @@ export default function HomeScreen() {
       {locked ? null : (
         <>
           <RefundCard summary={summarizeRefunds(trip, expensesToDate)} trip={trip} today={today} />
-          <PaceWarning summary={summary} />
+          <StatusWarning summary={summary} />
         </>
       )}
       {missedDay ? <MissedDayCard day={missedDay} /> : null}

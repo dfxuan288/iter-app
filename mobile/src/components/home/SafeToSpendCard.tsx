@@ -12,7 +12,7 @@ import type { BudgetStatus, TripSummary } from '@/domain/budget';
 import { formatDayMonth } from '@/domain/dates';
 import { formatMoney } from '@/domain/money';
 import type { Trip } from '@/domain/types';
-import { colors, spacing } from '@/theme/tokens';
+import { colors, radius, spacing } from '@/theme/tokens';
 
 const statusChips: Record<BudgetStatus, { label: string; icon: Icon; tone: ChipTone }> = {
   on_track: { label: 'On track', icon: CheckCircleIcon, tone: 'glass' },
@@ -30,8 +30,8 @@ interface Headline {
   /** Sen, shown large. */
   amountSen: number;
   caption: string;
-  /** The smaller "left today" line: the amount (sen) and the words around it. */
-  today?: { sen: number; template: (amount: string) => string };
+  /** The "left today" line: the amount (sen), the words around it, and whether today went over. */
+  today?: { sen: number; template: (amount: string) => string; over: boolean };
 }
 
 function headline(trip: Trip, summary: TripSummary): Headline {
@@ -58,7 +58,8 @@ function headline(trip: Trip, summary: TripSummary): Headline {
         caption: lastDay ? 'to spend today, your last day' : `a day across your ${days(summary.daysLeft)} left`,
         today: {
           sen: Math.abs(summary.leftTodayMyr),
-          template: over ? (amount) => `${amount} over today's amount${lastDay ? '' : ', so tomorrow gets a little less'}` : (amount) => `${amount} left today`,
+          template: over ? (amount) => `${amount} over today's amount${lastDay ? '' : ', so tomorrow gets less'}` : (amount) => `${amount} left today`,
+          over,
         },
       };
     }
@@ -85,7 +86,12 @@ export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSu
         <AppText color="inverse" style={styles.onPhoto}>
           {caption}
         </AppText>
-        {today ? <AnimatedMoney sen={today.sen} template={today.template} variant="bodyStrong" color="inverse" style={[styles.onPhoto, styles.today]} /> : null}
+        {today ? (
+          // Highlighted so today's position stands out: green while within today's amount, amber once over it.
+          <View style={[styles.todayPill, today.over ? styles.todayPillOver : null]}>
+            <AnimatedMoney sen={today.sen} template={today.template} variant="bodyStrong" style={{ color: today.over ? colors.warning : colors.navy }} />
+          </View>
+        ) : null}
       </View>
       <GlassPanel style={styles.statRow}>
         <View style={styles.stat}>
@@ -97,7 +103,7 @@ export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSu
         <View style={styles.statDivider} />
         <View style={styles.stat}>
           <AppText variant="caption" color="inverseMuted">
-            Remaining
+            Total remaining
           </AppText>
           <AnimatedMoney sen={summary.remainingMyr} variant="number" color="inverse" style={statSize(summary.remainingMyr)} />
         </View>
@@ -110,7 +116,8 @@ export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSu
 const styles = StyleSheet.create({
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   photoWindow: { height: 112 },
-  today: { marginTop: spacing.sm },
+  todayPill: { alignSelf: 'flex-start', marginTop: spacing.sm, paddingHorizontal: spacing.md, paddingVertical: spacing.xs, borderRadius: radius.pill, backgroundColor: colors.accent },
+  todayPillOver: { backgroundColor: colors.warningSurface },
   // A soft shadow keeps the white text readable where the photo is bright.
   onPhoto: { textShadowColor: 'rgba(5,59,80,0.55)', textShadowRadius: 12, textShadowOffset: { width: 0, height: 1 } },
   statRow: { flexDirection: 'row', alignItems: 'center' },

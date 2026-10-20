@@ -43,6 +43,14 @@ Amanda is on day 7 of a 10-day trip to Tokyo, with RM 2,550 for day-to-day spend
 - *Say:* "Spend less today and tomorrow gets more. Overspend and it tells you before you run short."
 - **Me → App date → Back to 15 Nov** before carrying on.
 
+### 4b. Overspending (45 s, optional)
+
+- **Add an expense**, type `11620 yen souvenirs` (about RM 300), **Fill in**, **Save expense**.
+- The "left today" line turns amber ("RM 100 over today's amount"), the chip changes to **Spending fast** at once,
+  and the box below explains: "From tomorrow you have RM 166 a day for your last 3 days."
+- *Say:* "Today's number stays fixed so it's easy to plan with, but ITER reacts the moment you overspend."
+- Delete that expense (tap it → Delete) or **Reset the demo** before step 5, so later numbers match this script.
+
 ### 5. Scan a receipt with AI (1.5 min)
 
 - **Scan** (the raised button) → **Receipt** → **No receipt to hand? → Drugstore, Ginza**.
