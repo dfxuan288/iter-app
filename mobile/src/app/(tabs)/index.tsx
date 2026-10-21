@@ -113,13 +113,13 @@ export default function HomeScreen() {
             <View style={styles.lockedFigures}>
               <View style={styles.flex}>
                 <AppText variant="caption" color="muted">
-                  Spent so far
+                  Total spent so far
                 </AppText>
                 <AppText variant="number">{formatMoney(summary.spentMyr, 'MYR', { trimZeros: true })}</AppText>
               </View>
               <View style={styles.flex}>
                 <AppText variant="caption" color="muted">
-                  Remaining
+                  Total remaining
                 </AppText>
                 <AppText variant="number">{formatMoney(summary.remainingMyr, 'MYR', { trimZeros: true })}</AppText>
               </View>

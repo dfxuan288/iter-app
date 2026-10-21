@@ -31,7 +31,7 @@ Amanda is on day 7 of a 10-day trip to Tokyo, with RM 2,550 for day-to-day spend
 
 ### 3. Home: safe to spend (1 min)
 
-- **RM 200 a day across your 4 days left**, *RM 200 left today*, spent **RM 1,450**, remaining **RM 1,100**.
+- **RM 200 a day across your 4 days left**, *RM 200 left today*, total spent so far **RM 1,450**, total remaining **RM 1,100**.
 - *Say:* "This is the one number travellers need. It is simple maths, not AI: what is left after the reserve,
   shared over the days left. (2,550 − 300 − 1,450) ÷ 4 = RM 200."
 - Tap a bar in **Each day**: the date and what was spent. Point out **On track**.
@@ -46,9 +46,10 @@ Amanda is on day 7 of a 10-day trip to Tokyo, with RM 2,550 for day-to-day spend
 ### 4b. Overspending (45 s, optional)
 
 - **Add an expense**, type `11620 yen souvenirs` (about RM 300), **Fill in**, **Save expense**.
-- The "left today" line turns amber ("RM 100 over today's amount"), the chip changes to **Spending fast** at once,
-  and the box below explains: "From tomorrow you have RM 166 a day for your last 3 days."
-- *Say:* "Today's number stays fixed so it's easy to plan with, but ITER reacts the moment you overspend."
+- The big number drops to **RM 166.66 a day for your last 3 days, down from RM 200**, the "left today" line turns
+  amber ("RM 100 over today's amount"), and the chip changes to **Spending fast** at once.
+- *Say:* "Within your daily amount the number stays put, so it's easy to plan with. The moment you overspend, ITER
+  lowers what the rest of the trip gets."
 - Delete that expense (tap it → Delete) or **Reset the demo** before step 5, so later numbers match this script.
 
 ### 5. Scan a receipt with AI (1.5 min)

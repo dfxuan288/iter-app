@@ -62,18 +62,20 @@ describe('the demo on day 7, reacting to what is spent today (the CTO review cas
   };
 
   it.each([
-    [0, 'on_track', 26666],
-    [200, 'on_track', 20000],
-    [250, 'spending_fast', 18333],
-    [300, 'spending_fast', 16666],
-    [560, 'running_short', 8000],
-    [801, 'running_short', 0],
-  ])('spending RM %d today: %s, tomorrow gets %d sen a day', (ringgit, status, tomorrow) => {
+    [0, 'on_track', 26666, 20000],
+    [200, 'on_track', 20000, 20000],
+    [250, 'spending_fast', 18333, 18333],
+    [300, 'spending_fast', 16666, 16666],
+    [560, 'running_short', 8000, 8000],
+    [801, 'running_short', 0, 0],
+  ])('spending RM %d today: %s, tomorrow gets %d sen a day, the card shows %d', (ringgit, status, tomorrow, shown) => {
     const summary = spendToday(ringgit);
     expect(summary.status).toBe(status);
     expect(summary.tomorrowPerDayMyr).toBe(tomorrow);
-    // The big daily number stays fixed all day.
+    // Today's amount is fixed all day; the card's big number lowers only once today goes over it.
     expect(summary.safePerDayMyr).toBe(RM(200));
+    expect(summary.shownPerDayMyr).toBe(shown);
+    expect(summary.perDayLowered).toBe(ringgit > 200);
   });
 
   it('spending past all the spending money means the reserve is in use', () => {
@@ -233,6 +235,20 @@ describe('today’s amount is set once at the start of the day (the Home card)',
 
   it('can go below zero today, and says by how much', () => {
     expect(on('2026-12-01', [spend('food', 500)]).leftTodayMyr).toBe(RM(-50));
+  });
+
+  it('within today’s amount the card shows it; over it, the card shows the lowered amount from tomorrow', () => {
+    expect(on('2026-12-01', [spend('food', 450)]).shownPerDayMyr).toBe(RM(450));
+    // (1,800 − 600) ÷ 3 = 400.
+    const over = on('2026-12-01', [spend('food', 600)]);
+    expect(over.perDayLowered).toBe(true);
+    expect(over.shownPerDayMyr).toBe(RM(400));
+  });
+
+  it('on the last day there is nothing to lower: the card keeps today’s amount', () => {
+    const summary = on('2026-12-04', [spend('food', 2000)]);
+    expect(summary.perDayLowered).toBe(false);
+    expect(summary.shownPerDayMyr).toBe(summary.safePerDayMyr);
   });
 
   it('rebalances the next morning: underspend raises it, overspend lowers it', () => {
