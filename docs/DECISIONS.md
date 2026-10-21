@@ -269,7 +269,9 @@ Team decision. Replaces brief §9.1 to §9.3 and the "essentials" notes above.
   so the card shows the two steps (Share, then Add to Home Screen, in Safari). The card disappears once ITER is opened
   from the home screen. Files: `mobile/public/manifest.json`, `mobile/public/icons/`, `mobile/public/index.html`.
 - **Full screen**: opened from the home screen, ITER has no browser bars and draws behind the notch
-  (`viewport-fit=cover`); the status bar takes the app's background colour, and content stays clear of the notch.
+  (`viewport-fit=cover`); content stays clear of the notch. On Android it opens truly full screen (manifest
+  `"display": "fullscreen"`, 21 Oct 2026): the status bar is hidden and a swipe down from the top shows it. iPhone
+  has no full-screen mode for web apps, so there the status bar stays, in the app's background colour.
   In a normal browser tab the browser's own bars stay; that cannot be changed by a website.
 - **Trip calendar**: the teal band now runs unbroken from the first day's circle to the last day's.
 - **Motion** (all switched off when the phone is set to reduce motion): amounts on Home and the tax refund total
