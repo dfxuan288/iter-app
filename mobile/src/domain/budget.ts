@@ -64,6 +64,14 @@ export interface TripSummary {
   tomorrowPerDayMyr: number | null;
   /** How far today's spending is over today's amount (0 when within it). */
   overTodayMyr: number;
+  /**
+   * The daily amount Home shows large. Today's amount while spending is within it. Once today goes
+   * over, it is what each day after today gets, so it lowers live with every overspend (team
+   * request, 21 Oct 2026). The switch has no jump: at exactly today's amount the two are equal.
+   */
+  shownPerDayMyr: number;
+  /** True when `shownPerDayMyr` is the lowered, from-tomorrow amount. */
+  perDayLowered: boolean;
   categories: CategoryProgress[];
   dailySpend: DailySpend[];
 }
@@ -154,6 +162,8 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
   const daysAfterToday = phase === 'active' ? daysLeft - 1 : 0;
   const tomorrowPerDayMyr = daysAfterToday > 0 ? safeToSpendPerDay(trip.totalBudgetMyr, trip.reserveMyr, spentMyr, daysAfterToday) : null;
   const overTodayMyr = phase === 'active' ? Math.max(0, spentTodayMyr - safePerDayMyr) : 0;
+  // Over today's amount, the card shows what each day after today gets instead (none to lower on the last day).
+  const loweredPerDayMyr = overTodayMyr > 0 ? tomorrowPerDayMyr : null;
   const dailySpend = eachDay(trip.startDate, trip.endDate).map((date, index) => ({
     date,
     dayNumber: index + 1,
@@ -179,6 +189,8 @@ export function summarizeTrip({ trip, categoryBudgets, expenses, today }: TripSu
     daysAfterToday,
     tomorrowPerDayMyr,
     overTodayMyr,
+    shownPerDayMyr: loweredPerDayMyr ?? safePerDayMyr,
+    perDayLowered: loweredPerDayMyr !== null,
     categories,
     dailySpend,
   };

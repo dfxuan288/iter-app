@@ -434,6 +434,20 @@ stays fixed all day.
 - Home card: the "left today" line is highlighted (green within today's amount, amber once over), and "Remaining" is
   now "Total remaining".
 
+## The daily amount lowers live once today goes over (21 Oct 2026)
+
+Team request: overspending should lower the big daily number straight away, not only the next morning.
+- **Within today's amount**: the big number stays fixed all day (spending RM 100 of RM 200 does not shrink it;
+  the green "left today" line counts down instead).
+- **Over today's amount**: the big number becomes what each day after today gets, and lowers with every further
+  expense: "RM 166.66 a day for your last 3 days, down from RM 200". The "left today" line turns amber
+  ("RM 100 over today's amount").
+- There is no jump at the switch: spending exactly today's amount leaves the days ahead with the same amount.
+- Not fully live from the first ringgit, on purpose: that would shrink the number even when spending within plan,
+  which looks like a penalty for doing the right thing.
+- On the last day there are no days after today, so the number stays and the amber line shows the overspend.
+- "Spent so far" is now "Total spent so far".
+
 ## Still open
 
 

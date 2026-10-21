@@ -49,16 +49,21 @@ function headline(trip: Trip, summary: TripSummary): Headline {
         caption: summary.remainingMyr >= 0 ? 'left over from your budget' : 'over your budget',
       };
     case 'active': {
-      // The daily amount is set each morning and stays put all day; today's spending shows on the line under it.
+      // The daily amount is set each morning and stays put while today's spending is within it.
+      // Once today goes over, it lowers live to what each day after today gets.
       const lastDay = summary.daysLeft === 1;
       const over = summary.leftTodayMyr < 0;
       return {
         dayChip: `Day ${summary.dayNumber} of ${summary.totalDays}`,
-        amountSen: summary.safePerDayMyr,
-        caption: lastDay ? 'to spend today, your last day' : `a day across your ${days(summary.daysLeft)} left`,
+        amountSen: summary.shownPerDayMyr,
+        caption: summary.perDayLowered
+          ? `a day for your last ${days(summary.daysAfterToday)}, down from ${rm(summary.safePerDayMyr)}`
+          : lastDay
+            ? 'to spend today, your last day'
+            : `a day across your ${days(summary.daysLeft)} left`,
         today: {
           sen: Math.abs(summary.leftTodayMyr),
-          template: over ? (amount) => `${amount} over today's amount${lastDay ? '' : ', so tomorrow gets less'}` : (amount) => `${amount} left today`,
+          template: over ? (amount) => `${amount} over today's amount` : (amount) => `${amount} left today`,
           over,
         },
       };
@@ -96,7 +101,7 @@ export function SafeToSpendCard({ trip, summary }: { trip: Trip; summary: TripSu
       <GlassPanel style={styles.statRow}>
         <View style={styles.stat}>
           <AppText variant="caption" color="inverseMuted">
-            Spent so far
+            Total spent so far
           </AppText>
           <AnimatedMoney sen={summary.spentMyr} variant="number" color="inverse" style={statSize(summary.spentMyr)} />
         </View>
