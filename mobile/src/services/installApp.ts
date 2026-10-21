@@ -46,8 +46,9 @@ if (isWeb) {
 
 export function installWay(): InstallWay {
   if (!isWeb) return 'none';
-  const standalone =
-    window.matchMedia?.('(display-mode: standalone)').matches === true || (navigator as Navigator & { standalone?: boolean }).standalone === true;
+  // Android opens the installed app full screen (no status bar); iPhone opens it standalone.
+  const opened = (mode: string) => window.matchMedia?.(`(display-mode: ${mode})`).matches === true;
+  const standalone = opened('fullscreen') || opened('standalone') || (navigator as Navigator & { standalone?: boolean }).standalone === true;
   if (standalone || justInstalled) return 'installed';
   if (deferred) return 'prompt';
   const ua = navigator.userAgent;
