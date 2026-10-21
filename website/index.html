@@ -837,6 +837,29 @@ a.pill{text-decoration:none;}
 
 @media (pointer:coarse){#dashNav button,.po-like,.lnk,#rcPick button,#cmDest button{min-height:44px;}}
 .bars i.fut{background:transparent;border:1.5px dashed #b9c9cf;border-bottom:0;}
+
+/* v2 content: status pill, chips, warning box, category rows, warning art */
+.st-pill{display:inline-flex;align-items:center;margin-top:10px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;}
+.st-pill.ok{background:#e2f3e8;color:#1b6338;}
+.st-pill.over{background:#fbeed6;color:#7f520f;}
+.chip.fast{background:#fbeed6;color:#7f520f;}
+.chip.short{background:#fbe3df;color:#9a2f1f;}
+#fWarn b{display:block;margin-bottom:2px;color:var(--ink);}
+.bars i.fut{background:transparent;border:1.5px dashed #b9c9cf;border-bottom:0;}
+.catrow .cn{width:104px;}
+.catrow .cv{width:auto;min-width:132px;font-size:12.5px;font-weight:400;color:var(--ink-soft);}
+.catrow .cv b{color:var(--ink);font-weight:600;}
+.catrow .cbar i.over{background:#b7791f;}
+@media(max-width:520px){.catrow{flex-wrap:wrap;gap:6px 12px;}.catrow .cbar{order:3;flex:1 0 100%;}.catrow .cn{width:auto;flex:1;}.catrow .cv{min-width:0;}}
+.wn{width:100%;height:100%;max-height:160px;overflow:visible;}
+.wn-plan{fill:none;stroke:#8fb3c0;stroke-width:1.4;stroke-dasharray:4 4;}
+.wn-spent{fill:var(--accent);}
+.wn-over{fill:#d69a3a;}
+.wn-overlbl{fill:#7f520f;font-weight:600;}
+.wn-day{fill:rgba(23,107,135,.14);stroke:var(--accent);stroke-width:1.2;stroke-dasharray:3 3;}
+.wn-was{stroke:#8fb3c0;stroke-width:1;stroke-dasharray:2 4;}
+.tile .v{white-space:nowrap;}
+@media(max-width:520px){.tiles{grid-template-columns:1fr 1fr;}.tile.tx{grid-column:1/-1;}}
 </style>
 <script>
 /* ════════════════════════════════════════════════════════════════════
@@ -1063,7 +1086,7 @@ window.ITER_SITE = {
       <div class="deck" id="deckEl">
         <div class="deck-core">
           <div class="aside">
-            <div class="who"><span class="av">AT</span><span><b>Amanda T.</b><span>Tokyo · Day 6 of 10</span></span></div>
+            <div class="who"><span class="av">AT</span><span><b>Amanda T.</b><span>Tokyo · Day 7 of 10</span></span></div>
             <nav role="tablist" aria-label="Dashboard view" id="dashNav">
               <button type="button" class="on" role="tab" aria-selected="true" aria-controls="panel-safe" id="tab-safe" data-tab="safe">Safe to spend</button>
               <button type="button" role="tab" aria-selected="false" aria-controls="panel-scan" id="tab-scan" data-tab="scan">Scan a receipt</button>
@@ -1078,31 +1101,32 @@ window.ITER_SITE = {
               <div class="p-top">
                 <div>
                   <span class="lbl">Safe to spend · per day</span>
-                  <div class="big" id="amt">RM 200</div>
-                  <div class="bsub" id="amtSub">for each of the next 4 days</div>
+                  <div class="big" id="amt">RM 200.00</div>
+                  <div class="bsub" id="amtSub">a day across your 4 days left</div>
+                  <span class="st-pill ok" id="amtPill">RM 200.00 left today</span>
                 </div>
                 <span class="chip" id="chip">On track</span>
               </div>
 
               <div class="tiles">
-                <div class="tile"><div class="k">Spent so far</div><div class="v" id="spentV">RM 2,700</div></div>
-                <div class="tile"><div class="k">Remaining</div><div class="v" id="rem">RM 1,500</div></div>
+                <div class="tile"><div class="k">Total spent so far</div><div class="v" id="spentV">RM 1,450.00</div></div>
+                <div class="tile"><div class="k">Total remaining</div><div class="v" id="rem">RM 1,100.00</div></div>
                 <div class="tile tx"><div class="k">Tax refund to collect</div><div class="v" id="taxV">RM 38</div></div>
               </div>
 
               <div class="bars" id="bars" aria-hidden="true">
-                <i style="height:29px"></i><i style="height:40px"></i><i style="height:26px"></i><i style="height:50px"></i>
-                <i style="height:35px"></i><i class="hi" style="height:44px"></i>
-                <i class="fut" style="height:24px"></i><i class="fut" style="height:24px"></i><i class="fut" style="height:24px"></i><i class="fut" style="height:24px"></i>
+                <i style="height:29px"></i><i style="height:37px"></i><i style="height:26px"></i><i style="height:42px"></i><i style="height:32px"></i><i style="height:33px"></i>
+                <i class="hi" style="height:3px"></i>
+                <i class="fut" style="height:28px"></i><i class="fut" style="height:28px"></i><i class="fut" style="height:28px"></i>
               </div>
-              <div class="bars-cap" style="position:relative"><span>Daily spend · day 1</span><span style="position:absolute;left:55%;transform:translateX(-50%)">Today</span><span>Day 10</span></div>
+              <div class="bars-cap" style="position:relative"><span>Daily spend · day 1</span><span style="position:absolute;left:65%;transform:translateX(-50%)">Today</span><span>Day 10</span></div>
 
               <div class="ctl-h"><span>No receipt? Type it in</span><button type="button" class="lnk" onclick="showTab('scan')">or scan a receipt →</button></div>
               <div class="ctl">
                 <select class="sel" id="fxCur" aria-label="Currency you paid in"><option value="MYR">MYR · Ringgit</option><option value="JPY" selected>JPY · Japanese Yen</option><option value="THB">THB · Thai Baht</option><option value="SGD">SGD · Singapore Dollar</option><option value="IDR">IDR · Indonesian Rupiah</option><option value="VND">VND · Vietnamese Dong</option><option value="USD">USD · US Dollar</option><option value="EUR">EUR · Euro</option><option value="KRW">KRW · Korean Won</option></select>
                 <input type="number" id="exp" placeholder="Amount" min="0" step="any" aria-label="Amount you paid">
                 <select class="sel" id="fxCat" aria-label="Spend category">
-                  <option>Food</option><option>Transport</option><option>Stay</option>
+                  <option>Food</option><option>Daily transport</option>
                   <option>Activities</option><option>Shopping</option>
                 </select>
                 <button class="sbtn" onclick="logExp()">Log expense</button>
@@ -1129,16 +1153,15 @@ window.ITER_SITE = {
 
             <div class="tabpanel" id="panel-categories" role="tabpanel" aria-labelledby="tab-categories" tabindex="0" hidden>
               <div class="p-top">
-                <div><span class="lbl">Spent by category</span><div class="big" id="catTotal">RM 2,700</div></div>
-                <span class="chip">Day 6 of 10</span>
+                <div><span class="lbl">Spent by category</span><div class="big" id="catTotal">RM 1,450.00</div></div>
+                <span class="chip">Day 7 of 10</span>
               </div>
               <div class="cats">
-                <div class="catrow" data-cat="Food"><span class="cn">Food</span><div class="cbar"><i style="width:62%"></i></div><span class="cv">RM 720</span></div>
-                <div class="catrow" data-cat="Transport"><span class="cn">Transport</span><div class="cbar"><i style="width:36%"></i></div><span class="cv">RM 410</span></div>
-                <div class="catrow" data-cat="Stay"><span class="cn">Stay</span><div class="cbar"><i style="width:100%"></i></div><span class="cv">RM 1,150</span></div>
-                <div class="catrow" data-cat="Activities"><span class="cn">Activities</span><div class="cbar"><i style="width:24%"></i></div><span class="cv">RM 280</span></div>
-                <div class="catrow" data-cat="Shopping"><span class="cn">Shopping</span><div class="cbar"><i style="width:12%"></i></div><span class="cv">RM 140</span></div>
-                <div class="catrow" data-cat="Reserve"><span class="cn">Reserve held</span><div class="cbar"><i style="width:26%;background:var(--ink-soft);"></i></div><span class="cv">RM 300</span></div>
+                <div class="catrow" data-cat="Food"><span class="cn">Food</span><div class="cbar"><i style="width:50%"></i></div><span class="cv"><b>RM 349.90</b> <span>of RM 700</span></span></div>
+                <div class="catrow" data-cat="Daily transport"><span class="cn">Daily transport</span><div class="cbar"><i style="width:70%"></i></div><span class="cv"><b>RM 244.81</b> <span>of RM 350</span></span></div>
+                <div class="catrow" data-cat="Activities"><span class="cn">Activities</span><div class="cbar"><i style="width:39%"></i></div><span class="cv"><b>RM 156.46</b> <span>of RM 400</span></span></div>
+                <div class="catrow" data-cat="Shopping"><span class="cn">Shopping</span><div class="cbar"><i style="width:87%"></i></div><span class="cv"><b>RM 698.83</b> <span>of RM 800</span></span></div>
+                <div class="catrow" data-cat="Reserve"><span class="cn">Reserve held</span><div class="cbar"><i style="width:100%;background:var(--ink-soft);"></i></div><span class="cv"><b>RM 300.00</b> <span>kept aside</span></span></div>
               </div>
             </div>
 
@@ -1157,7 +1180,7 @@ window.ITER_SITE = {
                 <span class="chip">Past trips</span>
               </div>
               <div class="hist">
-                <div class="hrow"><div><b>Tokyo</b><span>Current trip · day 6 of 10</span></div><span class="hv live" id="histNow">RM 2,700 so far</span></div>
+                <div class="hrow"><div><b>Tokyo</b><span>Current trip · day 7 of 10</span></div><span class="hv live" id="histNow">RM 1,450.00 so far</span></div>
                 <div class="hrow"><div><b>Seoul</b><span>2–9 Jul 2025</span></div><span class="hv">RM 2,940</span></div>
                 <div class="hrow"><div><b>Bangkok</b><span>12–16 Mar 2025</span></div><span class="hv">RM 1,180</span></div>
               </div>
@@ -1186,36 +1209,37 @@ window.ITER_SITE = {
 
     <div class="trio">
       <div class="col reveal" data-feature="safe">
-        <div class="idx"><span class="ic-tile" aria-hidden="true"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M4,24 L11,18.5 L17,20.5 L23,13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23,13 L29,7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 3.4" opacity=".6"/><circle cx="23" cy="13" r="2.6"/></svg></span><span class="idx-n" data-f="n">02</span><span class="idx-t" data-f="tag">Pace projected forward</span></div>
+        <div class="idx"><span class="ic-tile" aria-hidden="true"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M4,24 L11,18.5 L17,20.5 L23,13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23,13 L29,7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 3.4" opacity=".6"/><circle cx="23" cy="13" r="2.6"/></svg></span><span class="idx-n" data-f="n">02</span><span class="idx-t" data-f="tag">Your daily number</span></div>
         <h3 data-f="title">Know what's safe to spend</h3>
-        <p data-f="text">ITER weighs what's left against the days you have and your pace, and recalculates a safe daily number the moment a receipt lands. Overspend early, and you hear about it while there's still room to adjust.</p>
+        <p data-f="text">Set your budget once. ITER tells you what you can spend today, and rebalances it each morning so one big day never wrecks the rest of your trip.</p>
         <div class="frame two" data-tilt>
           <div class="ill">
-            <svg class="fc" viewBox="0 0 220 128" fill="none" aria-hidden="true">
+            <svg class="wn" viewBox="0 0 220 128" fill="none" aria-hidden="true">
+              <text class="fc-lbl fc-warn" x="212" y="32" text-anchor="end">From tomorrow: RM 166.66 a day</text>
               <line class="fc-grid" x1="8" y1="104" x2="212" y2="104"/>
-              <line class="fc-grid" x1="8" y1="70"  x2="212" y2="70"/>
-              <!-- the budget ceiling, and where the current pace meets it -->
-              <line class="fc-cap" id="fcCap" x1="8" y1="34" x2="212" y2="34"/>
-              <text class="fc-lbl" x="8" y="27">Budget ceiling</text>
-              <!-- spend so far -->
-              <path id="fcReal" class="fc-real" d="M14,100 L46,92 L78,78 L110,68"/>
-              <!-- where that pace lands -->
-              <g clip-path="url(#fcClip)">
-                <path id="fcProj" class="fc-proj" d="M110,68 L142,54 L174,41 L200,31"/>
-              </g>
-              <defs><clipPath id="fcClip"><rect id="fcWipe" x="108" y="0" width="0" height="128"/></clipPath></defs>
-              <circle id="fcNow" class="fc-now" cx="110" cy="68" r="4"/>
-              <circle id="fcHit" class="fc-hit" cx="186" cy="36" r="5"/>
-              <circle id="fcRing" class="fc-ring" cx="186" cy="36" r="5"/>
-              <text class="fc-lbl fc-warn" id="fcHitLbl" x="212" y="20" text-anchor="end">runs out · day 8</text>
+              <!-- today: RM 200 allowed (dashed), RM 300 spent -->
+              <rect class="wn-plan" x="20" y="54" width="36" height="50" rx="4"/>
+              <rect class="wn-spent" x="24" y="54" width="28" height="50" rx="3"/>
+              <rect class="wn-over" x="24" y="29" width="28" height="25" rx="3"/>
+              <text class="fc-lbl wn-overlbl" x="38" y="24" text-anchor="middle">+RM 100</text>
+              <!-- the last 3 days drop to RM 166.66 each -->
+              <rect class="wn-day" x="76" y="62" width="36" height="42" rx="4"/>
+              <rect class="wn-day" x="124" y="62" width="36" height="42" rx="4"/>
+              <rect class="wn-day" x="172" y="62" width="36" height="42" rx="4"/>
+              <line class="wn-was" x1="72" y1="54" x2="212" y2="54"/>
+              <text class="fc-lbl" x="212" y="49" text-anchor="end">was RM 200</text>
+              <text class="fc-lbl" x="38" y="117" text-anchor="middle">Today</text>
+              <text class="fc-lbl" x="94" y="117" text-anchor="middle">Day 8</text>
+              <text class="fc-lbl" x="142" y="117" text-anchor="middle">Day 9</text>
+              <text class="fc-lbl" x="190" y="117" text-anchor="middle">Day 10</text>
             </svg>
           </div>
           <div class="glass">
-            <div class="gh"><span>Safe to spend</span><span>Today</span></div>
-            <div class="gv">RM 200</div>
-            <div class="gs">Across 4 remaining days</div>
-            <div class="spark"><i style="height:70%"></i><i style="height:58%"></i><i style="height:52%"></i><i class="hi" style="height:44%"></i><i style="height:40%"></i><i style="height:36%"></i><i style="height:30%"></i></div>
-            <div class="rows"><div><span>Pace vs plan</span><span>+4%</span></div><div><span>Reserve held</span><span>RM 300</span></div><div><span>Forecast end</span><span>Day 10</span></div></div>
+            <div class="gh"><span>Safe to spend</span><span>Spending fast</span></div>
+            <div class="gv">RM 166.66</div>
+            <div class="gs">a day for your last 3 days, down from RM 200</div>
+            <div class="spark"><i style="height:58%"></i><i style="height:74%"></i><i style="height:52%"></i><i style="height:84%"></i><i style="height:64%"></i><i style="height:66%"></i><i class="hi" style="height:100%"></i></div>
+            <div class="rows"><div><span>Spent today</span><span>RM 300.00</span></div><div><span>Over today's amount</span><span>RM 100.00</span></div><div><span>Reserve held</span><span>RM 300.00</span></div></div>
           </div>
         </div>
       </div>
@@ -1262,8 +1286,8 @@ window.ITER_SITE = {
               <g id="rcSum">
                 <rect class="rs-card" x="56" y="26" width="108" height="78" rx="11"/>
                 <text class="rs-k" x="68" y="44">TRIP SO FAR · IN RM</text>
-                <text class="rs-v" x="68" y="68">RM 1,500</text>
-                <text class="rs-s" x="68" y="79">left of RM 4,200</text>
+                <text class="rs-v" x="68" y="68">RM 1,100</text>
+                <text class="rs-s" x="68" y="79">left of RM 2,550</text>
                 <rect class="rs-b1" x="68" y="88" width="34" height="5" rx="2.5"/>
                 <rect class="rs-b2" x="104" y="88" width="20" height="5" rx="2.5"/>
                 <rect class="rs-b3" x="126" y="88" width="26" height="5" rx="2.5"/>
@@ -1272,10 +1296,10 @@ window.ITER_SITE = {
           </div>
           <div class="glass">
             <div class="gh"><span>Trip overview</span><span class="dots-ic"><i></i><i></i><i></i></span></div>
-            <div class="gv">RM 1,500</div>
-            <div class="gs">Remaining of RM 4,200 budget</div>
+            <div class="gv">RM 1,100</div>
+            <div class="gs">total remaining of RM 2,550</div>
             <div class="spark"><i style="height:40%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:78%"></i><i class="hi" style="height:56%"></i><i style="height:34%"></i><i style="height:44%"></i></div>
-            <div class="rows"><div><span>Food</span><span>RM 720</span></div><div><span>Transport</span><span>RM 410</span></div><div><span>Stay</span><span>RM 1,150</span></div></div>
+            <div class="rows"><div><span>Food</span><span>RM 349.90</span></div><div><span>Daily transport</span><span>RM 244.81</span></div><div><span>Shopping</span><span>RM 698.83</span></div></div>
           </div>
         </div>
       </div>
@@ -1343,7 +1367,7 @@ window.ITER_SITE = {
       </div>
       <div class="wrap"><div class="copy">
         <div class="sn">PLAN</div><h3>Set the trip before you leave</h3>
-        <p>Destination, dates, total budget. ITER splits it across food, transport, stay, activities and shopping, and holds back a reserve you don't touch.</p>
+        <p>Destination, dates, total budget. ITER splits it across food, daily transport, activities and shopping, and holds back a reserve you don't touch. Hotels and flights stay outside the budget.</p>
         <div class="meta">Step one of four</div>
       </div></div>
     </article>
@@ -1373,7 +1397,7 @@ window.ITER_SITE = {
       </div>
       <div class="wrap"><div class="copy">
         <div class="sn">KNOW</div><h3>Know what's safe, every day</h3>
-        <p>Every receipt updates one number: what you can safely spend per day for the rest of the trip. If your pace won't last, you hear about it while there's still room to adjust.</p>
+        <p>Every receipt updates one number: what you can safely spend today. Go over, and ITER tells you straight away what's left for each day after.</p>
         <div class="meta">Step three of four</div>
       </div></div>
     </article>
@@ -1420,7 +1444,7 @@ window.ITER_SITE = {
         <div class="cm-stat">
           <span class="lbl">Typical <span id="cmDays">5</span>-day trip · <span id="cmCity">Tokyo</span></span>
           <div class="big" id="cmTotal">RM 2,900</div>
-          <div class="cm-sub" id="cmBase">Median of 46 trip summaries · excluding flights</div>
+          <div class="cm-sub" id="cmBase">Median of 46 trip summaries · excluding flights and hotels</div>
           <div class="cm-split" id="cmSplit" aria-hidden="true"></div>
           <div class="cm-legend" id="cmLegend"></div>
         </div>
@@ -1553,9 +1577,12 @@ window.ITER_SITE = {
 
 <script>
 /* ---------- demo logic ---------- */
-/* demo trip: Tokyo, RM 4,200 budget, day 6 of 10, RM 2,700 spent before the demo starts */
-const TOTAL=4200, BASE_SPENT=2700, ESSENTIAL=400, RESERVE=300, DAYS=4;
-let spent=0;   /* added during the demo */
+/* demo trip (same as the app): Amanda, Tokyo, day 7 of 10. Hotels and flights are outside the budget. */
+const BUDGET=2550, RESERVE=300, SPENT_BEFORE=1450, DAYS_LEFT=4, TOTAL_DAYS=10;
+let spent=0;   /* spentToday: what the visitor logs in the demo */
+/* round down to the sen, always 2 decimals: RM 166.66 */
+const sen=n=>Math.floor(n*100+1e-6)/100;
+const fmt2=n=>'RM '+sen(n).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt=n=>'RM '+Math.round(n).toLocaleString('en-MY');
 
 /* ---------- currency ---------- */
@@ -1621,40 +1648,70 @@ function updateConv(){
   out.innerHTML='<b>'+SYM[code]+v.toLocaleString('en-MY')+' = RM '+myr.toFixed(2)+'</b> '+basis+' '+tag;
 }
 
-/* ---------- category totals ---------- */
-const BASE_CATS={Food:720,Transport:410,Stay:1150,Activities:280,Shopping:140};
+/* ---------- category totals (spent of planned) ---------- */
+const BASE_CATS={'Food':349.90,'Daily transport':244.81,'Activities':156.46,'Shopping':698.83};
+const PLANNED={'Food':700,'Daily transport':350,'Activities':400,'Shopping':800};
 const RESERVE_HELD=300;
 let cats=Object.assign({},BASE_CATS);
 function renderCats(){
-  const max=Math.max(RESERVE_HELD,...Object.values(cats),1);
   Object.keys(cats).forEach(k=>{
     const row=document.querySelector('.catrow[data-cat="'+k+'"]'); if(!row)return;
-    row.querySelector('i').style.width=(cats[k]/max*100).toFixed(1)+'%';
-    row.querySelector('.cv').textContent=fmt(cats[k]);
+    const pct=Math.min(100,cats[k]/PLANNED[k]*100), over=cats[k]>PLANNED[k];
+    const bar=row.querySelector('i'); bar.style.width=pct.toFixed(1)+'%'; bar.classList.toggle('over',over);
+    row.querySelector('.cv').innerHTML='<b>'+fmt2(cats[k])+'</b> <span>of RM '+PLANNED[k]+'</span>';
   });
-  const res=document.querySelector('.catrow[data-cat="Reserve"] i');
-  if(res)res.style.width=(RESERVE_HELD/max*100).toFixed(1)+'%';
   const tot=document.getElementById('catTotal');
-  if(tot)tot.textContent=fmt(Object.values(cats).reduce((a,b)=>a+b,0));
+  if(tot)tot.textContent=fmt2(Object.values(cats).reduce((a,b)=>a+b,0));
+}
+
+/* past days 1-6 add up to RM 1,450; bar height = amount / 400 * 55px */
+const PAST_DAYS=[212,268,190,305,236,239];
+const barH=v=>Math.max(3,Math.min(76,v/400*55));
+function renderBars(tomorrow){
+  const bars=document.querySelectorAll('#bars i'); if(bars.length!==TOTAL_DAYS)return;
+  PAST_DAYS.forEach((v,i)=>{bars[i].style.height=barH(v)+'px';});
+  bars[6].style.height=barH(spent)+'px';
+  for(let i=7;i<TOTAL_DAYS;i++)bars[i].style.height=barH(tomorrow)+'px';
 }
 
 function render(){
-  const totalSpent=BASE_SPENT+spent, remaining=TOTAL-totalSpent;
-  const safe=Math.max(0,(remaining-ESSENTIAL-RESERVE)/DAYS);
-  document.getElementById('amt').textContent=fmt(safe);
-  document.getElementById('rem').textContent=fmt(Math.max(0,remaining));
-  document.getElementById('spentV').textContent=fmt(totalSpent);
-  const hn=document.getElementById('histNow'); if(hn)hn.textContent=fmt(totalSpent)+' so far';
+  const spentToday=spent;
+  const todayAmount=(BUDGET-RESERVE-SPENT_BEFORE)/DAYS_LEFT;            /* RM 200, fixed all day */
+  const leftToday=todayAmount-spentToday;
+  const spendable=BUDGET-RESERVE-SPENT_BEFORE-spentToday;
+  const tomorrow=Math.max(0,spendable/(DAYS_LEFT-1));                  /* each day after today */
+  const planned=(BUDGET-RESERVE)/TOTAL_DAYS;                           /* RM 225 */
+  const totalSpent=SPENT_BEFORE+spentToday, totalRemaining=BUDGET-totalSpent;
+  const over=spentToday>todayAmount+1e-9, lastDays=DAYS_LEFT-1;
+
+  const amt=document.getElementById('amt'), sub=document.getElementById('amtSub'), pill=document.getElementById('amtPill');
+  if(!over){
+    amt.textContent=fmt2(todayAmount);
+    sub.textContent='a day across your '+DAYS_LEFT+' days left';
+    pill.textContent=fmt2(leftToday)+' left today'; pill.className='st-pill ok';
+  }else{
+    amt.textContent=fmt2(tomorrow);
+    sub.textContent='a day for your last '+lastDays+' days, down from '+fmt2(todayAmount).replace('.00','');
+    pill.textContent=fmt2(spentToday-todayAmount)+" over today's amount"; pill.className='st-pill over';
+  }
+  document.getElementById('spentV').textContent=fmt2(totalSpent);
+  document.getElementById('rem').textContent=fmt2(totalRemaining);
+  const hn=document.getElementById('histNow'); if(hn)hn.textContent=fmt2(totalSpent)+' so far';
+  renderBars(tomorrow);
+
   const chip=document.getElementById('chip'), w=document.getElementById('fWarn');
-  if(remaining<ESSENTIAL+RESERVE){
-    chip.textContent='Running short';chip.className='chip warn';
-    w.textContent="You're running short: what's left no longer covers essentials and your reserve. Hold off on shopping and activities for the rest of the trip.";
-    w.classList.add('on');
-  }else if(safe<120){
-    chip.textContent='Ahead of plan';chip.className='chip warn';
-    w.textContent="Your pace is running ahead of plan. Trim non-essential spend, or tomorrow's number drops again.";
-    w.classList.add('on');
-  }else{chip.textContent='On track';chip.className='chip';w.classList.remove('on');}
+  const short=spendable<0||tomorrow<0.4*planned, fast=over||tomorrow<0.7*planned;
+  const say=(t,b)=>{w.innerHTML='<b>'+t+'</b><span>'+b+'</span>';w.classList.add('on');};
+  if(short){chip.textContent='Running short';chip.className='chip short';}
+  else if(fast){chip.textContent='Spending fast';chip.className='chip fast';}
+  else{chip.textContent='On track';chip.className='chip';}
+  if(spendable<0){
+    say('You are using your reserve','Your spending money is used up: you are '+fmt2(-spendable)+' into the RM '+RESERVE+' you kept aside.');
+  }else if(short){
+    say('Running short','From tomorrow you have '+fmt2(tomorrow)+' a day for your last '+lastDays+' days, under half of the RM '+planned+' a day you planned.');
+  }else if(over){
+    say("Over today's amount",'You are '+fmt2(spentToday-todayAmount)+" over today's "+fmt2(todayAmount).replace('.00','')+'. From tomorrow you have '+fmt2(tomorrow)+' a day for your last '+lastDays+' days.');
+  }else{w.classList.remove('on');w.innerHTML='';}
 }
 function addSpend(myr,cat){
   spent+=myr; if(cat in cats)cats[cat]+=myr;
@@ -1795,24 +1852,24 @@ document.getElementById('dashNav').addEventListener('click',e=>{
 
 /* ---------- community (sample data) ---------- */
 const CM={
-  Tokyo:{days:5,total:2900,n:46,split:[34,31,14,12,9],posts:[
-    {n:'Hafiz R.',t:'s',total:2640,days:5,body:'Came in RM 260 under budget.',tip:'Put Suica on your phone. No ticket queues every morning.',l:128,c:14},
+  Tokyo:{days:5,total:2000,n:46,split:[49,20,18,13],posts:[
+    {n:'Hafiz R.',t:'s',total:1820,days:5,body:'Came in RM 260 under budget.',tip:'Put Suica on your phone. No ticket queues every morning.',l:128,c:14},
     {n:'Mei Ling T.',t:'p',body:'Don Quijote tax-free: spend ¥5,000 or more before tax at the same store on the same day, and keep your passport handy.',l:86,c:9}]},
-  Bangkok:{days:4,total:1450,n:63,split:[38,30,10,12,10],posts:[
-    {n:'Aiman Z.',t:'s',total:1380,days:4,body:'Street food made this the cheapest trip of the year.',tip:'Grab bike for short hops is about half the price of a car.',l:97,c:11},
+  Bangkok:{days:4,total:1010,n:63,split:[54,15,17,14],posts:[
+    {n:'Aiman Z.',t:'s',total:970,days:4,body:'Street food made this the cheapest trip of the year.',tip:'Grab bike for short hops is about half the price of a car.',l:97,c:11},
     {n:'Priya S.',t:'p',body:'Menus with “++” add about 17% at the bill (10% service + 7% VAT). Budget for it before you order.',l:142,c:22}]},
-  Seoul:{days:6,total:3300,n:38,split:[30,33,12,13,12],posts:[
-    {n:'Jun Wei L.',t:'s',total:3120,days:6,body:'Skincare haul blew the shopping budget, everything else on plan.',tip:'One T-money card covers buses and the subway. Top up at any convenience store.',l:74,c:8},
+  Seoul:{days:6,total:2210,n:38,split:[45,18,19,18],posts:[
+    {n:'Jun Wei L.',t:'s',total:2090,days:6,body:'Skincare haul blew the shopping budget, everything else on plan.',tip:'One T-money card covers buses and the subway. Top up at any convenience store.',l:74,c:8},
     {n:'Nurul A.',t:'p',body:'Many shops in Myeongdong can process the tax refund at the counter. Ask before you pay.',l:63,c:6}]},
-  Bali:{days:5,total:1900,n:52,split:[32,36,14,14,4],posts:[
-    {n:'Daniel K.',t:'s',total:1760,days:5,body:'Villa split four ways was the best decision of the trip.',tip:'Book scooters for the week, not the day.',l:58,c:5},
+  Bali:{days:5,total:1220,n:52,split:[50,22,22,6],posts:[
+    {n:'Daniel K.',t:'s',total:1130,days:5,body:'Renting scooters for the group kept daily transport tiny.',tip:'Book scooters for the week, not the day.',l:58,c:5},
     {n:'Siti H.',t:'p',body:'Agree the fare before any taxi without a meter, or use the ride-hailing apps.',l:44,c:7}]},
-  Singapore:{days:3,total:1600,n:71,split:[30,42,10,12,6],posts:[
-    {n:'Kavin R.',t:'s',total:1540,days:3,body:'Hotel was almost half the trip. Food was cheap.',tip:'Tap your card on MRT gates. No need to buy a pass.',l:66,c:4},
+  Singapore:{days:3,total:930,n:71,split:[52,17,21,10],posts:[
+    {n:'Kavin R.',t:'s',total:890,days:3,body:'Attractions were the big spend. Food was cheap.',tip:'Tap your card on MRT gates. No need to buy a pass.',l:66,c:4},
     {n:'Chloe W.',t:'p',body:'Hawker centres are the best food per ringgit. Lunch under S$6 is easy.',l:118,c:15}]}
 };
-const CM_CATS=['Food','Stay','Transport','Activities','Shopping'];
-const CM_COL=['#176b87','#053b50','#3f9fb0','#64ccc5','#a9d8d3'];
+const CM_CATS=['Food','Daily transport','Activities','Shopping'];
+const CM_COL=['#176b87','#3f9fb0','#64ccc5','#a9d8d3'];
 let cmCity='Tokyo', cmLiked={};
 function renderCM(){
   const d=CM[cmCity];
@@ -1820,7 +1877,7 @@ function renderCM(){
   document.getElementById('cmCity').textContent=cmCity;
   document.getElementById('cmDays').textContent=d.days;
   document.getElementById('cmTotal').textContent=fmt(d.total);
-  document.getElementById('cmBase').textContent='Median of '+d.n+' trip summaries · excluding flights';
+  document.getElementById('cmBase').textContent='Median of '+d.n+' trip summaries · excluding flights and hotels';
   document.getElementById('cmSplit').innerHTML=d.split.map((v,i)=>'<i style="width:'+v+'%;background:'+CM_COL[i]+'"></i>').join('');
   document.getElementById('cmLegend').innerHTML=d.split.map((v,i)=>'<span><i style="background:'+CM_COL[i]+'"></i>'+CM_CATS[i]+' <b>'+v+'%</b></span>').join('');
   document.getElementById('cmFeed').innerHTML=d.posts.map((p,k)=>{
