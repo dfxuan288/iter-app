@@ -7,13 +7,55 @@ This is a **prototype**. It uses demo data and moves no real money.
 
 | Folder | What it is |
 |---|---|
-| `mobile/` | The app (Expo + React Native + TypeScript), shipped as a web app you open in a browser |
-| `api/` | The backend's endpoints. Vercel turns each file here into a web address under `/api/` |
-| `backend/` | The backend's actual logic and tests. Holds the AI key and fetches exchange rates |
+| `mobile/` | **Frontend**: the app (Expo + React Native + TypeScript), shipped as a web app you open in a browser |
+| `api/` | **Backend** endpoints. Vercel turns each file here into a web address under `/api/` |
+| `backend/` | **Backend** logic and tests. Holds the AI key and fetches exchange rates |
+| `supabase/` | The backend database's tables (rate cache, scan limits, scan cache) |
+| `website/` | The ITER marketing website |
 | `docs/` | The project brief, the decisions made since, the design direction, and the demo script (`docs/DEMO.md`) |
+| `plan.txt` | System design and logic overview |
+| `requirements.txt` | Every dependency, and what it is for |
 
 It is hosted on **Vercel** (the app and the backend) with **Supabase** for the backend's small
 database, as recommended for the course.
+
+## Architecture
+
+- **Frontend (`mobile/`)**: screens in `src/app/` read and change data through `src/state/` and
+  `src/services/`. All money maths lives in `src/domain/` as small pure functions with unit tests.
+  The traveller's trips, expenses and receipt photos are saved on their own phone.
+- **Backend (`api/` + `backend/`)**: five endpoints: `health`, `rates`, `rate-history`,
+  `scan-receipt` and `scan-menu`. They call Claude (Anthropic) to read receipts and menus,
+  Frankfurter for exchange rates, and Supabase to cache rates and count scans.
+- **Main rule: AI reads, code calculates.** The AI only copies what is printed. Every conversion
+  and total is worked out by tested code.
+
+See `plan.txt` for the full design, with a diagram.
+
+## Technologies used
+
+| Part | Technology |
+|---|---|
+| Language | TypeScript (strict), on Node.js |
+| Frontend | Expo SDK 57, React Native 0.86, React 19, React Native Web, Expo Router, Reanimated, react-native-svg |
+| Backend | Node.js serverless functions on Vercel, Anthropic SDK, Zod (checks AI answers), Sharp (checks photos) |
+| AI | Claude Haiku 5.5 reads receipts and menus; Claude Sonnet 5.5 takes a second look when unsure |
+| Data | Supabase (Postgres); AsyncStorage on the phone; Frankfurter exchange rates |
+| Testing | Jest (app), Vitest (backend), ESLint, TypeScript checks, GitHub Actions |
+| Tools | Git and GitHub, Claude Code (AI coding assistant) |
+
+## Testing, and how AI helped
+
+- **289 app tests and 59 backend tests**, plus type checks and linting, run before every commit and
+  automatically on GitHub on every push (**Actions** tab).
+- Each money rule (safe to spend, warnings, conversions, tax
+  refund eligibility, menu prices with tax and service, plan days) has tests with worked examples.
+- **AI assistance:** the team used Claude Code, an AI coding assistant, in place of GitHub Copilot. It
+  wrote the unit tests alongside the code, ran all the checks before each change, and opened the app
+  in a browser to click through each flow (scanning, saving, overspending). It also ran a real AI scan
+  on the live site and checked that no secret keys reach the app.
+- Bugs found by the team's own testing were turned into tests before being fixed, so they cannot come
+  back. One example: changing the app date to day 1 used to count later expenses.
 
 ## Build status
 

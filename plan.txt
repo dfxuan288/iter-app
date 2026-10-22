@@ -1,0 +1,107 @@
+ITER: system design and logic overview
+======================================
+
+1. Purpose
+----------
+ITER is a travel money app for Malaysian travellers. It answers one question every day of a trip:
+"How much can I safely spend today?" Around that number it offers AI receipt scanning, menu
+translation, a tax refund tracker, live exchange rates and a community of shared trip costs.
+It is a prototype: it uses a demo trip and moves no real money.
+
+2. Architecture
+---------------
+
+   Phone browser / installed web app (PWA)
+   +-------------------------------------------+
+   | FRONTEND  mobile/                         |
+   | Expo + React Native + TypeScript          |
+   | screens (src/app) -> state (src/state)    |
+   |   -> services (src/services)              |
+   |   -> domain maths (src/domain, tested)    |
+   | Data saved on the phone (AsyncStorage)    |
+   +---------------------+---------------------+
+                         | HTTPS, JSON (/api/...)
+   +---------------------v---------------------+
+   | BACKEND  api/ + backend/                  |
+   | Node.js + TypeScript functions on Vercel  |
+   |  /api/health        is the server up      |
+   |  /api/rates         today's rates vs MYR  |
+   |  /api/rate-history  7 or 30 day chart     |
+   |  /api/scan-receipt  AI reads a receipt    |
+   |  /api/scan-menu     AI reads a menu       |
+   +-----+----------------+----------------+---+
+         |                |                |
+     Supabase        Anthropic API     Frankfurter
+     (rate cache,    (Claude Haiku,    (daily exchange
+      scan limits,    Sonnet fallback)   rates)
+      scan cache)
+
+- The frontend is built into a static web app and served by Vercel; each file in api/ becomes
+  one backend endpoint. The logic behind the endpoints lives in backend/.
+- Secret keys (Anthropic, Supabase) exist only on the server, never in the app.
+- The traveller's trips, expenses and receipt photos stay on their own phone.
+
+3. Main rule: "AI reads, code calculates"
+-----------------------------------------
+The AI only copies what is printed on a receipt or menu. Every amount, conversion and total is
+worked out by small pure functions in mobile/src/domain/, each with unit tests. Money is stored
+as whole numbers in the smallest unit (sen, yen) with its currency, so there are no rounding errors.
+
+4. Safe to spend (mobile/src/domain/budget.ts)
+----------------------------------------------
+Inputs: total budget, reserve (money kept aside), everything spent, days left.
+
+  Today's amount = (budget - reserve - spent before today) / days left including today
+                   Fixed for the day while spending stays within it.
+  Left today     = today's amount - spent today
+  From tomorrow  = (budget - reserve - everything spent) / days after today
+  Once today goes over its amount, Home shows the "from tomorrow" figure instead, so the daily
+  number lowers live with every overspend.
+
+  Status:
+  - Running short: the reserve is being used, or "from tomorrow" is under 40% of the plan
+  - Spending fast: over today's amount, or "from tomorrow" is under 70% of the plan
+  - On track: otherwise
+  (Plan = (budget - reserve) / trip days. Thresholds in mobile/src/config/budget.ts.)
+
+  Demo, day 7 of 10: (2,550 - 300 - 1,450) / 4 = RM 200 a day.
+
+5. Receipt and menu scanning (backend/scan/)
+--------------------------------------------
+1. The app shrinks the photo and sends it to /api/scan-receipt or /api/scan-menu.
+2. The backend rejects anything that is not a JPEG, PNG or WebP under 3 MB.
+3. Identical photos are answered from the cache (free, instant).
+4. Daily limits per phone and overall protect the AI bill.
+5. Claude Haiku returns strict JSON. Code checks it: items add up to the subtotal, subtotal plus
+   tax and service equals the total, the currency is supported, the date fits the trip.
+   If the numbers do not add up, Claude Sonnet takes a second look.
+6. The app shows the result for review, highlights unsure fields, converts to Ringgit, and runs
+   the tax refund check. Nothing is saved until the traveller taps Save.
+7. With no signal, photos wait in an offline queue and are sent when the connection returns.
+
+6. Other features
+-----------------
+- Currency: live rates from Frankfurter, cached in Supabase and saved on the phone, so converting
+  still works offline. 87 currencies, 110 countries.
+- Tax refund: Japan's rules are config (mobile/src/config/taxRules.ts) with a source and a
+  "last verified" date; every scanned receipt is checked; a tracker and airport checklist.
+- Menu translate: dishes in English, prices in Ringgit including tax and service, pork and
+  alcohol flags, and the order can be logged as an expense.
+- Community: typical trip cost per destination from shared trips, feed, likes, report and block.
+- Plans: 3-day free trial, Day Pass RM 2.90, 7-Day Pass RM 12.90 (purchases simulated). Prices and
+  limits live in one config file (mobile/src/config/plans.ts).
+- Trip Wrapped: an end-of-trip summary that can be shared.
+
+7. Reliability and safety
+-------------------------
+- Network calls return typed results instead of crashing; user data is never lost.
+- Demo samples still answer if the AI cannot be reached, so a presentation never breaks.
+- Accessibility: WCAG AA contrast, 44-point touch targets, screen-reader labels, reduced motion.
+
+8. Testing
+----------
+- 289 automated tests for the app (Jest) and 59 for the backend (Vitest), plus type checking and
+  linting. GitHub Actions runs all of them on every push (.github/workflows/ci.yml).
+- Every change was also tried in a real browser before it was published.
+
+More detail: README.md, docs/PROJECT_BRIEF.md, docs/DECISIONS.md, docs/DESIGN.md.
