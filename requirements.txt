@@ -1,0 +1,59 @@
+ITER: list of dependencies
+=========================
+
+ITER is written in TypeScript and runs on Node.js, so its dependencies are npm packages,
+not Python packages. They are installed from package.json (exact versions are locked in
+package-lock.json):
+
+  npm install                    (backend, in the project folder)
+  npm --prefix mobile install    (frontend, the app in mobile/)
+
+Runtime
+-------
+Node.js 22 or newer (tested on 24)
+npm (comes with Node.js)
+
+Frontend: mobile/package.json
+-----------------------------
+expo ~57.0.28                     app framework (builds the web app / PWA)
+react 19.2.3, react-dom 19.2.3    user interface library
+react-native 0.86.3               components
+react-native-web ~0.21.0          runs the React Native components in a browser
+expo-router ~57.0.26              screens and navigation
+react-native-reanimated 4.5.1     animations
+react-native-worklets 0.10.1      animation engine used by Reanimated
+react-native-gesture-handler ~2.32.0
+react-native-screens ~4.26.0
+react-native-safe-area-context ~5.7.0
+react-native-svg 15.15.4          charts, icons and drawings
+@react-native-async-storage/async-storage 2.2.0   saves the user's data on the phone
+expo-image ~57.0.5, expo-image-picker ~57.0.20, expo-image-manipulator ~57.0.21   photos for scanning
+expo-asset ~57.0.19, expo-font ~57.0.4, @expo-google-fonts/outfit ^0.4.3
+expo-blur ~57.0.3, expo-linear-gradient ~57.0.2
+expo-constants ~57.0.21, expo-linking ~57.0.12
+expo-splash-screen ~57.0.10, expo-status-bar ~57.0.1, expo-system-ui ~57.0.4
+lottie-web ^5.13.0, lottie-react-native ~7.3.8   success animations
+phosphor-react-native ^3.0.6     icons
+
+Frontend, for development and testing only:
+typescript ~6.0.3, jest ~29.7.0, jest-expo ~57.0.6, @types/jest 29.5.14, @types/react ~19.2.2,
+eslint ^9.39.5, eslint-config-expo ~57.0.2
+
+Backend: package.json (project folder)
+--------------------------------------
+@anthropic-ai/sdk ^0.133.0        calls Claude to read receipts and menus
+zod ^4.6.7                        checks the AI's answers have the right shape
+sharp ^0.35.5                     checks and shrinks uploaded photos
+
+Backend, for development and testing only:
+typescript ^6.0.3, tsx ^4.23.15, vitest ^5.0.4, @types/node ^26.6.5,
+eslint ^10.12.0, @eslint/js ^10.0.1, typescript-eslint ^8.71.2
+
+Online services (no installation; accounts and keys)
+----------------------------------------------------
+Vercel           hosts the app and the backend functions
+Supabase         small database: exchange rate cache, scan counters, scan cache (supabase/migrations/)
+Anthropic API    Claude Haiku 5.5 (Claude Sonnet 5.5 as a second look) reads receipts and menus
+Frankfurter      free daily exchange rates (api.frankfurter.dev)
+
+Keys go in a .env file (see .env.example) and in Vercel's settings, never in the code.
