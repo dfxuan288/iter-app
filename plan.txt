@@ -178,7 +178,7 @@ Step 9. Polish
 Step 10. Final checks and demo
   Goal:     Ready to present.
   Build:    Checks on the live site, a real AI scan on the live server, security check (no keys in
-            the app), offline check, demo script (docs/DEMO.md).
+            the app), offline check, demo rehearsal.
   Done when: the whole demo runs on the live site on a phone without errors.
 
 10. How the plan changed

@@ -90,7 +90,7 @@ Step 9. Polish                                             18 Oct 2026
 
 Step 10. Final checks and demo                             18 Oct 2026
   Built:    Live site checked, real AI scan on the live server (read in 3.6 seconds, every field
-            correct), security check (no keys in the app), offline check, demo script.
+            correct), security check (no keys in the app), offline check, demo script (later removed).
   Checks:   284 app tests and 59 backend tests passed; type check, lint and production build clean.
   Compared with plan.txt: on track. Opening the app with no connection at all was not built
             (team decision, 19 Oct).

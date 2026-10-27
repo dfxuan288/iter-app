@@ -12,7 +12,7 @@ This is a **prototype**. It uses demo data and moves no real money.
 | `backend/` | **Backend** logic and tests. Holds the AI key and fetches exchange rates |
 | `supabase/` | The backend database's tables (rate cache, scan limits, scan cache) |
 | `website/` | The ITER marketing website |
-| `docs/` | The project brief, the decisions made since, the design direction, and the demo script (`docs/DEMO.md`) |
+| `docs/` | The project brief, the decisions made since and the design direction |
 | `plan.txt` | System design and logic overview, and the step-by-step build plan |
 | `built.txt` | What was built at each step, compared with the plan |
 | `requirements.txt` | Every dependency, and what it is for |
@@ -72,7 +72,7 @@ See `plan.txt` for the full design, with a diagram.
 | 7. Community: typical trip per destination, feed, likes, comments, report and block, share your trip | Done |
 | 8. Plans and Me: free trial, Day Pass, 7-Day Pass (purchases simulated), free version, My plan | Done |
 | 9. Polish: launch animation, welcome screens, motion, Trip Wrapped, demo receipt photos, accessibility pass | Done |
-| 10. Final deployment checks and demo rehearsal: live smoke test, real AI scan, security check, offline check, demo script (`docs/DEMO.md`) | Done |
+| 10. Final deployment checks and demo rehearsal: live smoke test, real AI scan, security check, offline check, demo rehearsal | Done |
 
 ## Run it on your computer
 
