@@ -1,0 +1,132 @@
+ITER: what was built, step by step
+==================================
+
+This is the build record. It is compiled from the project's Git history (every change is a dated
+commit on GitHub: https://github.com/dfxuan288/iter-app/commits/main) and compared with the steps
+in plan.txt, section 9.
+
+Checks: before each step was joined to the main version, the type check, lint and all automated
+tests were run in both the app and the backend. Since Step 0, GitHub has also run them on every push
+(the Actions tab). Each feature was also tried in a browser before it was published.
+
+
+Step 0. Foundations                                        13 Oct 2026
+  Built:    Expo + TypeScript app with five tabs, design colours and sizes in one file, backend
+            with a health check, automatic checks on GitHub, README. A design pass the same day:
+            light aqua style, Outfit font, destination photos on Home.
+  Checks:   type check, lint, tests passed; checks also run on GitHub from this step on.
+  Compared with plan.txt: on track.
+
+Step 1. Money core and Home                                13 Oct 2026
+  Built:    Safe-to-spend maths as tested functions, demo trip, Home screen with spent, remaining,
+            status, daily bars and categories, plan-a-trip form.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: plan adjusted: hosting moved from AWS to Vercel + Supabase the same
+            night (lecturer's recommended setup).
+
+Step 2. Currency and manual entry                          14 Oct 2026
+  Built:    Live exchange rates through the backend, saved on the phone, Currency tab with
+            converter and chart, add, edit and delete expenses. Team's destination photos and
+            category illustrations added.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: on track.
+
+Step 3. Scan backend (AI)                                  14 Oct 2026
+  Built:    Receipt and menu reading with Claude Haiku (Sonnet as a second look), code checks on
+            the totals, daily limits, cache, demo samples. Server placed in Singapore for speed;
+            token use logged per scan.
+  Checks:   type check, lint, tests passed; sample receipts read correctly.
+  Compared with plan.txt: on track. Fix the same day: today's daily amount is now set once a
+            day, so it does not jump with every purchase.
+
+Step 4. Receipt scan flow                                  14 Oct 2026
+  Built:    Photo or sample, reading screen, review with unsure fields highlighted, save, offline
+            waiting list.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: on track.
+
+Step 5. Tax refund                                         15 Oct 2026
+  Built:    Japan's rules as config with source and "last verified" date, a check on every
+            receipt, tracker, airport checklist, departure reminder.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: on track.
+
+Step 6. Menu translate                                     15 Oct 2026
+  Built:    Dishes in English, Ringgit prices with tax and service, pork and alcohol flags,
+            log the order as an expense.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: on track.
+
+Step 7. Community                                          15 Oct 2026
+  Built:    Typical trip per destination, feed, comments, likes, report and block, share your trip.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: on track.
+
+  Change after Step 7                                      15 Oct 2026
+  Built:    Hotels and flights removed from the budget; four everyday categories (food, daily
+            transport, activities, shopping); one simple daily-amount rule. App date control for
+            the demo, reminder for forgotten days, tappable daily bars.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: plan adjusted: budget covers everyday spending only (team decision).
+
+  Install as an app                                        16 Oct 2026
+  Built:    "Download ITER": opens full screen from the home screen; animations; saved tick.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: plan adjusted: a web app (PWA) instead of App Store / Play Store builds.
+
+Step 8. Plans and Me                                       17 Oct 2026
+  Built:    3-day free trial, Day Pass RM 2.90, 7-Day Pass RM 12.90 (simulated), free version,
+            My plan; prices and limits in one config file.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: on track.
+
+Step 9. Polish                                             18 Oct 2026
+  Built:    Launch animation (city photo inside the ITER logo), welcome screens, demo receipt
+            photos, accessibility pass. Also added: Trip Wrapped, raised scan button, trips to any
+            of 110 countries, trip history and removal. Fix: moving the app date back no longer
+            counts later expenses (found by the team's CTO; now covered by a test).
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: plan adjusted: Trip Wrapped and any-country trips added beyond the plan.
+
+Step 10. Final checks and demo                             18 Oct 2026
+  Built:    Live site checked, real AI scan on the live server (read in 3.6 seconds, every field
+            correct), security check (no keys in the app), offline check, demo script (later removed).
+  Checks:   284 app tests and 59 backend tests passed; type check, lint and production build clean.
+  Compared with plan.txt: on track. Opening the app with no connection at all was not built
+            (team decision, 19 Oct).
+
+
+Fixes and improvements after the 11 steps
+-----------------------------------------
+  Clearer button presses                                   19 Oct 2026
+  Built:    Every button and tab visibly dips and springs back when tapped.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: on track (polish, Step 9).
+
+  ITER website                                             19 Oct 2026
+  Built:    The team's marketing website, in website/.
+  Compared with plan.txt: added beyond the plan.
+
+  Warnings reworked                                        20 Oct 2026
+  Built:    One measure drives every status and warning (On track, Spending fast, Running short);
+            the "money runs out on day N" forecast removed; "left today" highlighted;
+            "Total remaining" label.
+  Checks:   287 app tests and 59 backend tests passed; type check, lint clean.
+  Compared with plan.txt: plan adjusted: the team's CTO found the old warnings could contradict
+            the main number.
+
+  Live daily amount                                        21 Oct 2026
+  Built:    Once today is overspent, the daily amount lowers straight away for the days left;
+            "Total spent so far" label. Website updated to match the app.
+  Checks:   289 app tests and 59 backend tests passed; type check, lint clean.
+  Compared with plan.txt: plan adjusted: team request after testing.
+
+  Full screen on Android                                   21 Oct 2026
+  Built:    The installed app hides the phone's status bar on Android.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: on track (polish).
+
+  Submission documents                                     22 to 27 Oct 2026
+  Built:    plan.txt, requirements.txt, built.txt; README sections on architecture, technologies
+            and testing.
+  Compared with plan.txt: on track.

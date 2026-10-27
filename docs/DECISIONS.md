@@ -404,7 +404,7 @@ Scope agreed with the team: finish what exists, no new features (the under-budge
 - **Offline**: with the connection cut while ITER is open, the converter uses the last saved rate and says so, and new
   expenses are saved on the phone; scans wait and send themselves later. **Opening** ITER with no connection at all is
   not possible yet: that needs a service worker (an offline copy of the app itself). Decision pending with the team.
-- **Demo script**: `docs/DEMO.md`.
+- **Demo script**: written for rehearsal (`docs/DEMO.md`); removed from the repository on 27 Oct 2026, still in the Git history.
 
 ## Offline start not built; clearer button presses (19 Oct 2026)
 
