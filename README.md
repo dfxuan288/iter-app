@@ -72,7 +72,7 @@ See `plan.txt` for the full design, with a diagram.
 | 7. Community: typical trip per destination, feed, likes, comments, report and block, share your trip | Done |
 | 8. Plans and Me: free trial, Day Pass, 7-Day Pass (purchases simulated), free version, My plan | Done |
 | 9. Polish: launch animation, welcome screens, motion, Trip Wrapped, demo receipt photos, accessibility pass | Done |
-| 10. Final deployment checks and demo rehearsal: live smoke test, real AI scan, security check, offline check, demo rehearsal | Done |
+| 10. Final deployment checks and demo rehearsal: live smoke test, real AI scan, security check, offline check | Done |
 
 ## Run it on your computer
 
