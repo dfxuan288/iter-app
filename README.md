@@ -13,7 +13,8 @@ This is a **prototype**. It uses demo data and moves no real money.
 | `supabase/` | The backend database's tables (rate cache, scan limits, scan cache) |
 | `website/` | The ITER marketing website |
 | `docs/` | The project brief, the decisions made since, the design direction, and the demo script (`docs/DEMO.md`) |
-| `plan.txt` | System design and logic overview |
+| `plan.txt` | System design and logic overview, and the step-by-step build plan |
+| `built.txt` | What was built at each step, compared with the plan |
 | `requirements.txt` | Every dependency, and what it is for |
 
 It is hosted on **Vercel** (the app and the backend) with **Supabase** for the backend's small

@@ -104,4 +104,99 @@ Inputs: total budget, reserve (money kept aside), everything spent, days left.
   linting. GitHub Actions runs all of them on every push (.github/workflows/ci.yml).
 - Every change was also tried in a real browser before it was published.
 
+9. Build steps
+--------------
+The app was built in 11 steps, one at a time. Each step had its own Git branch and was only joined
+to the main version (main) once its checks passed. The order follows the brief's build order
+(docs/PROJECT_BRIEF.md, section 14). What actually happened at each step is in built.txt.
+
+"Checks" always means: type check, lint and all automated tests pass, in both the app (mobile/)
+and the backend, and the feature works when tried in a browser.
+
+Step 0. Foundations
+  Goal:     A working empty app and backend that the whole team can run and test.
+  Build:    Expo + TypeScript project, five tabs (Home, Currency, Scan, Community, Me), design
+            colours and sizes in one file, a backend with a health check, automatic checks on
+            GitHub, README.
+  Done when: the app opens with five tabs, Me shows "Connected" to the backend, checks pass on GitHub.
+
+Step 1. Money core and Home
+  Goal:     The main number: how much is safe to spend each day.
+  Build:    Money maths as tested functions (amounts in sen), a demo trip, the Home screen
+            (safe to spend, spent, remaining, status, daily bars, categories), plan-a-trip form.
+  Done when: the demo trip shows the right daily amount, worked out by hand and matched by tests.
+
+Step 2. Currency and manual entry
+  Goal:     Log spending in any currency and see it in Ringgit.
+  Build:    Live exchange rates (Frankfurter) through the backend, saved on the phone for offline
+            use, Currency tab with converter and rate chart, add, edit and delete expenses.
+  Done when: an expense typed in yen shows the correct Ringgit amount, also with no connection.
+
+Step 3. Scan backend (AI)
+  Goal:     The server can read a receipt or menu photo safely and cheaply.
+  Build:    /api/scan-receipt and /api/scan-menu using Claude Haiku (Sonnet as a second look),
+            strict answer format, code checks that the numbers add up, daily scan limits,
+            a cache for repeated photos, demo samples that work without the AI.
+  Done when: sample receipts are read correctly, bad photos are rejected, the key never leaves the server.
+
+Step 4. Receipt scan flow
+  Goal:     Photo in, expense saved, in a few taps.
+  Build:    Camera or sample photo, "reading" screen, review screen with unsure fields highlighted,
+            save, and a waiting list that sends photos later when there is no signal.
+  Done when: a scanned receipt becomes a saved expense, and a scan with no signal is sent later.
+
+Step 5. Tax refund
+  Goal:     Show travellers the tax they can claim back when leaving Japan.
+  Build:    Japan's rules as a config file with source and "last verified" date, a check on every
+            receipt, a tracker screen, an airport checklist and a departure reminder.
+  Done when: eligible receipts add up correctly in the tracker; rules can change without code changes.
+
+Step 6. Menu translate
+  Goal:     Understand a foreign menu and its real price.
+  Build:    Dishes in English, prices in Ringgit including tax and service charge, pork and alcohol
+            flags, and logging the order as an expense.
+  Done when: sample menus show correct Ringgit prices including tax and service.
+
+Step 7. Community
+  Goal:     Show what trips really cost, from other travellers.
+  Build:    Typical trip cost per destination, feed with posts, comments and likes, report and
+            block, and sharing your own trip summary (your expenses stay private).
+  Done when: the typical trip figures match the shared trips, and reported posts can be hidden.
+
+Step 8. Plans and Me
+  Goal:     The business model: pay only for the days you travel.
+  Build:    3-day free trial, Day Pass and 7-Day Pass (buying is simulated), free version,
+            My plan screen; all prices and limits in one config file.
+  Done when: locked features open after a pass is "bought", and the days counted are correct in tests.
+
+Step 9. Polish
+  Goal:     Make it feel like a finished app.
+  Build:    Launch animation, welcome screens, button and list animations, demo receipt photos,
+            accessibility pass (contrast, touch sizes, screen-reader labels).
+  Done when: every screen passes the accessibility checks and animations respect "reduce motion".
+
+Step 10. Final checks and demo
+  Goal:     Ready to present.
+  Build:    Checks on the live site, a real AI scan on the live server, security check (no keys in
+            the app), offline check, demo script (docs/DEMO.md).
+  Done when: the whole demo runs on the live site on a phone without errors.
+
+10. How the plan changed
+------------------------
+The brief was the starting plan. These changes were made while building, each recorded with its
+reason in docs/DECISIONS.md:
+
+- Hosting: Vercel + Supabase instead of AWS (Lambda, Secrets Manager). Recommended by the lecturer;
+  free, HTTPS out of the box, and much simpler to run. The key still lives only on the server.
+- Delivery: a web app installed from the browser (PWA) instead of App Store / Play Store builds,
+  because v1 is shown from a server, not the stores.
+- Budget: hotels and flights removed. ITER tracks everyday spending only, with four categories:
+  food, daily transport, activities, shopping. One simple rule for the daily amount.
+- Daily amount and warnings reworked after team testing: one measure drives every warning, and the
+  daily amount lowers straight away once today is overspent. The old "money runs out on day N"
+  forecast was removed because it could contradict the main number.
+- Added beyond the plan: Trip Wrapped (end-of-trip summary), trips to any of 110 countries,
+  welcome screens and trip history.
+- Not built: opening the app with no connection at all (the team chose not to risk it).
+
 More detail: README.md, docs/PROJECT_BRIEF.md, docs/DECISIONS.md, docs/DESIGN.md.
