@@ -300,7 +300,7 @@ Prices live in `mobile/src/config/plans.ts`; the rules are pure functions in `mo
 
 - **Free trial**, RM 0, 3 days: everything, up to 10 scans a day. It starts by itself on the first trip day ITER is
   used (day 1 if opened that day) and is used once.
-- **Day Pass**, RM 2.90, 1 day. **7-Day Pass**, RM 12.90, 7 days in a row ("Best value", about RM 1.84 a day).
+- **Day Pass**, RM 2.90, 1 day (raised to RM 3.50 on 29 Oct 2026, see below). **7-Day Pass**, RM 12.90, 7 days in a row ("Best value", about RM 1.84 a day).
   Everything, no daily scan limit. Every button is active; buying asks "Buy 7-Day Pass for RM 12.90?", then shows the
   saved tick "7-Day Pass added". Purchases are simulated: no money moves.
 - **A pass starts by itself** on the next trip day not already covered (the trial first, then the oldest pass). Extra
@@ -449,6 +449,16 @@ Team request: overspending should lower the big daily number straight away, not 
   which looks like a penalty for doing the right thing.
 - On the last day there are no days after today, so the number stays and the amber line shows the overspend.
 - "Spent so far" is now "Total spent so far".
+
+## Day Pass raised to RM 3.50 (29 Oct 2026)
+
+Team decision. The Day Pass is now **RM 3.50** (was RM 2.90). The 7-Day Pass stays RM 12.90 and the free trial is
+unchanged.
+- The 7-Day Pass now costs less than Day Passes from 4 paid days (4 × RM 3.50 = RM 14.00), not 5, so its line reads
+  "Good for trips of 4 days or more". On the website this number is worked out from the prices.
+- Passes already bought keep working: a pass records only its kind and dates, not a price.
+- Changed in `mobile/src/config/plans.ts` (the only price file), its test, the website's price list, `plan.txt` and
+  `built.txt`.
 
 ## Still open
 

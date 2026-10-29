@@ -107,7 +107,7 @@ describe('passes', () => {
 
   it('works out the price per day', () => {
     expect(pricePerDaySen('week')).toBe(184);
-    expect(pricePerDaySen('day')).toBe(290);
+    expect(pricePerDaySen('day')).toBe(350);
   });
 });
 

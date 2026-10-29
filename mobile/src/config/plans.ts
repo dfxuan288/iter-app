@@ -39,7 +39,7 @@ export const planConfig = {
       kind: 'day',
       name: 'Day Pass',
       label: 'For short trips',
-      priceSen: 290,
+      priceSen: 350,
       days: 1,
       blurb: 'Good for day trips and weekend trips.',
     },
@@ -49,7 +49,7 @@ export const planConfig = {
       label: 'Best value',
       priceSen: 1290,
       days: 7,
-      blurb: 'Good for trips of 5 days or more.',
+      blurb: 'Good for trips of 4 days or more.',
     },
   } satisfies Record<PassKind, PassOffer>,
   /** Order the passes are shown in. */

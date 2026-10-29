@@ -88,7 +88,7 @@ Inputs: total budget, reserve (money kept aside), everything spent, days left.
 - Menu translate: dishes in English, prices in Ringgit including tax and service, pork and
   alcohol flags, and the order can be logged as an expense.
 - Community: typical trip cost per destination from shared trips, feed, likes, report and block.
-- Plans: 3-day free trial, Day Pass RM 2.90, 7-Day Pass RM 12.90 (purchases simulated). Prices and
+- Plans: 3-day free trial, Day Pass RM 3.50, 7-Day Pass RM 12.90 (purchases simulated). Prices and
   limits live in one config file (mobile/src/config/plans.ts).
 - Trip Wrapped: an end-of-trip summary that can be shared.
 

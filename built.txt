@@ -130,3 +130,9 @@ Fixes and improvements after the 11 steps
   Built:    plan.txt, requirements.txt, built.txt; README sections on architecture, technologies
             and testing.
   Compared with plan.txt: on track.
+
+  Day Pass price change                                    29 Oct 2026
+  Built:    Day Pass raised from RM 2.90 to RM 3.50 (team decision); the 7-Day Pass line now says
+            "Good for trips of 4 days or more". App, website and documents updated.
+  Checks:   type check, lint, tests passed.
+  Compared with plan.txt: plan adjusted: new Day Pass price.
